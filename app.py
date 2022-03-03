@@ -1,6 +1,9 @@
 from flask import *
 from models import modelsBlueprint
+from dotenv import load_dotenv
+import os
 
+environment = os.getenv('FLASK_ENV')
 
 
 
@@ -44,9 +47,7 @@ def booking():
 def thankyou():
 	return render_template("thankyou.html")
 
-# app.run(port=3000)
-
-if __name__ == '__main__':
-    app.run(debug=True, port=3000)
-    # connection.close()
-    # mycursor.close()
+if __name__ == '__main__' and environment == 'developmente':
+	app.run(debug=True, port=3000)
+else:
+	app.run(port=3000)
