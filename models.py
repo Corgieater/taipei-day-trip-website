@@ -33,13 +33,13 @@ connection = pool.get_connection()
 cursor = connection.cursor()
 
 def searchAttractions():
+    ###### use limit to improve selecting######
     searchByPageAndNameKeyword = ('SELECT id, name, category, description, address, transport, mrt, latitude, '
-                                  'longitude, images FROM taipeitrip WHERE name LIKE %s')
+                                  'longitude, images FROM taipeitrip WHERE name LIKE %s LIMIT 12')
     userInputKeyword = request.args.get('keyword')
     userInputPage = request.args.get('page')
     countItemLength = ('SELECT COUNT(*) FROM taipeitrip WHERE name LIKE %s')
     # don't trans userInputPage here, page 0 will turn to False
-    nextPage = None
 
     errorData = {
         "error": True,
@@ -49,7 +49,6 @@ def searchAttractions():
     if userInputPage and userInputKeyword:
         #search when user input page and keyword
         cursor.execute(searchByPageAndNameKeyword, ('%' + userInputKeyword + '%',))
-
         totalAttractions = cursor.fetchall()
         cursor.execute(countItemLength, ('%' + userInputKeyword + '%',))
         searchLength = cursor.fetchone()
@@ -74,49 +73,38 @@ def searchAttractions():
 
     elif userInputPage:
         #if user only input page
-        search = ('SELECT id, name, category, description, address, transport, mrt, latitude, '
-                  'longitude, images FROM taipeitrip')
-        cursor.execute(search)
-        totalAttractions = cursor.fetchall()
+        # search = ('SELECT id, name, category, description, address, transport, mrt, latitude, '
+        #           'longitude, images FROM taipeitrip') #****************
+
         search = 'SELECT COUNT(*) FROM taipeitrip'
         cursor.execute(search)
         totalAttractionLength = cursor.fetchone()
         totalAttractionLength = totalAttractionLength[0]
         totalPage = math.ceil(totalAttractionLength/11)
-        # # hard coded but ok, try to fix it in a smart way after job done, I think it can be iterate
-        if int(userInputPage) < totalPage-1:
-            #total page -1 because we have 58 items / 11 to ceil will be 6 pages,
-            #but we start from 0, 0-4
-            if int(userInputPage) == 0:
-                # search = ('SELECT * FROM taipeitrip WHERE id < 12')
-                totalData = makeJsonData(totalAttractions, 11)
-                nextPage = 1
-                totalData['nextPage'] = nextPage
+        pagesList=[]
+        for i in range(totalPage-1):
+            pagesList.append(i)
+        print(pagesList)
+        if int(userInputPage) in pagesList:
+            startPoint = 0 + (12 * (int(userInputPage)))
+            endPoint = 11+(12*int(userInputPage))
+            print(f'start from {startPoint} end from {endPoint}')
+            ##### use limit range to make mysql do less
+            search = ('SELECT id, name, category, description, address, transport, mrt, latitude, '
+                      'longitude, images FROM taipeitrip LIMIT %s, 12')
+            cursor.execute(search, (startPoint,))
+            totalAttractions = cursor.fetchall()
+            if len(totalAttractions) < 11:
+                print(len(totalAttractions))
+                totalData = makeJsonData(totalAttractions, len(totalAttractions), 0)
                 return totalData
 
-            elif int(userInputPage) == 1:
-                totalData = makeJsonData(totalAttractions, 23, 12)
-                nextPage = 2
-                totalData['nextPage'] = nextPage
-                return totalData
+            totalData = makeJsonData(totalAttractions, 11, 0)
+            if userInputPage != pagesList[-1]:
+                totalData['nextPage'] = int(userInputPage)+1
 
-            elif int(userInputPage) == 2:
-                totalData = makeJsonData(totalAttractions, 35, 24)
-                nextPage = 3
-                totalData['nextPage'] = nextPage
-                return totalData
+            return totalData
 
-            elif int(userInputPage) == 3:
-                totalData = makeJsonData(totalAttractions, 47, 36)
-                nextPage = 4
-                totalData['nextPage'] = nextPage
-                return totalData
-
-            elif int(userInputPage) == 4:
-                totalData = makeJsonData(totalAttractions, 58, 48)
-                nextPage = None
-                totalData['nextPage'] = nextPage
-                return totalData
         else:
             return errorData, 500
 
@@ -126,28 +114,31 @@ def makeJsonData(totalAttractions, end, start=0):
         "data": []
     }
     for index in range(start, end):
-        attraction = {
-            "id": totalAttractions[index][0],
-            "name": totalAttractions[index][1],
-            "category": totalAttractions[index][2],
-            "description": totalAttractions[index][3],
-            "address": totalAttractions[index][4],
-            "transport": totalAttractions[index][5],
-            "mrt": totalAttractions[index][6],
-            "latitude": totalAttractions[index][7],
-            "longitude": totalAttractions[index][8],
-            "images": totalAttractions[index][9].split(',')
-        }
-        totalAttractionsData['data'].append(attraction)
+            attraction = {
+                # how to deal with all these hard code index?
+                "id": totalAttractions[index][0],
+                "name": totalAttractions[index][1],
+                "category": totalAttractions[index][2],
+                "description": totalAttractions[index][3],
+                "address": totalAttractions[index][4],
+                "transport": totalAttractions[index][5],
+                "mrt": totalAttractions[index][6],
+                "latitude": totalAttractions[index][7],
+                "longitude": totalAttractions[index][8],
+                "images": totalAttractions[index][9].split(',')
+            }
+            totalAttractionsData['data'].append(attraction)
     return totalAttractionsData
 
 
 def searchAttractionById(attractionId):
-    searchById = ('SELECT * FROM taipeitrip WHERE id =%s')
+    searchById = ('SELECT id, name, category, description, address, transport, mrt, latitude, '
+                  'longitude, images FROM taipeitrip WHERE id = %s')
     attraction = {}
 
     try:
         cursor.execute(searchById, (attractionId,))
+        print(attractionId)
         result = cursor.fetchone()
         if result is None:
             attraction = {
@@ -161,6 +152,7 @@ def searchAttractionById(attractionId):
                              "message": 'Internal server error'
                          }, 500
     else:
+        # can I find a way to fix this repetition?
         attraction = {
             "id": result[0],
             "name": result[1],
