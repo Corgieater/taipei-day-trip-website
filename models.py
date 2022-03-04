@@ -92,6 +92,7 @@ def searchAttractions():
                 totalData = makeJsonData(totalAttractions, 11)
                 nextPage = 1
                 totalData['nextPage'] = nextPage
+                return totalData
 
             elif int(userInputPage) == 1:
                 totalData = makeJsonData(totalAttractions, 23, 12)
