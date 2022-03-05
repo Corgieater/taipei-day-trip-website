@@ -84,18 +84,14 @@ def searchAttractions():
         pagesList=[]
         for i in range(totalPage-1):
             pagesList.append(i)
-        print(pagesList)
         if int(userInputPage) in pagesList:
             startPoint = 0 + (12 * (int(userInputPage)))
-            endPoint = 11+(12*int(userInputPage))
-            print(f'start from {startPoint} end from {endPoint}')
             ##### use limit range to make mysql do less
             search = ('SELECT id, name, category, description, address, transport, mrt, latitude, '
                       'longitude, images FROM taipeitrip LIMIT %s, 12')
             cursor.execute(search, (startPoint,))
             totalAttractions = cursor.fetchall()
             if len(totalAttractions) < 11:
-                print(len(totalAttractions))
                 totalData = makeJsonData(totalAttractions, len(totalAttractions), 0)
                 return totalData
 
@@ -125,7 +121,8 @@ def makeJsonData(totalAttractions, end, start=0):
                 "mrt": totalAttractions[index][6],
                 "latitude": totalAttractions[index][7],
                 "longitude": totalAttractions[index][8],
-                "images": totalAttractions[index][9].split(',')
+                "images": [totalAttractions[index][9].split(',')[0]]
+                ###fixed this
             }
             totalAttractionsData['data'].append(attraction)
     return totalAttractionsData
@@ -138,7 +135,6 @@ def searchAttractionById(attractionId):
 
     try:
         cursor.execute(searchById, (attractionId,))
-        print(attractionId)
         result = cursor.fetchone()
         if result is None:
             attraction = {
@@ -163,7 +159,8 @@ def searchAttractionById(attractionId):
             "mrt": result[6],
             "latitude": result[7],
             "longitude": result[8],
-            "images": result[9].split(',')
+            "images": [result[9].split(',')[0]]
+            ### fixed this too
         }
     finally:
         return attraction
