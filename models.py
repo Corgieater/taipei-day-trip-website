@@ -121,8 +121,7 @@ def makeJsonData(totalAttractions, end, start=0):
                 "mrt": totalAttractions[index][6],
                 "latitude": totalAttractions[index][7],
                 "longitude": totalAttractions[index][8],
-                "images": [totalAttractions[index][9].split(',')]
-                ###fixed this
+                "images": totalAttractions[index][9].split(',')
             }
             totalAttractionsData['data'].append(attraction)
     return totalAttractionsData
@@ -150,17 +149,20 @@ def searchAttractionById(attractionId):
     else:
         # can I find a way to fix this repetition?
         attraction = {
-            "id": result[0],
-            "name": result[1],
-            "category": result[2],
-            "description": result[3],
-            "address": result[4],
-            "transport": result[5],
-            "mrt": result[6],
-            "latitude": result[7],
-            "longitude": result[8],
-            "images": [result[9].split(',')]
-            ### fixed this too
+            "data": {
+                "id": result[0],
+                "name": result[1],
+                "category": result[2],
+                "description": result[3],
+                "address": result[4],
+                "transport": result[5],
+                "mrt": result[6],
+                "latitude": result[7],
+                "longitude": result[8],
+                "images": result[9].split(',')
+                ### fixed this too
+            }
+
         }
     finally:
         return attraction
