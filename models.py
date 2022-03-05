@@ -121,7 +121,7 @@ def makeJsonData(totalAttractions, end, start=0):
                 "mrt": totalAttractions[index][6],
                 "latitude": totalAttractions[index][7],
                 "longitude": totalAttractions[index][8],
-                "images": [totalAttractions[index][9].split(',')[0]]
+                "images": [totalAttractions[index][9].split(',')]
                 ###fixed this
             }
             totalAttractionsData['data'].append(attraction)
@@ -159,7 +159,7 @@ def searchAttractionById(attractionId):
             "mrt": result[6],
             "latitude": result[7],
             "longitude": result[8],
-            "images": [result[9].split(',')[0]]
+            "images": [result[9].split(',')]
             ### fixed this too
         }
     finally:
