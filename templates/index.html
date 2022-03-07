@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>台北一日遊</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{url_for('static', filename='style.css')}}"
+    />
+  </head>
+  <body>
+    <div class="wrap">
+      <nav>
+        <h1>台北一日遊</h1>
+        <ul class="signInAndReserveBox">
+          <li><a href="">預定行程</a></li>
+          <li><a href="">登入/註冊</a></li>
+        </ul>
+      </nav>
+      <header>
+        <div class="searchBar">
+          <h2>輕鬆享受台北一日悠閒</h2>
+          <p>搜尋每個角落，體驗城市的深度旅遊行程</p>
+          <form action="">
+            <input type="text" placeholder="輸入景點名稱查詢" />
+            <button>
+              <img
+                src="{{url_for('static', filename='imgs/icon_search.png')}}"
+                alt="icon"
+              />
+            </button>
+          </form>
+        </div>
+        <div class="headerPic"></div>
+      </header>
+      <main>
+        <ul class="showCase">
+          <li class="pics"></li>
+          <li class="pics"></li>
+          <li class="pics"></li>
+          <li class="pics"></li>
+          <li class="pics"></li>
+          <li class="pics"></li>
+          <li class="pics"></li>
+          <li class="pics"></li>
+          <li class="pics"></li>
+          <li class="pics"></li>
+          <li class="pics"></li>
+          <li class="pics"></li>
+        </ul>
+      </main>
+      <footer></footer>
+    </div>
+  </body>
+</html>
