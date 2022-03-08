@@ -34,6 +34,7 @@ cursor = connection.cursor()
 
 def searchAttractions():
     ###### use limit to improve selecting######
+    # maybe limit at 13 to see if there is next page?
     searchByPageAndNameKeyword = ('SELECT id, name, category, description, address, transport, mrt, latitude, '
                                   'longitude, images FROM taipeitrip WHERE name LIKE %s LIMIT 12')
     userInputKeyword = request.args.get('keyword')
@@ -54,16 +55,17 @@ def searchAttractions():
         searchLength = cursor.fetchone()
         searchLength = searchLength[0]
 
-        totalPages = math.ceil(searchLength/11)
+        totalPages = math.ceil(searchLength/12)
+        # determine pages, really important
         if int(userInputPage) < totalPages:
             if totalPages > 1 and int(userInputPage) < totalPages:
                 if int(userInputPage) == 0:
-                    # userInput = 0, but total pages > 1 = item > 11
+                    # userInput = 0, but total pages > 1 = item > 12
                     totalData = makeJsonData(totalAttractions, 11)
-                    # show whole page with 11 itmes
+                    # show whole page with 12 itmes
 
             elif int(userInputPage) == 0 and totalPages == 1:
-                # user input = 0 and total pages > 1 = item <= 11
+                # user input = 0 and total pages > 1 = item <= 12
                 totalData = makeJsonData(totalAttractions, searchLength)
 
             return totalData
@@ -80,23 +82,21 @@ def searchAttractions():
         cursor.execute(search)
         totalAttractionLength = cursor.fetchone()
         totalAttractionLength = totalAttractionLength[0]
-        totalPage = math.ceil(totalAttractionLength/11)
-        pagesList=[]
-        for i in range(totalPage-1):
-            pagesList.append(i)
-        if int(userInputPage) in pagesList:
-            startPoint = 0 + (12 * (int(userInputPage)))
+        totalPage = math.floor(totalAttractionLength/12)
+        if int(userInputPage) <= totalPage:
+            startPoint = 12 * (int(userInputPage))
             ##### use limit range to make mysql do less
             search = ('SELECT id, name, category, description, address, transport, mrt, latitude, '
                       'longitude, images FROM taipeitrip LIMIT %s, 12')
             cursor.execute(search, (startPoint,))
             totalAttractions = cursor.fetchall()
-            if len(totalAttractions) < 11:
-                totalData = makeJsonData(totalAttractions, len(totalAttractions), 0)
+            if len(totalAttractions) < 12:
+                totalData = makeJsonData(totalAttractions, len(totalAttractions))
                 return totalData
 
-            totalData = makeJsonData(totalAttractions, 11, 0)
-            if userInputPage != pagesList[-1]:
+            totalData = makeJsonData(totalAttractions, 12)
+
+            if userInputPage != totalPage:
                 totalData['nextPage'] = int(userInputPage)+1
 
             return totalData
@@ -110,20 +110,20 @@ def makeJsonData(totalAttractions, end, start=0):
         "data": []
     }
     for index in range(start, end):
-            attraction = {
-                # how to deal with all these hard code index?
-                "id": totalAttractions[index][0],
-                "name": totalAttractions[index][1],
-                "category": totalAttractions[index][2],
-                "description": totalAttractions[index][3],
-                "address": totalAttractions[index][4],
-                "transport": totalAttractions[index][5],
-                "mrt": totalAttractions[index][6],
-                "latitude": totalAttractions[index][7],
-                "longitude": totalAttractions[index][8],
-                "images": totalAttractions[index][9].split(',')
-            }
-            totalAttractionsData['data'].append(attraction)
+        attraction = {
+            # how to deal with all these hard code index?
+            "id": totalAttractions[index][0],
+            "name": totalAttractions[index][1],
+            "category": totalAttractions[index][2],
+            "description": totalAttractions[index][3],
+            "address": totalAttractions[index][4],
+            "transport": totalAttractions[index][5],
+            "mrt": totalAttractions[index][6],
+            "latitude": totalAttractions[index][7],
+            "longitude": totalAttractions[index][8],
+            "images": totalAttractions[index][9].split(',')
+        }
+        totalAttractionsData['data'].append(attraction)
     return totalAttractionsData
 
 
@@ -160,7 +160,6 @@ def searchAttractionById(attractionId):
                 "latitude": result[7],
                 "longitude": result[8],
                 "images": result[9].split(',')
-                ### fixed this too
             }
 
         }
