@@ -33,14 +33,8 @@ connection = pool.get_connection()
 cursor = connection.cursor()
 
 def searchAttractions():
-    ###### use limit to improve selecting######
-    # maybe limit at 13 to see if there is next page?
-    searchByPageAndNameKeyword = ('SELECT id, name, category, description, address, transport, mrt, latitude, '
-                                  'longitude, images FROM taipeitrip WHERE name LIKE %s LIMIT 12')
     userInputKeyword = request.args.get('keyword')
     userInputPage = request.args.get('page')
-    countItemLength = ('SELECT COUNT(*) FROM taipeitrip WHERE name LIKE %s')
-    # don't trans userInputPage here, page 0 will turn to False
 
     errorData = {
         "error": True,
@@ -48,8 +42,15 @@ def searchAttractions():
     }
 
     if userInputPage and userInputKeyword:
+        ###### use limit to improve selecting######
+        # maybe limit at 13 to see if there is next page?
+        searchByPageAndNameKeyword = ('SELECT id, name, category, description, address, transport, mrt, latitude, '
+                                      'longitude, images FROM taipeitrip WHERE name LIKE %s LIMIT %s,  12')
+        countItemLength = ('SELECT COUNT(*) FROM taipeitrip WHERE name LIKE %s')
+        # don't trans userInputPage here, page 0 will turn to False
         #search when user input page and keyword
-        cursor.execute(searchByPageAndNameKeyword, ('%' + userInputKeyword + '%',))
+        startPoint = 12*int(userInputPage)
+        cursor.execute(searchByPageAndNameKeyword, ('%' + userInputKeyword + '%', startPoint, ))
         totalAttractions = cursor.fetchall()
         cursor.execute(countItemLength, ('%' + userInputKeyword + '%',))
         searchLength = cursor.fetchone()
@@ -58,26 +59,17 @@ def searchAttractions():
         totalPages = math.ceil(searchLength/12)
         # determine pages, really important
         if int(userInputPage) < totalPages:
-            if totalPages > 1 and int(userInputPage) < totalPages:
-                if int(userInputPage) == 0:
-                    # userInput = 0, but total pages > 1 = item > 12
-                    totalData = makeJsonData(totalAttractions, 11)
-                    # show whole page with 12 itmes
+            if int(userInputPage) == totalPages-1:
+                totalData = makeJsonData(totalAttractions, len(totalAttractions))
+                return totalData
 
-            elif int(userInputPage) == 0 and totalPages == 1:
-                # user input = 0 and total pages > 1 = item <= 12
-                totalData = makeJsonData(totalAttractions, searchLength)
-
+            totalData = makeJsonData(totalAttractions, 12)
             return totalData
+
         else:
-            # 我們的頁數從0開始, 兩頁 = 0, 1, 如果userinputpage >=2就error
             return errorData, 500
 
     elif userInputPage:
-        #if user only input page
-        # search = ('SELECT id, name, category, description, address, transport, mrt, latitude, '
-        #           'longitude, images FROM taipeitrip') #****************
-
         search = 'SELECT COUNT(*) FROM taipeitrip'
         cursor.execute(search)
         totalAttractionLength = cursor.fetchone()
