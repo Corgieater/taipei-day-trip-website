@@ -38,7 +38,11 @@ def searchAttractions():
 
     errorData = {
         "error": True,
-        "message": "Something is wrong, have you enter page number? Or maybe there is no page there"
+        "message": "Something is wrong, have you enter the right page number? Or maybe there is no page there"
+    }
+    errorDataForKeyword = {
+        "error": True,
+        "message": "Something is wrong, maybe there is no such keyword"
     }
 
     if userInputPage and userInputKeyword:
@@ -57,6 +61,7 @@ def searchAttractions():
         searchLength = searchLength[0]
 
         totalPages = math.ceil(searchLength/12)
+        print(totalPages)
         # determine pages, really important
         if int(userInputPage) < totalPages:
             if int(userInputPage) == totalPages-1:
@@ -64,10 +69,11 @@ def searchAttractions():
                 return totalData
 
             totalData = makeJsonData(totalAttractions, 12)
+            totalData['nextPage'] = int(userInputPage)+1
             return totalData
 
         else:
-            return errorData, 500
+            return errorDataForKeyword, 500
 
     elif userInputPage:
         search = 'SELECT COUNT(*) FROM taipeitrip'

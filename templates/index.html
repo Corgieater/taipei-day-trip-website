@@ -10,6 +10,12 @@
       type="text/css"
       href="{{url_for('static', filename='style.css')}}"
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <div class="wrap">
@@ -24,9 +30,9 @@
         <div class="searchBar">
           <h2>輕鬆享受台北一日悠閒</h2>
           <p>搜尋每個角落，體驗城市的深度旅遊行程</p>
-          <form action="">
-            <input type="text" placeholder="輸入景點名稱查詢" />
-            <button>
+          <form>
+            <input type="text" placeholder="輸入景點名稱查詢" name='keyword' id='keyword'/>
+            <button id="submitBt">
               <img
                 src="{{url_for('static', filename='imgs/icon_search.png')}}"
                 alt="icon"
@@ -34,25 +40,19 @@
             </button>
           </form>
         </div>
-        <div class="headerPic"></div>
+        </div>
       </header>
       <main>
-        <ul class="showCase">
-          <li class="pics"></li>
-          <li class="pics"></li>
-          <li class="pics"></li>
-          <li class="pics"></li>
-          <li class="pics"></li>
-          <li class="pics"></li>
-          <li class="pics"></li>
-          <li class="pics"></li>
-          <li class="pics"></li>
-          <li class="pics"></li>
-          <li class="pics"></li>
-          <li class="pics"></li>
+        <ul class="showCase" id="showCase">
         </ul>
+        <div id="endPoint"></div>
       </main>
-      <footer></footer>
+      <footer><p>COPYRIGHT &copy 2021台北一日遊</p></footer>
     </div>
+      
+   
+    
+    <!-- scripts -->
+    <script src="{{url_for('static', filename='script.js')}}"></script>
   </body>
 </html>
