@@ -1,106 +1,146 @@
 const url = "http://127.0.0.1:3000/api/attractions?page=0";
+const endText = document.querySelector("#end");
+const submitBt = document.querySelector("#submitBt");
+let globalNextPage = 0;
+console.log(globalNextPage);
 
-async function getData() {
-  const res = await fetch(url);
-  attractions = await res.json();
-  attractions = attractions.data;
-  console.log(attractions);
-  console.log(attractions[0]["images"][0]);
-  for (let i = 0; i < 12; i++) {
-    makeLi();
-  }
-  let imgs = document.querySelectorAll(".pics img");
-  let ps = document.querySelectorAll(".pics p");
-  for (let i = 0; i < imgs.length; i++) {
-    imgs[i].src = attractions[i]["images"][0];
-    ps[i].textContent = attractions[i]["name"];
-    console.log(`${attractions[i]["name"]}, ${attractions[i]["images"][0]}`);
-  }
-}
+// ########see image if it blur fix it
 
-function makeLi(picAddress) {
-  const showCase = document.querySelector("#showCase");
+function makeLi(picAddress, name, mrt, category) {
   const li = document.createElement("li");
-  const img = document.createElement("img");
-  img.alt = "pics";
-  img.src = picAddress;
-  const div = document.createElement("div");
-  const p = document.createElement("p");
-  div.append(img);
-  div.append(p);
-  // for (let i = 0; i < 2; i++) {
-  //   const span = document.createElement("span");
-  //   const p = document.createElement("p");
-  //   span.append(p);
-  //   div.append(span);
-  // }
-  // const spanPs = document.querySelectorAll("# showCase span p");
-  // spanPs[0].textContent = "123";
-  // spanPs[1].textContent = "123";
-
-  div.classList.add("pics");
-  li.append(div);
+  const showCase = document.querySelector("#showCase");
+  if (mrt == null) {
+    mrt = "沒有捷運站:(";
+  }
+  li.innerHTML = `
+  <div class='pics'> 
+  <img alt='pictures' src='${picAddress}'>
+  <p class='name'>${name}</p>
+  <div class='description'>
+  <p class='mrt'>${mrt}</p>
+  <p class='category'>${category}</p>
+  </div>
+  </div>
+  `;
   showCase.append(li);
 }
-getData();
-// =============get info and show the first 8===============
 
-// const getData = async function () {
-//   const res = await fetch(url);
-//   const data = await res.json();
-//   const dataInfo = data.result.results;
-//   loadInfo(dataInfo, startPoint, endPoint);
-// };
+let options = {
+  root: null,
+  rootMargin: "0px",
+  threshold: 1,
+};
 
-// // load more pics after clicked
-// loadBtn.addEventListener("click", async function () {
-//   const res = await fetch(url);
-//   const data = await res.json();
-//   const dataInfo = data.result.results;
-//   const dataLength = dataInfo.length;
+const observer = new IntersectionObserver(handleIntersect, options);
+const endPoint = document.querySelector("#endPoint");
+observer.observe(endPoint);
 
-//   startPoint += 8;
-//   endPoint += 8;
-//   if (dataLength - endPoint < 8) {
-//     endPoint = dataLength;
-//   }
-//   makeMoreContainer(startPoint, endPoint); //make containers
-//   loadInfo(dataInfo, startPoint, endPoint);
+async function handleIntersect(entries) {
+  if (entries[0].isIntersecting) {
+    console.log("something is intersecting with the viewpoint");
+    getData(globalNextPage);
+  }
+  const endFlag = document.querySelector(".endFlag");
+  if (endFlag) {
+    observer.disconnect();
+  }
+}
 
-//   if (endPoint >= dataLength) {
-//     loadBtn.classList.add("hide");
-//     const p = document.createElement("p");
-//     const text = document.createTextNode("There is no picture any more!");
-//     p.appendChild(text);
-//     btnArea.appendChild(p);
+async function getData(next) {
+  if (next != null) {
+    let newUrl = `http://127.0.0.1:3000/api/attractions?page=${next}`;
+    console.log(newUrl);
+    newRes = await fetch(newUrl);
+    newData = await newRes.json();
+    let attractions = newData.data;
+    console.log(attractions);
+    for (let i = 0; i < attractions.length; i++) {
+      picPlace = attractions[i]["images"][0];
+      picName = attractions[i]["name"];
+      picMrt = attractions[i]["mrt"];
+      picCategory = attractions[i]["category"];
+      makeLi(picPlace, picName, picMrt, picCategory);
+    }
+    globalNextPage = newData.nextPage;
+  }
+  if (next == null) {
+    const main = document.querySelector("main");
+    const p = document.createElement("p");
+    p.classList.add("endFlag");
+    p.textContent = "no more :(";
+    p.classList.add("noPicText");
+    main.append(p);
+    return false;
+  }
+}
+let textArea = document.querySelector("#keyword");
+
+submitBt.addEventListener("click", async function (e) {
+  // 北投
+  e.preventDefault();
+  observer.disconnect();
+  const lastMessage = document.querySelector(".noPicText");
+  console.log("last message", lastMessage);
+  if (lastMessage) {
+    lastMessage.remove();
+  }
+  const lis = document.querySelectorAll("#showCase li");
+  let textArea = document.querySelector("#keyword");
+  let userInput = textArea.value;
+  let data = null;
+  let attractions = null;
+
+  try {
+    const res = await fetch(
+      `http://127.0.0.1:3000/api/attractions?page=0&keyword=${userInput}`
+    );
+    if (res.ok) {
+      data = await res.json();
+      attractions = data.data;
+      console.log("data page", data.nextPage);
+      if (data.nextPage != null) {
+        observer.observe(endPoint);
+      }
+    } else {
+      console.log("bo");
+      const p = document.createElement("p");
+      const main = document.querySelector("main");
+      p.textContent = "no such keyword, try again:(";
+      p.classList.add("noPicText");
+      main.append(p);
+      throw new Error("Something went wrong");
+    }
+  } catch (e) {
+    console.log(e);
+  }
+
+  if (userInput != "") {
+    for (let i = 0; i < lis.length; i++) {
+      lis[i].remove();
+    }
+  }
+  for (let i = 0; i < attractions.length; i++) {
+    picPlace = attractions[i]["images"][0];
+    picName = attractions[i]["name"];
+    picMrt = attractions[i]["mrt"];
+    picCategory = attractions[i]["category"];
+    makeLi(picPlace, picName, picMrt, picCategory);
+  }
+});
+
+// window.addEventListener("scroll", async function () {
+//   // let url = `http://127.0.0.1:3000/api/attractions?page=0`;
+//   if (endPoint.getBoundingClientRect().top < this.window.innerHeight) {
+//     const res = await this.fetch(url);
+//     let data = await res.json();
+//     let nextPage = data.nextPage;
+//     if (nextPage != null) {
+//       let page = nextPage;
+//       const res = await this.fetch(
+//         `http://127.0.0.1:3000/api/attractions?page=${page}`
+//       );
+//       let data = await res.json();
+//       console.log(data);
+//     }
 //   }
 // });
-
-// function makeMoreContainer(startIndex, endIndex) {
-//   for (let i = startIndex; i < endIndex; i++) {
-//     const li = document.createElement("li");
-//     const div = document.createElement("div");
-//     const describe_div = document.createElement("div");
-//     const img = document.createElement("img");
-//     const p = document.createElement("p");
-//     div.classList.add("card");
-//     div.appendChild(img);
-//     describe_div.classList.add("description");
-//     div.appendChild(describe_div);
-//     describe_div.appendChild(p);
-//     li.appendChild(div);
-//     mainUl.appendChild(li);
-//   }
-// }
-
-// function loadInfo(data, startIndex, endIndex) {
-//   const imgs = document.querySelectorAll(".card > img");
-//   const p = document.querySelectorAll(".description > p");
-//   for (let i = startIndex; i < endIndex; i++) {
-//     let photo = data[i].file.split("https://");
-//     let text = document.createTextNode(data[i].stitle);
-//     imgs[i].src = `https://${photo[1]}`;
-//     p[i].appendChild(text);
-//   }
-// }
-// getData();

@@ -126,9 +126,6 @@ table {
 /* Start here */
 
 /* ---public--- */
-html {
-  width: 1920px;
-}
 .wrap {
   margin: 0 auto;
 }
@@ -174,7 +171,6 @@ nav {
   height: 54px;
   top: 0; /* for staying on top */
   width: 100%;
-  border: 1px black solid;
 }
 
 nav h1 {
@@ -269,6 +265,17 @@ p {
   height: 22px;
   color: #757575;
   padding: 10px;
+}
+
+.description {
+  display: flex;
+  justify-content: space-between;
+}
+
+.noPicText {
+  font-size: 20px;
+  color: black;
+  margin-top: 50px;
 }
 
 /* ---footer--- */
