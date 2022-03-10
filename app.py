@@ -1,22 +1,15 @@
 from flask import *
 from models import modelsBlueprint
-from dotenv import load_dotenv
 import os
 
 environment = os.getenv('FLASK_ENV')
 
 
-
-# app = Blueprint(
-# 	'app',
-# 	__name__,
-# 	static_folder='static',
-# 	template_folder='templates'
-# )
-
-
-
-app=Flask(__name__)
+app=Flask(
+	__name__,
+	static_folder='static',
+	template_folder='templates'
+)
 app.config["JSON_AS_ASCII"]=False
 app.config["TEMPLATES_AUTO_RELOAD"]=True
 
