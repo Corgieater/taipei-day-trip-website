@@ -1,11 +1,12 @@
-// const url = "http://127.0.0.1:3000/api/attractions?page=0";
+const url = "http://127.0.0.1:3000/api/attractions?page=0";
 const endText = document.querySelector("#end");
 const submitBt = document.querySelector("#submitBt");
 let userInput = "";
 let currentPage = 0;
+console.log("current page at global", currentPage);
 // try to use try catch fixing things
 
-// ########see image if it blur fix it
+// 製作li放圖片
 function makeLi(picAddress, name, mrt, category) {
   const li = document.createElement("li");
   const showCase = document.querySelector("#showCase");
@@ -26,6 +27,17 @@ function makeLi(picAddress, name, mrt, category) {
   showCase.append(li);
 }
 
+// 拿到景點資料丟到li裡面
+function appendAttractionsToLi(attractions) {
+  for (let i = 0; i < attractions.length; i++) {
+    picPlace = attractions[i]["images"][0];
+    picName = attractions[i]["name"];
+    picMrt = attractions[i]["mrt"];
+    picCategory = attractions[i]["category"];
+    makeLi(picPlace, picName, picMrt, picCategory);
+  }
+}
+
 // 刪除一些小廢訊息
 function deleteMessage() {
   const lastMessage = document.querySelector(".noPicText");
@@ -43,6 +55,15 @@ function deleteLis() {
   }
 }
 
+//做訊息然後貼在main
+function makeMessageAppendToMain(text) {
+  const main = document.querySelector("main");
+  const p = document.createElement("p");
+  p.textContent = text;
+  p.classList.add("noPicText");
+  main.append(p);
+}
+
 let options = {
   root: null,
   rootMargin: "0px",
@@ -51,29 +72,49 @@ let options = {
 
 // observer
 // 只要滑到觀察對象就會呼叫動作
-let observer = new IntersectionObserver(triggerById, options);
+// let observer = new IntersectionObserver(triggerById, options);
+let observer = new IntersectionObserver(callback, options);
 const endPoint = document.querySelector("#endPoint");
 observer.observe(endPoint);
 
-async function triggerById(entries) {
+async function callback(entries) {
+  console.log("triggered");
   if (entries[0].isIntersecting) {
-    console.log("currnet page", currentPage);
-    let nextPage = await getNextPage(currentPage);
-
-    if (nextPage == null) {
-      // 如果下一頁是null就不要再觀察了
+    const res = await fetch(
+      `http://127.0.0.1:3000/api/attractions?page=${currentPage}&keyword=${userInput}`
+    );
+    const data = await res.json();
+    const attractions = data.data;
+    const nextPage = data.nextPage;
+    appendAttractionsToLi(attractions);
+    if (nextPage === null) {
+      makeMessageAppendToMain("No more data :(");
       observer.disconnect();
-      const main = document.querySelector("main");
-      const p = document.createElement("p");
-      p.textContent = "no more :(";
-      p.classList.add("noPicText");
-      main.append(p);
     }
-    getDataById(currentPage, "http://127.0.0.1:3000/api/attractions?page=");
-    currentPage = nextPage;
-    console.log("nextPage", nextPage);
+    currentPage = data.nextPage;
+    // 注意這裡，這裡看起來沒改到global?
   }
 }
+console.log("current page at global", currentPage);
+// async function triggerById(entries) {
+//   if (entries[0].isIntersecting) {
+//     console.log("currnet page", currentPage);
+//     let nextPage = await getNextPage(currentPage);
+
+//     if (nextPage == null) {
+//       // 如果下一頁是null就不要再觀察了
+//       observer.disconnect();
+//       const main = document.querySelector("main");
+//       const p = document.createElement("p");
+//       p.textContent = "no more :(";
+//       p.classList.add("noPicText");
+//       main.append(p);
+//     }
+//     getDataById(currentPage, "http://127.0.0.1:3000/api/attractions?page=");
+//     currentPage = nextPage;
+//     console.log("nextPage", nextPage);
+//   }
+// }
 
 // sudo
 // 一進去先fetch 0頁，抓下一頁是幾頁，記起來
@@ -82,51 +123,31 @@ async function triggerById(entries) {
 
 // 抓有沒有下一頁並回傳
 // **************大問題，現在searchByID跟searchByKeyword整個是分開的，連trigger的function都不一樣，理論上應該要可以合併吧？？應該有東西可以判斷然後作切換啊？？？
-async function getNextPage(currentPage) {
-  let url = `http://127.0.0.1:3000/api/attractions?page=${currentPage}`;
-  let data = await fetch(url);
-  data = await data.json();
-  let nextPage = data.nextPage;
-  return nextPage;
-}
-
-// **************************************
-// async function getNextPageByKeyword(currentPage) {
-//   let url = `http://127.0.0.1:3000/api/attractions?page=${currentPage}&keyword=${userInput}`;
+// async function getNextPage(currentPage) {
+//   let url = `http://127.0.0.1:3000/api/attractions?page=${currentPage}`;
 //   let data = await fetch(url);
 //   data = await data.json();
-//   console.log(data);
-//   if (data.error) {
-//     console.log("not ok");
-//     const main = document.querySelector("main");
-//     const p = document.createElement("p");
-//     p.textContent = "This key word doesn't exist :(";
-//     p.classList.add("noPicText");
-//     main.append(p);
-//     return false;
-//   } else {
-//     let nextPage = data.nextPage;
-//     return nextPage;
-//   }
+//   let nextPage = data.nextPage;
+//   return nextPage;
 // }
 
 // 一進去用頁數拿資料
-async function getDataById(page, url) {
-  let wholeUrl = `${url}${page}`;
-  console.log(wholeUrl);
-  res = await fetch(wholeUrl);
-  data = await res.json();
-  let attractions = data.data;
-  console.log(attractions);
+// async function getDataById(page, url) {
+//   let wholeUrl = `${url}${page}`;
+//   console.log(wholeUrl);
+//   res = await fetch(wholeUrl);
+//   data = await res.json();
+//   let attractions = data.data;
+//   console.log(attractions);
 
-  for (let i = 0; i < attractions.length; i++) {
-    picPlace = attractions[i]["images"][0];
-    picName = attractions[i]["name"];
-    picMrt = attractions[i]["mrt"];
-    picCategory = attractions[i]["category"];
-    makeLi(picPlace, picName, picMrt, picCategory);
-  }
-}
+//   for (let i = 0; i < attractions.length; i++) {
+//     picPlace = attractions[i]["images"][0];
+//     picName = attractions[i]["name"];
+//     picMrt = attractions[i]["mrt"];
+//     picCategory = attractions[i]["category"];
+//     makeLi(picPlace, picName, picMrt, picCategory);
+//   }
+// }
 
 // async function getDataByKeyword(page, input) {
 //   let wholeUrl = `http://127.0.0.1:3000/api/attractions?page=${page}&keyword=${input}`;
@@ -196,110 +217,108 @@ async function getDataById(page, url) {
 // }
 
 submitBt.addEventListener("click", async function (e) {
-  observer.disconnect();
   e.preventDefault();
   deleteMessage();
   currentPage = 0;
   let textArea = document.querySelector("#keyword");
   userInput = textArea.value;
   console.log(userInput);
-  let newObserver = new IntersectionObserver(triggerByKeyword, options);
-  newObserver.observe(endPoint);
+
   textArea.value = "";
   if (userInput != "") {
     deleteLis();
   } else {
     deleteLis();
-    newObserver.disconnect();
-    observer.observe(endPoint);
   }
 
   // **************************************************
-  async function triggerByKeyword(entries) {
-    if (entries[0].isIntersecting) {
-      console.log("trigger by key word");
-      console.log("currnet page", currentPage);
-      console.log("something is intersecting with the viewpoint");
-      let nextPage = await getNextPageByKeyword(currentPage);
-      if (nextPage === undefined) {
-        newObserver.disconnect();
-        const main = document.querySelector("main");
-        const p = document.createElement("p");
-        p.textContent = "no such keyword :(";
-        p.classList.add("noPicText");
-        main.append(p);
-      }
-      console.log("trigger by key word next page", nextPage);
+  // async function triggerByKeyword(entries) {
+  //   if (entries[0].isIntersecting) {
+  //     console.log("trigger by key word");
+  //     console.log("currnet page", currentPage);
+  //     console.log("something is intersecting with the viewpoint");
+  //     let nextPage = await getNextPageByKeyword(currentPage);
+  //     if (nextPage === undefined) {
+  //       newObserver.disconnect();
+  //       const main = document.querySelector("main");
+  //       const p = document.createElement("p");
+  //       p.textContent = "no such keyword :(";
+  //       p.classList.add("noPicText");
+  //       main.append(p);
+  //     }
+  //     console.log("trigger by key word next page", nextPage);
 
-      if (nextPage === null) {
-        // 如果下一頁是null就不要再觀察了
-        newObserver.disconnect();
-        const main = document.querySelector("main");
-        const p = document.createElement("p");
-        p.textContent = "no more :(";
-        p.classList.add("noPicText");
-        main.append(p);
-      }
-      getDataByKeyword(currentPage, userInput);
-      currentPage = nextPage;
-      console.log("nextPage", nextPage);
-    }
-  }
+  //     if (nextPage === null) {
+  //       // 如果下一頁是null就不要再觀察了
+  //       newObserver.disconnect();
+  //       const main = document.querySelector("main");
+  //       const p = document.createElement("p");
+  //       p.textContent = "no more :(";
+  //       p.classList.add("noPicText");
+  //       main.append(p);
+  //     }
+  //     getDataByKeyword(currentPage, userInput);
+  //     currentPage = nextPage;
+  //     console.log("nextPage", nextPage);
+  //   }
+  // }
 
-  async function getNextPageByKeyword(currentPage) {
-    let url = `http://127.0.0.1:3000/api/attractions?page=${currentPage}&keyword=${userInput}`;
-    let data = await fetch(url);
-    data = await data.json();
-    console.log(data);
-    if (data.error) {
-      console.log("false");
-      return undefined;
-      // console.log("not ok");
-      // const main = document.querySelector("main");
-      // const p = document.createElement("p");
-      // p.textContent = "This key word doesn't exist :(";
-      // p.classList.add("noPicText");
-      // main.append(p);
-    } else {
-      let nextPage = data.nextPage;
-      return nextPage;
-    }
-  }
+  // async function getNextPageByKeyword(currentPage) {
+  //   let url = `http://127.0.0.1:3000/api/attractions?page=${currentPage}&keyword=${userInput}`;
+  //   let data = await fetch(url);
+  //   data = await data.json();
+  //   console.log(data);
+  //   if (data.error) {
+  //     console.log("false");
+  //     return undefined;
+  //     // console.log("not ok");
+  //     // const main = document.querySelector("main");
+  //     // const p = document.createElement("p");
+  //     // p.textContent = "This key word doesn't exist :(";
+  //     // p.classList.add("noPicText");
+  //     // main.append(p);
+  //   } else {
+  //     let nextPage = data.nextPage;
+  //     return nextPage;
+  //   }
+  // }
 
-  async function getDataByKeyword(page, input) {
-    let wholeUrl = `http://127.0.0.1:3000/api/attractions?page=${page}&keyword=${input}`;
-    console.log(wholeUrl);
-    res = await fetch(wholeUrl);
-    if (res.ok) {
-      data = await res.json();
-      let attractions = data.data;
-      console.log(attractions);
+  // async function getDataByKeyword(page, input) {
+  //   let wholeUrl = `http://127.0.0.1:3000/api/attractions?page=${page}&keyword=${input}`;
+  //   console.log(wholeUrl);
+  //   res = await fetch(wholeUrl);
+  //   if (res.ok) {
+  //     data = await res.json();
+  //     let attractions = data.data;
+  //     console.log(attractions);
 
-      for (let i = 0; i < attractions.length; i++) {
-        picPlace = attractions[i]["images"][0];
-        picName = attractions[i]["name"];
-        picMrt = attractions[i]["mrt"];
-        picCategory = attractions[i]["category"];
-        makeLi(picPlace, picName, picMrt, picCategory);
-      }
-    } else if (nextPage === false) {
-      console.log("not ok");
-      const main = document.querySelector("main");
-      const p = document.createElement("p");
-      p.textContent = "This key word doesn't exist :(";
-      p.classList.add("noPicText");
-      main.append(p);
-    } else {
-      deleteMessage();
-      newObserver.disconnect();
-      const main = document.querySelector("main");
-      const p = document.createElement("p");
-      p.textContent = "no more :(";
-      p.classList.add("noPicText");
-      main.append(p);
-    }
-  }
+  //     for (let i = 0; i < attractions.length; i++) {
+  //       picPlace = attractions[i]["images"][0];
+  //       picName = attractions[i]["name"];
+  //       picMrt = attractions[i]["mrt"];
+  //       picCategory = attractions[i]["category"];
+  //       makeLi(picPlace, picName, picMrt, picCategory);
+  //     }
+  //   } else if (nextPage === false) {
+  //     console.log("not ok");
+  //     const main = document.querySelector("main");
+  //     const p = document.createElement("p");
+  //     p.textContent = "This key word doesn't exist :(";
+  //     p.classList.add("noPicText");
+  //     main.append(p);
+  //   } else {
+  //     deleteMessage();
+  //     newObserver.disconnect();
+  //     const main = document.querySelector("main");
+  //     const p = document.createElement("p");
+  //     p.textContent = "no more :(";
+  //     p.classList.add("noPicText");
+  //     main.append(p);
+  //   }
+  // }
 });
+
+// WHOASMFDOPGFJPD IGOTTTTTTIT
 
 // window.addEventListener("scroll", async function () {
 //   // let url = `http://127.0.0.1:3000/api/attractions?page=0`;
