@@ -1,5 +1,3 @@
-const url = "http://127.0.0.1:3000/api/attractions?page=0";
-const endText = document.querySelector("#end");
 const submitBt = document.querySelector("#submitBt");
 let userInput = "";
 let currentPage = 0;
@@ -78,6 +76,7 @@ async function callback(entries) {
   if (entries[0].isIntersecting) {
     const res = await fetch(
       `http://127.0.0.1:3000/api/attractions?page=${currentPage}&keyword=${userInput}`
+      // 下次要去修ec2的url，改成ec2的地址
     );
     if (res.ok) {
       const data = await res.json();

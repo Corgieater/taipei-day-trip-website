@@ -43,4 +43,6 @@ def thankyou():
 if __name__ == '__main__' and environment == 'developmente':
 	app.run(debug=True, port=3000)
 else:
-	app.run(port=3000)
+	app.run(host=None, port=3000)
+# 	下次要去修ec2的host = '0.0.0.0'，應該可以用.env
+
