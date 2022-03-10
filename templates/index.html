@@ -31,7 +31,12 @@
           <h2>輕鬆享受台北一日悠閒</h2>
           <p>搜尋每個角落，體驗城市的深度旅遊行程</p>
           <form>
-            <input type="text" placeholder="輸入景點名稱查詢" name='keyword' id='keyword'/>
+            <input
+              type="text"
+              placeholder="輸入景點名稱查詢"
+              name="keyword"
+              id="keyword"
+            />
             <button id="submitBt">
               <img
                 src="{{url_for('static', filename='imgs/icon_search.png')}}"
@@ -40,18 +45,14 @@
             </button>
           </form>
         </div>
-        </div>
       </header>
       <main>
-        <ul class="showCase" id="showCase">
-        </ul>
+        <ul class="showCase" id="showCase"></ul>
         <div id="endPoint"></div>
       </main>
       <footer><p>COPYRIGHT &copy 2021台北一日遊</p></footer>
     </div>
-      
-   
-    
+
     <!-- scripts -->
     <script src="{{url_for('static', filename='script.js')}}"></script>
   </body>
