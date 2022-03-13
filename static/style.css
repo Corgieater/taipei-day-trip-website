@@ -150,7 +150,10 @@ body * {
 nav,
 .signInAndReserveBox,
 header,
-.searchBar form {
+.searchBar form,
+.signHead,
+.signBox form,
+.description {
   /* display flex collection */
   display: flex;
 }
@@ -163,7 +166,8 @@ nav h1,
 .showCase,
 nav,
 .showCase li,
-header {
+header,
+signBox {
   box-sizing: border-box;
 }
 /* ---nav--- */
@@ -250,6 +254,63 @@ p {
   border-radius: 0 5px 5px 0;
 }
 
+.signBox {
+  width: 340px;
+  margin: 0 auto;
+  border-radius: 5px;
+  border: 1px solid #cccccc;
+  position: fixed;
+  left: 41.5%;
+  margin: 20px 10px 0;
+  background-color: white;
+  padding: 15px;
+}
+
+.signHead > a {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 16px;
+}
+
+.signBox h3 {
+  color: #666666;
+
+  padding: 0 15px;
+  margin: 0 auto;
+  font-weight: bold;
+}
+
+.signBox form {
+  flex-direction: column;
+}
+
+.signBox form > button {
+  padding: 10px;
+  border: none;
+  background-color: #448899;
+  color: white;
+}
+
+.signBox form,
+.signBox h3 {
+  font-size: 27px;
+}
+.signBox > form > input {
+  margin-bottom: 10px;
+  border: 1px solid #cccccc;
+}
+
+.signBox > form > input,
+.signBox button {
+  border-radius: 5px;
+}
+
+.signHead,
+.signBox > form > input {
+  padding: 15px;
+}
+
 /* ---main--- */
 .showCase {
   width: 100%;
@@ -283,7 +344,6 @@ p {
 }
 
 .description {
-  display: flex;
   justify-content: space-between;
 }
 
@@ -385,14 +445,14 @@ footer p {
   }
 
   header {
-    background-image: url("imgs/welcome2.png"),
+    background-image: url("imgs/welcome1.png"),
       linear-gradient(#aaddee 0%, #66aabb 100%);
-    background-position: right bottom;
+    background-position: right bottom 110%;
     height: 280px;
   }
 
   .searchBar {
-    margin: 65px 0 0 0;
+    margin: 65px 0 0 200px;
     padding: 20px;
   }
 

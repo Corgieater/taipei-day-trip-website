@@ -1,6 +1,11 @@
+"user strict";
 const submitBt = document.querySelector("#submitBt");
+const signBt = document.querySelector("#signBt");
 let userInput = "";
 let currentPage = 0;
+let resStatus = null;
+let resStatusPerPage = null;
+// for lazy loading preventing multiple fetch per page
 
 // 製作li放圖片
 function makeLi(picAddress, name, mrt, category) {
@@ -72,13 +77,20 @@ let observer = new IntersectionObserver(callback, options);
 const endPoint = document.querySelector("#endPoint");
 observer.observe(endPoint);
 
+let currentPageFetched = false;
+
 async function callback(entries) {
-  if (entries[0].isIntersecting) {
+  if (entries[0].isIntersecting && currentPageFetched !== true) {
     const res = await fetch(
-      `http://127.0.0.1:3000/api/attractions?page=${currentPage}&keyword=${userInput}`
-      // 下次要去修ec2的url，改成ec2的地址
+      `/api/attractions?page=${currentPage}&keyword=${userInput}`
     );
+    fetche = true;
     if (res.ok) {
+      resStatus = true;
+    } else {
+      makeMessageAppendToMain("No such keyword :(");
+    }
+    if (resStatus) {
       const data = await res.json();
       const attractions = data.data;
       const nextPage = data.nextPage;
@@ -89,15 +101,14 @@ async function callback(entries) {
         observer.disconnect();
       }
       currentPage = data.nextPage;
-    } else {
-      makeMessageAppendToMain("No such keyword :(");
+      fetche = false;
     }
   }
 }
 
 submitBt.addEventListener("click", async function (e) {
   observer.disconnect();
-  // 按下去的瞬間先段開連線重製global的currentPage
+  // 按下去的瞬間先斷開連線重製global的currentPage
   // 不然照callback的設定，讀到currentPage = null會disconnect
   e.preventDefault();
   deleteMessage();
@@ -112,4 +123,42 @@ submitBt.addEventListener("click", async function (e) {
   } else {
     deleteLis();
   }
+});
+
+signBt.addEventListener("click", function () {
+  const header = document.querySelector("header");
+  const div = document.createElement("div");
+  div.classList.add("signBox");
+  const formContent = `
+  <div class='signHead'>
+  <h3>登入會員帳號</h3>
+  <a href="#">
+  <img
+  src="static/imgs/icon_close.png"
+  alt="close icon"/>
+  </a>
+  </div>
+  <form>
+  <input
+              type="text"
+              placeholder="輸入電子郵件"
+              name="userEmail"
+              id="userEmail"
+            />
+  <input
+            type="text"
+            placeholder="輸入密碼"
+            name="userPassword"
+            id="userPassword"
+          />
+  <button id="signInBt">
+              登入帳戶
+  </button>
+  <a href="#">
+  還沒有帳戶？點此註冊
+  </a>
+  </form>
+  `;
+  div.innerHTML = formContent;
+  header.append(div);
 });
