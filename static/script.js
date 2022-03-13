@@ -75,53 +75,37 @@ let options = {
 let observer = new IntersectionObserver(callback, options);
 const endPoint = document.querySelector("#endPoint");
 
-observer.observe(endPoint);
+let infiniteScrollActive = false;
 
-let currentPageNotFetched = true;
-let fetchedPages = [];
+if (infiniteScrollActive !== true) {
+  observer.observe(endPoint);
+}
 
 async function callback(entries) {
-  // for (let i = 0; i < fetchedPages.length; i++) {
-  //   if (i === currentPage) {
-  //     currentPageFetched = true;
-  //     console.log("index, ", index);
-  //   }
-  //   console.log("i= ", i);
-  // }
-  console.log("fetchedPages: ", fetchedPages);
-  console.log("currnet Page", currentPage);
   if (entries[0].isIntersecting) {
-    if (fetchedPages.indexOf(currentPage) === -1) {
-      currentPageNotFetched = true;
+    infiniteScrollActive = true;
+    console.log("scroll!");
+    const res = await fetch(
+      `/api/attractions?page=${currentPage}&keyword=${userInput}`
+    );
+    if (res.ok) {
+      resStatus = true;
     } else {
-      currentPageNotFetched = false;
+      makeMessageAppendToMain("No such keyword :(");
     }
-    if (currentPageNotFetched === true) {
-      console.log("fetched!");
-      const res = await fetch(
-        `/api/attractions?page=${currentPage}&keyword=${userInput}`
-      );
-      if (res.ok) {
-        resStatus = true;
-        fetchedPages.push(currentPage);
-      } else {
-        makeMessageAppendToMain("No such keyword :(");
-      }
-      if (resStatus) {
-        const data = await res.json();
-        const attractions = data.data;
-        const nextPage = data.nextPage;
-        currentPage = nextPage;
+    if (resStatus) {
+      const data = await res.json();
+      const attractions = data.data;
+      const nextPage = data.nextPage;
+      currentPage = nextPage;
 
-        appendAttractionsToLi(attractions);
-        if (nextPage === null) {
-          makeMessageAppendToMain("No more data :(");
-          observer.disconnect();
-        }
+      appendAttractionsToLi(attractions);
+      if (nextPage === null) {
+        makeMessageAppendToMain("No more data :(");
+        observer.disconnect();
       }
-    } else {
-      console.log(currentPage, "dont fetch");
     }
+    infiniteScrollActive = false;
   }
 }
 
