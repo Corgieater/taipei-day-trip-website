@@ -76,37 +76,37 @@ let observer = new IntersectionObserver(callback, options);
 const endPoint = document.querySelector("#endPoint");
 
 let currentPageFetched = false;
-let lastPage = null;
+let fetchedUrl = "";
 observer.observe(endPoint);
 
 async function callback(entries) {
-  console.log(`lastPage: ${lastPage} currentPage: ${currentPage}`);
-  if (lastPage == currentPage) {
-    currentPageFetched = true;
-  }
-  if (entries[0].isIntersecting && currentPageFetched === false) {
+  if (entries[0].isIntersecting) {
     console.log("scroll!");
-    const res = await fetch(
-      `/api/attractions?page=${currentPage}&keyword=${userInput}`
-    );
-    if (res.ok) {
-      resStatus = true;
-    } else {
-      makeMessageAppendToMain("No such keyword :(");
-    }
-    if (resStatus) {
-      const data = await res.json();
-      const attractions = data.data;
-      const nextPage = data.nextPage;
-      lastPage = currentPage;
-      currentPage = nextPage;
-      currentPageFetched = false;
-      //this is the probelm, where should i put this??
+    if (
+      fetchedUrl !== `/api/attractions?page=${currentPage}&keyword=${userInput}`
+    ) {
+      const res = await fetch(
+        `/api/attractions?page=${currentPage}&keyword=${userInput}`
+      );
+      fetchedUrl = `/api/attractions?page=${currentPage}&keyword=${userInput}`;
+      if (res.ok) {
+        resStatus = true;
+      } else {
+        makeMessageAppendToMain("No such keyword :(");
+      }
+      if (resStatus) {
+        const data = await res.json();
+        const attractions = data.data;
+        const nextPage = data.nextPage;
+        currentPage = nextPage;
+        // currentPageFetched = false;
+        //this is the probelm, where should i put this??
 
-      appendAttractionsToLi(attractions);
-      if (nextPage === null) {
-        makeMessageAppendToMain("No more data :(");
-        observer.disconnect();
+        appendAttractionsToLi(attractions);
+        if (nextPage === null) {
+          makeMessageAppendToMain("No more data :(");
+          observer.disconnect();
+        }
       }
     }
   }
