@@ -77,7 +77,7 @@ const endPoint = document.querySelector("#endPoint");
 
 observer.observe(endPoint);
 
-let currentPageHasFetched = true;
+let currentPageHasFetched = false;
 let fetchedPages = [];
 
 async function callback(entries) {
@@ -90,35 +90,35 @@ async function callback(entries) {
   // }
   console.log("fetchedPages: ", fetchedPages);
   console.log("currnet Page", currentPage);
-  console.log(fetchedPages.indexOf(currentPage) === -1);
-  if (entries[0].isIntersecting && currentPageHasFetched !== true) {
+  if (entries[0].isIntersecting) {
     if (fetchedPages.indexOf(currentPage) === -1) {
       currentPageHasFetched = false;
     } else {
       currentPageHasFetched = true;
     }
-
-    const res = await fetch(
-      `/api/attractions?page=${currentPage}&keyword=${userInput}`
-    );
-    if (res.ok) {
-      resStatus = true;
-      fetchedPages.push(currentPage);
-    } else {
-      makeMessageAppendToMain("No such keyword :(");
-    }
-    if (resStatus) {
-      const data = await res.json();
-      const attractions = data.data;
-      const nextPage = data.nextPage;
-      currentPage = nextPage;
-
-      appendAttractionsToLi(attractions);
-      if (nextPage === null) {
-        makeMessageAppendToMain("No more data :(");
-        observer.disconnect();
+    if (currentPageHasFetched !== true) {
+      console.log("fetched!");
+      const res = await fetch(
+        `/api/attractions?page=${currentPage}&keyword=${userInput}`
+      );
+      if (res.ok) {
+        resStatus = true;
+        fetchedPages.push(currentPage);
+      } else {
+        makeMessageAppendToMain("No such keyword :(");
       }
-      // currentPageFetched = false;
+      if (resStatus) {
+        const data = await res.json();
+        const attractions = data.data;
+        const nextPage = data.nextPage;
+        currentPage = nextPage;
+
+        appendAttractionsToLi(attractions);
+        if (nextPage === null) {
+          makeMessageAppendToMain("No more data :(");
+          observer.disconnect();
+        }
+      }
     }
   }
 }
