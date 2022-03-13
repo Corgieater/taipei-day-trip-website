@@ -75,23 +75,24 @@ let options = {
 };
 let observer = new IntersectionObserver(callback, options);
 const endPoint = document.querySelector("#endPoint");
+
 observer.observe(endPoint);
 
 let currentPageFetched = false;
 console.log("global", currentPageFetched);
 
 async function callback(entries) {
-  if (entries[0].isIntersecting && currentPageFetched !== true) {
+  if (entries[0].isIntersecting && currentPageFetched === false) {
     const res = await fetch(
       `/api/attractions?page=${currentPage}&keyword=${userInput}`
     );
-    currentPageFetched = true;
     if (res.ok) {
       resStatus = true;
     } else {
       makeMessageAppendToMain("No such keyword :(");
     }
     if (resStatus) {
+      currentPageFetched = true;
       const data = await res.json();
       const attractions = data.data;
       const nextPage = data.nextPage;
@@ -101,9 +102,8 @@ async function callback(entries) {
         makeMessageAppendToMain("No more data :(");
         observer.disconnect();
       }
-      currentPage = data.nextPage;
       currentPageFetched = false;
-      console.log(currentPageFetched);
+      currentPage = data.nextPage;
     }
   }
 }
