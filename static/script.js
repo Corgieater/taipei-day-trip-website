@@ -77,7 +77,7 @@ const endPoint = document.querySelector("#endPoint");
 
 observer.observe(endPoint);
 
-let currentPageHasFetched = false;
+let currentPageNotFetched = true;
 let fetchedPages = [];
 
 async function callback(entries) {
@@ -92,11 +92,11 @@ async function callback(entries) {
   console.log("currnet Page", currentPage);
   if (entries[0].isIntersecting) {
     if (fetchedPages.indexOf(currentPage) === -1) {
-      currentPageHasFetched = false;
+      currentPageNotFetched = true;
     } else {
-      currentPageHasFetched = true;
+      currentPageNotFetched = false;
     }
-    if (currentPageHasFetched !== true) {
+    if (currentPageNotFetched === true) {
       console.log("fetched!");
       const res = await fetch(
         `/api/attractions?page=${currentPage}&keyword=${userInput}`
@@ -119,6 +119,8 @@ async function callback(entries) {
           observer.disconnect();
         }
       }
+    } else {
+      console.log(currentPage, "dont fetch");
     }
   }
 }
