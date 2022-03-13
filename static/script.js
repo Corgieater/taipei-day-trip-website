@@ -78,13 +78,14 @@ const endPoint = document.querySelector("#endPoint");
 observer.observe(endPoint);
 
 let currentPageFetched = false;
+console.log("global", currentPageFetched);
 
 async function callback(entries) {
   if (entries[0].isIntersecting && currentPageFetched !== true) {
     const res = await fetch(
       `/api/attractions?page=${currentPage}&keyword=${userInput}`
     );
-    fetche = true;
+    currentPageFetched = true;
     if (res.ok) {
       resStatus = true;
     } else {
@@ -101,7 +102,8 @@ async function callback(entries) {
         observer.disconnect();
       }
       currentPage = data.nextPage;
-      fetche = false;
+      currentPageFetched = false;
+      console.log(currentPageFetched);
     }
   }
 }
