@@ -82,14 +82,14 @@ let fetchedPages = [];
 
 async function callback(entries) {
   console.log(fetchedPages);
-  for (let i = 0; i < fetchedPages.length; i++) {
-    if (i === currentPage) {
-      currentPageFetched = true;
-      console.log("index, ", index);
-    }
-    console.log("i= ", i);
-  }
-  if (entries[0].isIntersecting && currentPageFetched === false) {
+  // for (let i = 0; i < fetchedPages.length; i++) {
+  //   if (i === currentPage) {
+  //     currentPageFetched = true;
+  //     console.log("index, ", index);
+  //   }
+  //   console.log("i= ", i);
+  // }
+  if (entries[0].isIntersecting && fetchedPages.indexOf(currentPage) == -1) {
     const res = await fetch(
       `/api/attractions?page=${currentPage}&keyword=${userInput}`
     );
@@ -109,7 +109,7 @@ async function callback(entries) {
         makeMessageAppendToMain("No more data :(");
         observer.disconnect();
       }
-      currentPageFetched = false;
+      // currentPageFetched = false;
       currentPage = data.nextPage;
     }
   }
