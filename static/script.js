@@ -82,10 +82,12 @@ let fetchedPages = [];
 
 async function callback(entries) {
   console.log(fetchedPages);
-  for (let index in fetchedPages) {
-    if (index === currentPage) {
+  for (let i = 0; i < fetchedPages.length; i++) {
+    if (i === currentPage) {
       currentPageFetched = true;
+      console.log("index, ", index);
     }
+    console.log("i= ", i);
   }
   if (entries[0].isIntersecting && currentPageFetched === false) {
     const res = await fetch(
