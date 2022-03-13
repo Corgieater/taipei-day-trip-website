@@ -4,7 +4,6 @@ const signBt = document.querySelector("#signBt");
 let userInput = "";
 let currentPage = 0;
 let resStatus = null;
-let resStatusPerPage = null;
 // for lazy loading preventing multiple fetch per page
 
 // 製作li放圖片
@@ -79,20 +78,26 @@ const endPoint = document.querySelector("#endPoint");
 observer.observe(endPoint);
 
 let currentPageFetched = false;
-console.log("global", currentPageFetched);
+let fetchedPages = [];
 
 async function callback(entries) {
+  console.log(fetchedPages);
+  for (let index in fetchedPages) {
+    if (index === currentPage) {
+      currentPageFetched = true;
+    }
+  }
   if (entries[0].isIntersecting && currentPageFetched === false) {
     const res = await fetch(
       `/api/attractions?page=${currentPage}&keyword=${userInput}`
     );
     if (res.ok) {
       resStatus = true;
+      fetchedPages.push(currentPage);
     } else {
       makeMessageAppendToMain("No such keyword :(");
     }
     if (resStatus) {
-      currentPageFetched = true;
       const data = await res.json();
       const attractions = data.data;
       const nextPage = data.nextPage;
