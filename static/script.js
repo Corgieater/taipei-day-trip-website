@@ -78,16 +78,20 @@ const endPoint = document.querySelector("#endPoint");
 observer.observe(endPoint);
 
 let currentPageFetched = false;
+let lastPage = null;
 
 async function callback(entries) {
+  if (lastPage === currentPage) {
+    currentPageFetched = true;
+  }
   if (entries[0].isIntersecting && currentPageFetched === false) {
     console.log("scroll!");
     const res = await fetch(
       `/api/attractions?page=${currentPage}&keyword=${userInput}`
     );
+    currentPageFetched = true;
     if (res.ok) {
       resStatus = true;
-      currentPageFetched = true;
     } else {
       makeMessageAppendToMain("No such keyword :(");
     }
@@ -95,6 +99,7 @@ async function callback(entries) {
       const data = await res.json();
       const attractions = data.data;
       const nextPage = data.nextPage;
+      lastPage = currentPage;
       currentPage = nextPage;
       currentPageFetched = false;
 
