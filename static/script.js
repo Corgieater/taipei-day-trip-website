@@ -75,13 +75,13 @@ let options = {
 let observer = new IntersectionObserver(callback, options);
 const endPoint = document.querySelector("#endPoint");
 
-observer.observe(endPoint);
-
 let currentPageFetched = false;
 let lastPage = null;
+observer.observe(endPoint);
 
 async function callback(entries) {
-  if (lastPage === currentPage) {
+  console.log(`lastPage: ${lastPage} currentPage: ${currentPage}`);
+  if (lastPage == currentPage) {
     currentPageFetched = true;
   }
   if (entries[0].isIntersecting && currentPageFetched === false) {
@@ -89,7 +89,6 @@ async function callback(entries) {
     const res = await fetch(
       `/api/attractions?page=${currentPage}&keyword=${userInput}`
     );
-    currentPageFetched = true;
     if (res.ok) {
       resStatus = true;
     } else {
@@ -102,6 +101,7 @@ async function callback(entries) {
       lastPage = currentPage;
       currentPage = nextPage;
       currentPageFetched = false;
+      //this is the probelm, where should i put this??
 
       appendAttractionsToLi(attractions);
       if (nextPage === null) {
