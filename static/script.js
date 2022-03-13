@@ -77,11 +77,10 @@ const endPoint = document.querySelector("#endPoint");
 
 observer.observe(endPoint);
 
-let currentPageFetched = false;
+let currentPageHasFetched = true;
 let fetchedPages = [];
 
 async function callback(entries) {
-  console.log(fetchedPages);
   // for (let i = 0; i < fetchedPages.length; i++) {
   //   if (i === currentPage) {
   //     currentPageFetched = true;
@@ -89,7 +88,16 @@ async function callback(entries) {
   //   }
   //   console.log("i= ", i);
   // }
-  if (entries[0].isIntersecting && fetchedPages.indexOf(currentPage) == -1) {
+  console.log("fetchedPages: ", fetchedPages);
+  console.log("currnet Page", currentPage);
+  console.log(fetchedPages.indexOf(currentPage) === -1);
+  if (entries[0].isIntersecting && currentPageHasFetched !== true) {
+    if (fetchedPages.indexOf(currentPage) === -1) {
+      currentPageHasFetched = false;
+    } else {
+      currentPageHasFetched = true;
+    }
+
     const res = await fetch(
       `/api/attractions?page=${currentPage}&keyword=${userInput}`
     );
@@ -103,6 +111,7 @@ async function callback(entries) {
       const data = await res.json();
       const attractions = data.data;
       const nextPage = data.nextPage;
+      currentPage = nextPage;
 
       appendAttractionsToLi(attractions);
       if (nextPage === null) {
@@ -110,7 +119,6 @@ async function callback(entries) {
         observer.disconnect();
       }
       // currentPageFetched = false;
-      currentPage = data.nextPage;
     }
   }
 }
