@@ -79,11 +79,14 @@ let urlIsLoading = false;
 observer.observe(endPoint);
 
 async function callback(entries) {
-  if (entries[0].isIntersecting && urlIsLoading !== true) {
-    const res = await fetch(
-      `/api/attractions?page=${currentPage}&keyword=${userInput}`
-    );
-    urlIsLoading = true;
+  if (entries[0].isIntersecting) {
+    let res = null;
+    if (urlIsLoading !== true) {
+      res = await fetch(
+        `/api/attractions?page=${currentPage}&keyword=${userInput}`
+      );
+      urlIsLoading = true;
+    }
 
     if (res.ok) {
       resStatus = true;
@@ -97,7 +100,9 @@ async function callback(entries) {
       currentPage = nextPage;
 
       appendAttractionsToLi(attractions);
+      res = null;
       urlIsLoading = false;
+      // this is the problem, but where should i put it?
       if (nextPage === null) {
         makeMessageAppendToMain("No more data :(");
         observer.disconnect();
