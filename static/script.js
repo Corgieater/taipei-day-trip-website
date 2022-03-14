@@ -74,15 +74,18 @@ let options = {
 };
 let observer = new IntersectionObserver(callback, options);
 const endPoint = document.querySelector("#endPoint");
+let urlIsLoading = false;
 
 observer.observe(endPoint);
 
 async function callback(entries) {
-  if (entries[0].isIntersecting) {
+  if (entries[0].isIntersecting && urlIsLoading !== true) {
     const res = await fetch(
       `/api/attractions?page=${currentPage}&keyword=${userInput}`
     );
-    if (res.ok && res.status !== 202) {
+    urlIsLoading = true;
+
+    if (res.ok) {
       resStatus = true;
     } else {
       makeMessageAppendToMain("No such keyword :(");
@@ -94,6 +97,7 @@ async function callback(entries) {
       currentPage = nextPage;
 
       appendAttractionsToLi(attractions);
+      urlIsLoading = false;
       if (nextPage === null) {
         makeMessageAppendToMain("No more data :(");
         observer.disconnect();
