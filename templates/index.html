@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>台北一日遊</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{url_for('static', filename='style.css')}}"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="wrap">
+      <nav>
+        <h1>台北一日遊</h1>
+        <ul class="signInAndReserveBox">
+          <li><a href="#">預定行程</a></li>
+          <li><a id="signBt" href="#">登入/註冊</a></li>
+        </ul>
+      </nav>
+      <header>
+        <div class="searchBar">
+          <h2>輕鬆享受台北一日悠閒</h2>
+          <p>搜尋每個角落，體驗城市的深度旅遊行程</p>
+          <form>
+            <input
+              type="text"
+              placeholder="輸入景點名稱查詢"
+              name="keyword"
+              id="keyword"
+            />
+            <button id="submitBt">
+              <img
+                src="{{url_for('static', filename='imgs/icon_search.png')}}"
+                alt="icon"
+              />
+            </button>
+          </form>
+        </div>
+      </header>
+      <main>
+        <ul class="showCase" id="showCase"></ul>
+        <div id="endPoint"></div>
+      </main>
+      <footer><p>COPYRIGHT &copy 2021台北一日遊</p></footer>
+    </div>
+
+    <!-- scripts -->
+    <script src="{{url_for('static', filename='script.js')}}"></script>
+  </body>
+</html>

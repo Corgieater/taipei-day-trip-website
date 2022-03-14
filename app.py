@@ -1,22 +1,16 @@
 from flask import *
 from models import modelsBlueprint
-from dotenv import load_dotenv
 import os
 
 environment = os.getenv('FLASK_ENV')
+flask_host = os.getenv('FLASK_HOST')
 
 
-
-# app = Blueprint(
-# 	'app',
-# 	__name__,
-# 	static_folder='static',
-# 	template_folder='templates'
-# )
-
-
-
-app=Flask(__name__)
+app=Flask(
+	__name__,
+	static_folder='static',
+	template_folder='templates'
+)
 app.config["JSON_AS_ASCII"]=False
 app.config["TEMPLATES_AUTO_RELOAD"]=True
 
@@ -50,4 +44,5 @@ def thankyou():
 if __name__ == '__main__' and environment == 'developmente':
 	app.run(debug=True, port=3000)
 else:
-	app.run(port=3000)
+	app.run(host=flask_host, port=3000)
+
