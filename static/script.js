@@ -75,38 +75,28 @@ let options = {
 let observer = new IntersectionObserver(callback, options);
 const endPoint = document.querySelector("#endPoint");
 
-let currentPageFetched = false;
-let fetchedUrl = "";
 observer.observe(endPoint);
 
 async function callback(entries) {
   if (entries[0].isIntersecting) {
-    console.log("scroll!");
-    if (
-      fetchedUrl !== `/api/attractions?page=${currentPage}&keyword=${userInput}`
-    ) {
-      const res = await fetch(
-        `/api/attractions?page=${currentPage}&keyword=${userInput}`
-      );
-      fetchedUrl = `/api/attractions?page=${currentPage}&keyword=${userInput}`;
-      if (res.ok) {
-        resStatus = true;
-      } else {
-        makeMessageAppendToMain("No such keyword :(");
-      }
-      if (resStatus) {
-        const data = await res.json();
-        const attractions = data.data;
-        const nextPage = data.nextPage;
-        currentPage = nextPage;
-        // currentPageFetched = false;
-        //this is the probelm, where should i put this??
+    const res = await fetch(
+      `/api/attractions?page=${currentPage}&keyword=${userInput}`
+    );
+    if (res.ok && res.status !== 202) {
+      resStatus = true;
+    } else {
+      makeMessageAppendToMain("No such keyword :(");
+    }
+    if (resStatus) {
+      const data = await res.json();
+      const attractions = data.data;
+      const nextPage = data.nextPage;
+      currentPage = nextPage;
 
-        appendAttractionsToLi(attractions);
-        if (nextPage === null) {
-          makeMessageAppendToMain("No more data :(");
-          observer.disconnect();
-        }
+      appendAttractionsToLi(attractions);
+      if (nextPage === null) {
+        makeMessageAppendToMain("No more data :(");
+        observer.disconnect();
       }
     }
   }
