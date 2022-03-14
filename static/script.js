@@ -72,21 +72,22 @@ let options = {
   threshold: 1,
   // 要完全看到才可以觸發
 };
+
 let observer = new IntersectionObserver(callback, options);
 const endPoint = document.querySelector("#endPoint");
 let urlIsLoading = false;
+// 判斷url是不是在fetching
 
 observer.observe(endPoint);
 
 async function callback(entries) {
-  if (entries[0].isIntersecting) {
-    let res = null;
-    if (urlIsLoading !== true) {
-      res = await fetch(
-        `/api/attractions?page=${currentPage}&keyword=${userInput}`
-      );
-      urlIsLoading = true;
-    }
+  if (entries[0].isIntersecting && urlIsLoading !== true) {
+    urlIsLoading = true;
+    const res = await fetch(
+      `/api/attractions?page=${currentPage}&keyword=${userInput}`
+    );
+
+    // 這邊在等資料所以true
 
     if (res.ok) {
       resStatus = true;
@@ -100,8 +101,8 @@ async function callback(entries) {
       currentPage = nextPage;
 
       appendAttractionsToLi(attractions);
-      res = null;
       urlIsLoading = false;
+      // 資料都貼完了所以改回false
       // this is the problem, but where should i put it?
       if (nextPage === null) {
         makeMessageAppendToMain("No more data :(");
