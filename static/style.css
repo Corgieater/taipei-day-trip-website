@@ -173,7 +173,8 @@ nav,
 .showCase li,
 header,
 .signBox,
-.attractionImgContainer {
+.attractionImgContainer,
+.attractionArea {
   box-sizing: border-box;
 }
 
@@ -375,6 +376,10 @@ footer p {
 
 /* 考慮把下段獨立成一個css= = */
 /* ---attraction page--- */
+:root {
+  accent-color: #448899;
+}
+
 .attractionHead {
   border-color: #e8e8e8;
   border-style: solid;
@@ -385,7 +390,8 @@ footer p {
 }
 
 .attractionHead p,
-label {
+label,
+.attractionName h2 {
   color: #666666;
 }
 
@@ -393,6 +399,8 @@ label {
 .attractionImgContainer {
   max-width: 540px;
   max-height: 406px;
+  min-width: 540px;
+  min-height: 406px;
   /* i think  these two should fix*/
 }
 
@@ -400,8 +408,6 @@ label {
   border-radius: 5px;
   height: 100%;
   width: 100%;
-  min-width: 540px;
-  min-height: 406px;
 }
 
 .attractionHead p,
@@ -417,6 +423,7 @@ label {
 
 .attractionName h2 {
   font-size: 24px;
+  font-weight: bold;
 }
 
 .attractionName > div {
@@ -431,6 +438,21 @@ label {
   background-color: #e8e8e8;
   border-radius: 5px;
   padding: 20px;
+}
+
+.radioGroup {
+  display: flex;
+}
+
+.radioGroup > div {
+  margin-right: 18px;
+}
+
+input[type="radio"] {
+  height: 18px;
+  width: 18px;
+  position: relative;
+  bottom: -2px;
 }
 
 .attractionArea button {
@@ -517,6 +539,37 @@ label {
   .noPicText {
     margin: 50px 25%;
   }
+
+  /* for attraction html */
+  /* .................................... */
+
+  .attractionHead {
+    flex-direction: column;
+    min-width: 360px;
+    max-width: 600px;
+  }
+
+  .attractionImgContainer {
+    max-width: 600px;
+    min-width: 360px;
+    height: 350px;
+  }
+
+  .attractionImgContainer > img {
+    max-width: 600px;
+    max-height: 350px;
+    min-width: 360px;
+    min-height: 350px;
+    width: 100%;
+  }
+
+  .wrapForNameAndArea {
+    width: 100%;
+  }
+
+  .attractionArea {
+    width: 95%;
+  }
 }
 
 @media screen and (min-width: 600px) and (max-width: 1400px) {
@@ -525,7 +578,6 @@ label {
     display: flex;
     padding: 10px 100px;
     max-width: 1200px;
-    left: 5%;
     justify-content: space-between;
   }
 

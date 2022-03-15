@@ -19,22 +19,30 @@
         <label for="bookingDate" class="pTitles">選擇日期 : </label>
         <input type="date" name="bookingDate" id="bookingDate" />
         <br />
-        <label for="morning" class="pTitles">選擇時間 : </label>
-        <input
-          type="radio"
-          name="bookingTimeFrame"
-          id="morning"
-          value="morning"
-        />
-        <label for="morning">上半天</label>
-        <input
-          type="radio"
-          name="bookingTimeFrame"
-          id="afternoon"
-          value="afternoon"
-        />
-        <label for="afternoon">下半天</label>
-        <p class="pTitles">#導覽費用 : 新台幣 2000 元</p>
+        <div class="radioGroup">
+          <div>
+            <label for="morning" class="pTitles">選擇時間 : </label>
+            <input
+              type="radio"
+              name="bookingTimeFrame"
+              id="morning"
+              value="morning"
+            />
+            <label for="morning">上半天</label>
+          </div>
+          <div>
+            <input
+              type="radio"
+              name="bookingTimeFrame"
+              id="afternoon"
+              value="afternoon"
+            />
+            <label for="afternoon">下半天</label>
+          </div>
+        </div>
+        <p class="pTitles">
+          #導覽費用 : 新台幣 <span id="money">2000</span> 元
+        </p>
         <!-- i think this will need if else -->
         <button>開始預訂行程</button>
       </form>
@@ -47,12 +55,12 @@
   </div>
 
   <div>
-    <p>景點地址 :</p>
+    <p class="pTitles">景點地址 :</p>
     <p class="attractionBodyAddress"></p>
   </div>
 
   <div>
-    <p>交通方式 :</p>
+    <p class="pTitles">交通方式 :</p>
     <p class="attractionBodyTransport"></p>
   </div>
 </div>

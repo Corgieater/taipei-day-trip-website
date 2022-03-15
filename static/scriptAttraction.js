@@ -1,10 +1,10 @@
 "user strict";
-
+const morningBt = document.querySelector("#morning");
+const afternoonBt = document.querySelector("#afternoon");
 const currentUrl = window.location.href;
-let currentId = currentUrl.slice(-2);
-if (currentId.indexOf("/") !== -1) {
-  currentId = currentId.slice(1);
-}
+let cutPosition = currentUrl.indexOf("n/") + 2;
+let currentId = currentUrl.substring(cutPosition);
+console.log(currentId);
 
 async function fetchAttractionById() {
   const res = await fetch("/api/attraction/" + currentId);
@@ -31,4 +31,18 @@ async function fetchAttractionById() {
   transport.textContent = attraction["transport"];
 }
 
+// 觸發就改錢
+function changeMoney(among) {
+  const money = document.querySelector("#money");
+  money.textContent = among;
+}
+
 fetchAttractionById();
+
+morningBt.addEventListener("click", function () {
+  changeMoney(2000);
+});
+
+afternoonBt.addEventListener("click", function () {
+  changeMoney(2500);
+});
