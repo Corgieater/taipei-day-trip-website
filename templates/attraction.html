@@ -1,7 +1,22 @@
 {% extends 'index.html' %} {% block header %} {% endblock %}{% block main %}
 <div class="attractionHead">
   <div class="attractionImgContainer" id="attractionImgContainer">
+    <a class="leftArrow" id="leftArrow" href="#">
+      <img
+        src="{{url_for('static', filename='imgs/btn_leftArrow.png')}}"
+        alt="arrow"
+      />
+    </a>
     <img src="" alt="pic" />
+    <a class="rightArrow" id="rightArrow" href="#">
+      <img
+        src="{{url_for('static', filename='imgs/btn_rightArrow.png')}}"
+        alt="arrow"
+      />
+    </a>
+    <div>
+      <div class="circleArea" id="circleArea"></div>
+    </div>
   </div>
   <div class="wrapForNameAndArea">
     <div class="attractionName">
