@@ -1,0 +1,60 @@
+{% extends 'index.html' %} {% block header %} {% endblock %}{% block main %}
+<div class="attractionHead">
+  <div class="attractionImgContainer" id="attractionImgContainer">
+    <img src="" alt="pic" />
+  </div>
+  <div class="wrapForNameAndArea">
+    <div class="attractionName">
+      <h2></h2>
+      <div>
+        <p class="attractionNameCategory"></p>
+        <p>at</p>
+        <p class="attractionNameArea"></p>
+      </div>
+    </div>
+    <div class="attractionArea">
+      <p class="pTitles">訂購導覽行程</p>
+      <p>以此景點為中心的一日行程，帶您探索城市角落故事</p>
+      <form action="#">
+        <label for="bookingDate" class="pTitles">選擇日期 : </label>
+        <input type="date" name="bookingDate" id="bookingDate" />
+        <br />
+        <label for="morning" class="pTitles">選擇時間 : </label>
+        <input
+          type="radio"
+          name="bookingTimeFrame"
+          id="morning"
+          value="morning"
+        />
+        <label for="morning">上半天</label>
+        <input
+          type="radio"
+          name="bookingTimeFrame"
+          id="afternoon"
+          value="afternoon"
+        />
+        <label for="afternoon">下半天</label>
+        <p class="pTitles">#導覽費用 : 新台幣 2000 元</p>
+        <!-- i think this will need if else -->
+        <button>開始預訂行程</button>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="attractionBody">
+  <div>
+    <p class="attractionBodyDescription"></p>
+  </div>
+
+  <div>
+    <p>景點地址 :</p>
+    <p class="attractionBodyAddress"></p>
+  </div>
+
+  <div>
+    <p>交通方式 :</p>
+    <p class="attractionBodyTransport"></p>
+  </div>
+</div>
+<script src="{{ url_for('static', filename='scriptAttraction.js') }}"></script>
+{% endblock %}

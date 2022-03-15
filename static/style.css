@@ -129,7 +129,7 @@ table {
 .wrap {
   margin: 0 auto;
   width: 100%;
-  max-width: 100%;
+  max-width: 1200px;
 }
 
 body {
@@ -140,6 +140,11 @@ body {
 
 body * {
   font-family: "Noto Sans TC";
+}
+
+img {
+  object-fit: cover;
+  /* prevent images blur */
 }
 
 .main {
@@ -167,24 +172,31 @@ nav h1,
 nav,
 .showCase li,
 header,
-signBox {
+.signBox,
+.attractionImgContainer {
   box-sizing: border-box;
+}
+
+.pTitles {
+  font-weight: bold;
 }
 /* ---nav--- */
 nav {
-  justify-content: space-around;
-  margin: 0 auto;
+  justify-content: space-between;
   position: fixed;
   background-color: white;
   height: 54px;
   top: 0; /* for staying on top */
   width: 100%;
+  /* max-width: 1920px; */
+  min-width: 1200px;
 }
 
 nav h1 {
   font-size: 30px;
   color: #448899;
-  padding: 10px 100px 0 0;
+  padding: 10px 0;
+  margin-left: 360px;
 }
 
 nav a {
@@ -195,7 +207,7 @@ nav a {
 }
 
 .signInAndReserveBox {
-  padding-right: 50px;
+  margin-right: 360px;
 }
 
 .signInAndReserveBox li {
@@ -210,7 +222,6 @@ header {
   background-position: 80%;
   background-repeat: no-repeat;
   width: 100%;
-  max-width: 1920px;
 }
 .searchBar {
   margin-top: 85px;
@@ -333,8 +344,6 @@ p {
   width: 100%;
   max-height: 70%;
   max-width: 100%;
-  object-fit: cover;
-  /* prevent images blur */
 }
 
 .pics p {
@@ -364,17 +373,103 @@ footer p {
   line-height: 5.5;
 }
 
+/* 考慮把下段獨立成一個css= = */
+/* ---attraction page--- */
+.attractionHead {
+  border-color: #e8e8e8;
+  border-style: solid;
+  border-width: 1px 0;
+  padding: 50px 0;
+  display: flex;
+  justify-content: space-around;
+}
+
+.attractionHead p,
+label {
+  color: #666666;
+}
+
+/* 如果輪播不知道會不會有問題 */
+.attractionImgContainer {
+  max-width: 540px;
+  max-height: 406px;
+  /* i think  these two should fix*/
+}
+
+.attractionImgContainer > img {
+  border-radius: 5px;
+  height: 100%;
+  width: 100%;
+  min-width: 540px;
+  min-height: 406px;
+}
+
+.attractionHead p,
+.attractionName h2,
+.attractionHead input {
+  margin-bottom: 15px;
+}
+
+.wrapForNameAndArea {
+  padding: 10px;
+  width: 50%;
+}
+
+.attractionName h2 {
+  font-size: 24px;
+}
+
+.attractionName > div {
+  display: flex;
+}
+
+.attractionName > div > p {
+  padding-right: 5px;
+}
+
+.attractionArea {
+  background-color: #e8e8e8;
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.attractionArea button {
+  padding: 10px 20px;
+  font-size: 19px;
+  color: white;
+  background-color: #448899;
+  border-radius: 5px;
+  border: none;
+  margin-top: 20px;
+}
+
+/* ---attraction body--- */
+.attractionBody {
+  margin-top: 50px;
+  padding: 0 10px;
+}
+.attractionBody p {
+  color: #666666;
+  line-height: 23px;
+}
+
+.attractionBody > div {
+  margin-bottom: 20px;
+}
+
 /* rwd */
 @media screen and (min-width: 360px) and (max-width: 600px) {
   nav {
     min-width: 360px;
     display: flex;
     padding: 10px;
+    left: 0;
   }
 
   .signInAndReserveBox,
   nav h1 {
     padding: 0;
+    margin: 0;
   }
   .signInAndReserveBox li {
     padding: 10px;
@@ -428,13 +523,18 @@ footer p {
   nav {
     min-width: 360px;
     display: flex;
-    padding: 10px;
+    padding: 10px 100px;
+    max-width: 1200px;
+    left: 5%;
+    justify-content: space-between;
   }
 
   .signInAndReserveBox,
   nav h1 {
     padding: 0;
+    margin: 0;
   }
+
   .signInAndReserveBox li {
     padding: 10px;
   }
