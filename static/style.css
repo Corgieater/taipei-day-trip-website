@@ -179,6 +179,7 @@ header,
 .signBox,
 .attractionImgContainer,
 .attractionArea,
+.wrapForNameAndArea,
 .circleBtGroup {
   box-sizing: border-box;
 }
@@ -552,6 +553,7 @@ input[type="radio"] {
 @media screen and (min-width: 360px) and (max-width: 600px) {
   nav {
     min-width: 360px;
+    max-width: 600px;
     padding: 10px;
     left: 0;
   }
@@ -622,6 +624,7 @@ input[type="radio"] {
     max-width: 600px;
     min-width: 360px;
     height: 350px;
+    margin-bottom: 30px;
   }
 
   .attractionImgContainer > img {
@@ -633,7 +636,7 @@ input[type="radio"] {
   }
 
   .attractionArea {
-    width: 95%;
+    padding: 10px;
   }
 }
 
