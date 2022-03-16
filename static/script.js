@@ -229,19 +229,3 @@ if (signBt) {
     header.append(div);
   });
 }
-
-// async function getDataAndRender() {
-//   console.log(attractionId);
-//   let imgUrls = await fetchById(attractionId);
-//   console.log(imgUrls);
-//   attractionImgContainer.src = imgUrls[0];
-// }
-
-// const attractionImgContainer = document.querySelector("#attractionImgContainer > img");
-// if (attractionImgContainer) {
-//   const urlString = window.location.href;
-//   console.log("in if attractionImgContainer ", attractionId);
-//   getDataAndRender();
-// }
-
-// how to get attraction id?

@@ -190,6 +190,7 @@ header,
 nav {
   justify-content: space-between;
   position: fixed;
+  z-index: 1;
   background-color: white;
   height: 54px;
   top: 0; /* for staying on top */
@@ -378,7 +379,7 @@ footer p {
   line-height: 5.5;
 }
 
-/* 考慮把下段獨立成一個css= = */
+/* 考慮把下段獨立成一個css*/
 /* ---attraction page--- */
 :root {
   accent-color: #448899;
@@ -399,14 +400,12 @@ label,
   color: #666666;
 }
 
-/* 如果輪播不知道會不會有問題 */
 .attractionImgContainer {
   max-width: 540px;
   max-height: 406px;
   min-width: 540px;
   min-height: 406px;
   position: relative;
-  /* i think  these two should fix*/
 }
 
 .leftArrow,
@@ -524,6 +523,7 @@ input[type="radio"] {
   border-radius: 5px;
   border: none;
   margin-top: 20px;
+  cursor: pointer;
 }
 
 /* ---attraction body--- */
@@ -544,7 +544,6 @@ input[type="radio"] {
 @media screen and (min-width: 360px) and (max-width: 600px) {
   nav {
     min-width: 360px;
-    display: flex;
     padding: 10px;
     left: 0;
   }
@@ -601,9 +600,7 @@ input[type="radio"] {
     margin: 50px 25%;
   }
 
-  /* rwd for attraction html */
-  /* .................................... */
-
+  /* 360-600 rwd for attraction html */
   .attractionHead {
     flex-direction: column;
     min-width: 360px;
@@ -636,7 +633,6 @@ input[type="radio"] {
 @media screen and (min-width: 600px) and (max-width: 1400px) {
   nav {
     min-width: 360px;
-    display: flex;
     padding: 10px 100px;
     max-width: 1200px;
     justify-content: space-between;
@@ -692,5 +688,32 @@ input[type="radio"] {
 
   .noPicText {
     margin: 50px 35%;
+  }
+
+  /* 600-1400 rwd for attraction html */
+  /* doing here */
+  .attractionHead {
+    min-width: 600px;
+    max-width: 1200px;
+    padding: 10px;
+    justify-content: center;
+  }
+
+  .attractionImgContainer {
+    max-width: 100%;
+    min-width: 30%;
+    height: 350px;
+  }
+
+  .attractionImgContainer > img {
+    max-width: 100%;
+    max-height: 350px;
+    min-width: 40%;
+    min-height: 350px;
+    width: 100%;
+  }
+
+  .radioGroup {
+    flex-wrap: wrap;
   }
 }
