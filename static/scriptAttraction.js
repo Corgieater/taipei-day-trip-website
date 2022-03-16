@@ -5,21 +5,26 @@ const currentUrl = window.location.href;
 
 const leftArrow = document.querySelector("#leftArrow");
 const rightArrow = document.querySelector("#rightArrow");
+let leftClickCount = null;
+let rightClickCount = 0;
 let cutPosition = currentUrl.indexOf("n/") + 2;
 let currentId = currentUrl.substring(cutPosition);
+let currentImgs = null;
 
-async function fetchImgs() {
+async function fetchData() {
   const res = await fetch("/api/attraction/" + currentId);
   const data = await res.json();
   const attraction = data.data;
-  let imgs = attraction["images"];
-  return imgs;
+  currentImgs = attraction["images"];
+  leftClickCount = currentImgs.length - 1;
+  return attraction;
 }
 
 async function fetchAttractionById() {
-  const res = await fetch("/api/attraction/" + currentId);
-  const data = await res.json();
-  const attraction = data.data;
+  // const res = await fetch("/api/attraction/" + currentId);
+  // const data = await res.json();
+  // const attraction = data.data;
+  const attraction = await fetchData();
   console.log(attraction);
   const imgs = document.querySelector("#attractionImgContainer > img");
   const name = document.querySelector(".attractionName > h2");
@@ -69,8 +74,6 @@ function changeMoney(among) {
   money.textContent = among;
 }
 
-fetchAttractionById();
-
 morningBt.addEventListener("click", function () {
   changeMoney(2000);
 });
@@ -81,14 +84,34 @@ afternoonBt.addEventListener("click", function () {
 
 leftArrow.addEventListener("click", async function (e) {
   e.preventDefault();
-  console.log("hi");
-  let imgs = fetchImgs();
+
+  if (leftClickCount !== 0) {
+    leftClickCount -= 1;
+  } else {
+    leftClickCount = currentImgs.length - 1;
+  }
+
+  let imgShouldChanged = document.querySelector(
+    "#attractionImgContainer > img"
+  );
+  imgShouldChanged.src = currentImgs[leftClickCount];
+  rightClickCount = leftClickCount;
 });
 
 rightArrow.addEventListener("click", async function (e) {
   e.preventDefault();
-  console.log("hi");
-  let imgs = await fetchImgs();
-  // await due to it's an async func
-  console.log(imgs.length);
+
+  if (rightClickCount !== currentImgs.length - 1) {
+    rightClickCount += 1;
+  } else {
+    rightClickCount = 0;
+  }
+
+  let imgShouldChanged = document.querySelector(
+    "#attractionImgContainer > img"
+  );
+  imgShouldChanged.src = currentImgs[rightClickCount];
+  leftClickCount = rightClickCount;
 });
+
+fetchAttractionById();
