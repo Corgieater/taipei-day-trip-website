@@ -16,7 +16,7 @@ async function fetchData() {
   const data = await res.json();
   const attraction = data.data;
   currentImgs = attraction["images"];
-  leftClickCount = currentImgs.length - 1;
+  leftClickCount = currentImgs.length;
   return attraction;
 }
 
@@ -96,6 +96,12 @@ leftArrow.addEventListener("click", async function (e) {
   );
   imgShouldChanged.src = currentImgs[leftClickCount];
   rightClickCount = leftClickCount;
+
+  const circleBtGroup = document.querySelectorAll(".circleBtGroup");
+  let formerChosenCircle = document.querySelector(".chosenCircle");
+  formerChosenCircle.classList.remove("chosenCircle");
+  circleBtGroup[leftClickCount].classList.add("chosenCircle");
+  console.log(leftClickCount);
 });
 
 rightArrow.addEventListener("click", async function (e) {
@@ -112,6 +118,11 @@ rightArrow.addEventListener("click", async function (e) {
   );
   imgShouldChanged.src = currentImgs[rightClickCount];
   leftClickCount = rightClickCount;
+
+  const circleBtGroup = document.querySelectorAll(".circleBtGroup");
+  let formerChosenCircle = document.querySelector(".chosenCircle");
+  formerChosenCircle.classList.remove("chosenCircle");
+  circleBtGroup[rightClickCount].classList.add("chosenCircle");
 });
 
 fetchAttractionById();

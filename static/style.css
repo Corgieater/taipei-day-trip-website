@@ -434,9 +434,9 @@ label,
 }
 
 .circleArea {
-  width: 50%;
+  width: 100%;
   display: flex;
-  justify-content: left;
+  justify-content: center;
   position: absolute;
   flex-wrap: wrap;
   /* holy crap it works */
