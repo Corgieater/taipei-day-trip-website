@@ -1,57 +1,22 @@
 "user strict";
-const submitBt = document.querySelector("#submitBt");
+const searchBt = document.querySelector("#searchBt");
 const signBt = document.querySelector("#signBt");
 let userInput = "";
 let currentPage = 0;
+// after are for lazy loading preventing multiple fetch per page
 let resStatus = null;
-// for lazy loading preventing multiple fetch per page
+const endPoint = document.querySelector("#endPoint");
+let urlIsLoading = false;
+// 判斷url是不是在fetching
 
-console.log("記得這份script也會連到attraction/id fix it");
-// 記得這份script也會連到attraction/id fix it
-
-// for attraction per ID
-// let attractionImgContainers = [];
-// let attractionCategory = "";
-// let attractionArea = "";
-// let attractionDescription = "";
-// let attractionAddress = "";
-// let attractionTransport = "";
 let attractionId = null;
-// for attraction per ID
-
-// async function fetchById(id) {
-//   let res = await fetch("/api/attraction/" + id);
-//   let data = await res.json();
-//   let attraction = data.data;
-//   console.log(attraction);
-//   let attractionImgContainers = attraction["images"];
-//   console.log(attractionImgContainers);
-//   return attractionImgContainers;
-//   // attractionCategory = attraction["category"];
-//   // console.log(attractionCategory);
-//   // attractionArea = attraction["mrt"];
-//   // attractionDescription = attraction["description"];
-//   // attractionAddress = attraction["address"];
-//   // attractionTransport = attraction["transport"];
-// }
-
-// let links = null;
-// console.log(links);
 
 // 製作li放圖片
 function makeLi(picAddress, name, mrt, category, picId) {
   const li = document.createElement("li");
   const aLink = document.createElement("a");
   aLink.href = `/attraction/` + picId;
-  // 下面這個可以被獨立嗎?
-  // aLink.addEventListener("click", async function (e) {
-  //   attractionId = picId;
-  //   console.log("in makeLi ", attractionId);
-  // const attractionImgContainer = document.querySelector("#attractionImgContainer");
-  // console.log(book);
-  // attractionImgContainer.src = imgs[0];
-  // fix this
-  // });
+
   const showCase = document.querySelector("#showCase");
   const div1 = document.createElement("div");
   div1.classList.add("pics");
@@ -128,11 +93,11 @@ let options = {
   threshold: 1,
   // 要完全看到才可以觸發
 };
-const endPoint = document.querySelector("#endPoint");
-let urlIsLoading = false;
-// 判斷url是不是在fetching
+
+// 看到觀察點就會fetch資料
+// 本來是連observer也包在裡面 但不知道為啥會整組壞光還會牽連到我的搜尋功能WTF?
+let observer = new IntersectionObserver(callback, options);
 if (endPoint) {
-  let observer = new IntersectionObserver(callback, options);
   observer.observe(endPoint);
 }
 
@@ -145,12 +110,12 @@ async function callback(entries) {
       `/api/attractions?page=${currentPage}&keyword=${userInput}`
     );
 
-    // 這邊在等資料所以true
-
     if (res.ok) {
       resStatus = true;
     } else {
       makeMessageAppendToMain("No such keyword :(");
+      urlIsLoading = false;
+      // 找不到資料，切回false
     }
     if (resStatus) {
       const data = await res.json();
@@ -169,8 +134,8 @@ async function callback(entries) {
   }
 }
 
-if (submitBt) {
-  submitBt.addEventListener("click", async function (e) {
+if (searchBt) {
+  searchBt.addEventListener("click", async function (e) {
     observer.disconnect();
     // 按下去的瞬間先斷開連線重製global的currentPage
     // 不然照callback的設定，讀到currentPage = null會disconnect
