@@ -78,11 +78,11 @@ function deleteLis() {
 
 //做訊息然後貼在main
 function makeMessageAppendToMain(text) {
-  const main = document.querySelector("main");
+  const messagePlace = document.querySelector("#messagePlace");
   const p = document.createElement("p");
   p.textContent = text;
   p.classList.add("noPicText");
-  main.append(p);
+  messagePlace.append(p);
 }
 
 // observer

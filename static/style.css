@@ -169,7 +169,7 @@ header,
 
 nav h1,
 .searchBar h2 {
-  font-weight: 700;
+  font-weight: bold;
 }
 
 .showCase,
@@ -187,6 +187,7 @@ header,
   font-weight: bold;
 }
 /* ---nav--- */
+/* problem */
 nav {
   justify-content: space-between;
   position: fixed;
@@ -195,8 +196,11 @@ nav {
   height: 54px;
   top: 0; /* for staying on top */
   width: 100%;
-  /* max-width: 1920px; */
+  max-width: 1920px;
   min-width: 1200px;
+  border-color: #e8e8e8;
+  border-style: solid;
+  border-width: 0 0 1px 0;
 }
 
 nav h1 {
@@ -362,10 +366,14 @@ p {
   justify-content: space-between;
 }
 
+#messagePlace {
+  margin: 50px auto;
+  text-align: center;
+}
+
 .noPicText {
   font-size: 25px;
   color: black;
-  margin: 50px 0 0 50%;
 }
 
 /* ---footer--- */
@@ -388,7 +396,7 @@ footer p {
 .attractionHead {
   border-color: #e8e8e8;
   border-style: solid;
-  border-width: 1px 0;
+  border-width: 0 0 1px 0;
   padding: 50px 0;
   display: flex;
   justify-content: space-around;
@@ -601,6 +609,9 @@ input[type="radio"] {
   }
 
   /* 360-600 rwd for attraction html */
+  .signInAndReserveBox {
+    padding: 0 5px 0 0;
+  }
   .attractionHead {
     flex-direction: column;
     min-width: 360px;
@@ -614,10 +625,6 @@ input[type="radio"] {
   }
 
   .attractionImgContainer > img {
-    max-width: 600px;
-    max-height: 350px;
-    min-width: 360px;
-    min-height: 350px;
     width: 100%;
   }
 
@@ -632,9 +639,9 @@ input[type="radio"] {
 
 @media screen and (min-width: 600px) and (max-width: 1400px) {
   nav {
-    min-width: 360px;
+    /* min-width: 360px; */
     padding: 10px 100px;
-    max-width: 1200px;
+    /* max-width: 1200px; */
     justify-content: space-between;
   }
 
@@ -693,8 +700,8 @@ input[type="radio"] {
   /* 600-1400 rwd for attraction html */
   /* doing here */
   .attractionHead {
-    min-width: 600px;
-    max-width: 1200px;
+    /* min-width: 600px;
+    max-width: 1200px; */
     padding: 10px;
     justify-content: center;
   }
