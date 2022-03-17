@@ -1,26 +1,46 @@
 "user strict";
-const submitBt = document.querySelector("#submitBt");
+const searchBt = document.querySelector("#searchBt");
 const signBt = document.querySelector("#signBt");
 let userInput = "";
 let currentPage = 0;
+// after are for lazy loading preventing multiple fetch per page
 let resStatus = null;
-// for lazy loading preventing multiple fetch per page
+const endPoint = document.querySelector("#endPoint");
+let urlIsLoading = false;
+// 判斷url是不是在fetching
+
+let attractionId = null;
 
 // 製作li放圖片
-function makeLi(picAddress, name, mrt, category) {
+function makeLi(picAddress, name, mrt, category, picId) {
   const li = document.createElement("li");
-  const showCase = document.querySelector("#showCase");
+  const aLink = document.createElement("a");
+  aLink.href = `/attraction/` + picId;
 
-  li.innerHTML = `
-  <div class='pics'> 
-  <img alt='pictures' src='${picAddress}'>
-  <p class='name'>${name}</p>
-  <div class='description'>
-  <p class='mrt'>${mrt}</p>
-  <p class='category'>${category}</p>
-  </div>
-  </div>
-  `;
+  const showCase = document.querySelector("#showCase");
+  const div1 = document.createElement("div");
+  div1.classList.add("pics");
+  const div2 = document.createElement("div");
+  div2.classList.add("description");
+  const img = document.createElement("img");
+  img.alt = "pics";
+  img.src = picAddress;
+  const p1 = document.createElement("p");
+  p1.classList.add("name");
+  p1.textContent = name;
+  const p2 = document.createElement("p");
+  p2.classList.add("mrt");
+  p2.textContent = mrt;
+  const p3 = document.createElement("p");
+  p3.textContent = category;
+  div1.append(img);
+  div1.append(p1);
+  div2.append(p2);
+  div2.append(p3);
+  div1.append(div2);
+  aLink.append(div1);
+  li.append(aLink);
+
   showCase.append(li);
 }
 
@@ -35,7 +55,8 @@ function appendAttractionsToLi(attractions) {
     }
     // 有的地方沒mrt地區所以抓address前的地區
     picCategory = attractions[i]["category"];
-    makeLi(picPlace, picName, picMrt, picCategory);
+    picId = attractions[i]["id"];
+    makeLi(picPlace, picName, picMrt, picCategory, picId);
   }
 }
 
@@ -57,11 +78,11 @@ function deleteLis() {
 
 //做訊息然後貼在main
 function makeMessageAppendToMain(text) {
-  const main = document.querySelector("main");
+  const messagePlace = document.querySelector("#messagePlace");
   const p = document.createElement("p");
   p.textContent = text;
   p.classList.add("noPicText");
-  main.append(p);
+  messagePlace.append(p);
 }
 
 // observer
@@ -73,26 +94,28 @@ let options = {
   // 要完全看到才可以觸發
 };
 
+// 看到觀察點就會fetch資料
+// 本來是連observer也包在裡面 但不知道為啥會整組壞光還會牽連到我的搜尋功能WTF?
 let observer = new IntersectionObserver(callback, options);
-const endPoint = document.querySelector("#endPoint");
-let urlIsLoading = false;
-// 判斷url是不是在fetching
-
-observer.observe(endPoint);
+if (endPoint) {
+  observer.observe(endPoint);
+}
 
 async function callback(entries) {
   if (entries[0].isIntersecting && urlIsLoading !== true) {
     urlIsLoading = true;
+    // 結果是這個沒有擺在最一開始才有問題
+    // 試著把觸發流程寫一遍
     const res = await fetch(
       `/api/attractions?page=${currentPage}&keyword=${userInput}`
     );
-
-    // 這邊在等資料所以true
 
     if (res.ok) {
       resStatus = true;
     } else {
       makeMessageAppendToMain("No such keyword :(");
+      urlIsLoading = false;
+      // 找不到資料，切回false
     }
     if (resStatus) {
       const data = await res.json();
@@ -103,7 +126,6 @@ async function callback(entries) {
       appendAttractionsToLi(attractions);
       urlIsLoading = false;
       // 資料都貼完了所以改回false
-      // this is the problem, but where should i put it?
       if (nextPage === null) {
         makeMessageAppendToMain("No more data :(");
         observer.disconnect();
@@ -112,59 +134,64 @@ async function callback(entries) {
   }
 }
 
-submitBt.addEventListener("click", async function (e) {
-  observer.disconnect();
-  // 按下去的瞬間先斷開連線重製global的currentPage
-  // 不然照callback的設定，讀到currentPage = null會disconnect
-  e.preventDefault();
-  deleteMessage();
-  currentPage = 0;
-  observer.observe(endPoint);
-  let textArea = document.querySelector("#keyword");
-  userInput = textArea.value;
+if (searchBt) {
+  searchBt.addEventListener("click", async function (e) {
+    observer.disconnect();
+    // 按下去的瞬間先斷開連線重製global的currentPage
+    // 不然照callback的設定，讀到currentPage = null會disconnect
+    e.preventDefault();
+    deleteMessage();
+    currentPage = 0;
+    observer.observe(endPoint);
+    let textArea = document.querySelector("#keyword");
+    userInput = textArea.value;
 
-  textArea.value = "";
-  if (userInput != "") {
-    deleteLis();
-  } else {
-    deleteLis();
-  }
-});
+    textArea.value = "";
+    if (userInput != "") {
+      deleteLis();
+    } else {
+      deleteLis();
+    }
+  });
+}
 
-signBt.addEventListener("click", function () {
-  const header = document.querySelector("header");
-  const div = document.createElement("div");
-  div.classList.add("signBox");
-  const formContent = `
-  <div class='signHead'>
-  <h3>登入會員帳號</h3>
-  <a href="#">
-  <img
-  src="static/imgs/icon_close.png"
-  alt="close icon"/>
-  </a>
-  </div>
-  <form>
-  <input
+// 這邊會一直貼signinBox所以看是要按一次清一次還是改成本來隱藏按下去出現:(
+if (signBt) {
+  signBt.addEventListener("click", function () {
+    const header = document.querySelector("header");
+    const div = document.createElement("div");
+    div.classList.add("signBox");
+    const formContent = `
+    <div class='signHead'>
+    <h3>登入會員帳號</h3>
+    <a href="#">
+    <img
+    src="static/imgs/icon_close.png"
+    alt="close icon"/>
+    </a>
+    </div>
+    <form>
+    <input
+                type="text"
+                placeholder="輸入電子郵件"
+                name="userEmail"
+                id="userEmail"
+              />
+    <input
               type="text"
-              placeholder="輸入電子郵件"
-              name="userEmail"
-              id="userEmail"
+              placeholder="輸入密碼"
+              name="userPassword"
+              id="userPassword"
             />
-  <input
-            type="text"
-            placeholder="輸入密碼"
-            name="userPassword"
-            id="userPassword"
-          />
-  <button id="signInBt">
-              登入帳戶
-  </button>
-  <a href="#">
-  還沒有帳戶？點此註冊
-  </a>
-  </form>
-  `;
-  div.innerHTML = formContent;
-  header.append(div);
-});
+    <button id="signInBt">
+                登入帳戶
+    </button>
+    <a href="#">
+    還沒有帳戶？點此註冊
+    </a>
+    </form>
+    `;
+    div.innerHTML = formContent;
+    header.append(div);
+  });
+}

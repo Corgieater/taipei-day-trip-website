@@ -18,42 +18,53 @@
     />
   </head>
   <body>
-    <div class="wrap">
-      <nav>
+    <nav>
+      <div>
         <h1>台北一日遊</h1>
         <ul class="signInAndReserveBox">
           <li><a href="#">預定行程</a></li>
           <li><a id="signBt" href="#">登入/註冊</a></li>
         </ul>
-      </nav>
-      <header>
-        <div class="searchBar">
-          <h2>輕鬆享受台北一日悠閒</h2>
-          <p>搜尋每個角落，體驗城市的深度旅遊行程</p>
-          <form>
-            <input
-              type="text"
-              placeholder="輸入景點名稱查詢"
-              name="keyword"
-              id="keyword"
+      </div>
+    </nav>
+    {% block header %}
+    <header>
+      <div class="searchBar">
+        <h2>輕鬆享受台北一日悠閒</h2>
+        <p>搜尋每個角落，體驗城市的深度旅遊行程</p>
+        <form>
+          <input
+            type="text"
+            placeholder="輸入景點名稱查詢"
+            name="keyword"
+            id="keyword"
+          />
+          <button id="searchBt">
+            <img
+              src="{{url_for('static', filename='imgs/icon_search.png')}}"
+              alt="icon"
             />
-            <button id="submitBt">
-              <img
-                src="{{url_for('static', filename='imgs/icon_search.png')}}"
-                alt="icon"
-              />
-            </button>
-          </form>
-        </div>
-      </header>
+          </button>
+        </form>
+      </div>
+    </header>
+    {% endblock %}
+    <div class="wrap">
       <main>
+        {% block main%}
         <ul class="showCase" id="showCase"></ul>
         <div id="endPoint"></div>
+        {% endblock %}
       </main>
-      <footer><p>COPYRIGHT &copy 2021台北一日遊</p></footer>
     </div>
+    <div id="messagePlace"></div>
+    <footer>
+      <p>COPYRIGHT &copy 2021台北一日遊</p>
+    </footer>
 
     <!-- scripts -->
+    {% block script %}
     <script src="{{url_for('static', filename='script.js')}}"></script>
+    {% endblock %}
   </body>
 </html>
