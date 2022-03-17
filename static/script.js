@@ -155,6 +155,7 @@ if (searchBt) {
   });
 }
 
+// 這邊會一直貼signinBox所以看是要按一次清一次還是改成本來隱藏按下去出現:(
 if (signBt) {
   signBt.addEventListener("click", function () {
     const header = document.querySelector("header");
