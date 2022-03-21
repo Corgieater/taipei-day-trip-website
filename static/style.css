@@ -332,6 +332,12 @@ label,
   padding: 20px;
 }
 
+.bookingDate {
+  border: none;
+  padding: 5px 10px;
+  margin-left: 5px;
+}
+
 .radioGroup {
   display: flex;
 }
