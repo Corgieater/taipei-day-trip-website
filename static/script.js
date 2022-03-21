@@ -1,5 +1,5 @@
 "user strict";
-const searchBt = document.querySelector("#searchBt");
+// const searchBt = document.querySelector("#searchBt");
 let userInput = "";
 let currentPage = 0;
 // after are for lazy loading preventing multiple fetch per page
