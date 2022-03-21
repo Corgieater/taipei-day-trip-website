@@ -158,40 +158,44 @@ if (searchBt) {
 // 這邊會一直貼signinBox所以看是要按一次清一次還是改成本來隱藏按下去出現:(
 if (signBt) {
   signBt.addEventListener("click", function () {
-    const header = document.querySelector("header");
-    const div = document.createElement("div");
-    div.classList.add("signBox");
-    const formContent = `
-    <div class='signHead'>
-    <h3>登入會員帳號</h3>
-    <a href="#">
-    <img
-    src="static/imgs/icon_close.png"
-    alt="close icon"/>
-    </a>
-    </div>
-    <form>
-    <input
-                type="text"
-                placeholder="輸入電子郵件"
-                name="userEmail"
-                id="userEmail"
-              />
-    <input
-              type="text"
-              placeholder="輸入密碼"
-              name="userPassword"
-              id="userPassword"
-            />
-    <button id="signInBt">
-                登入帳戶
-    </button>
-    <a href="#">
-    還沒有帳戶？點此註冊
-    </a>
-    </form>
-    `;
-    div.innerHTML = formContent;
-    header.append(div);
+    const wrapForWholeSignInBox = document.querySelector(
+      "#wrapForWholeSignInBox"
+    );
+    wrapForWholeSignInBox.classList.toggle("hide");
+    // const header = document.querySelector("header");
+    // const div = document.createElement("div");
+    // div.classList.add("signInBox");
+    // const formContent = `
+    // <div class='signInHead'>
+    // <h3>登入會員帳號</h3>
+    // <a href="#">
+    // <img
+    // src="static/imgs/icon_close.png"
+    // alt="close icon"/>
+    // </a>
+    // </div>
+    // <form>
+    // <input
+    //             type="text"
+    //             placeholder="輸入電子郵件"
+    //             name="userEmail"
+    //             id="userEmail"
+    //           />
+    // <input
+    //           type="text"
+    //           placeholder="輸入密碼"
+    //           name="userPassword"
+    //           id="userPassword"
+    //         />
+    // <button id="signInBt">
+    //             登入帳戶
+    // </button>
+    // </form>
+    // <a href="#">
+    // 還沒有帳戶？點此註冊
+    // </a>
+    // `;
+    // div.innerHTML = formContent;
+    // header.append(div);
   });
 }
