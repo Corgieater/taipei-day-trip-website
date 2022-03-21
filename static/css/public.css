@@ -45,6 +45,7 @@ img {
 
 a {
   text-decoration: none;
+  color: #666666;
 }
 
 .main {
@@ -57,7 +58,6 @@ nav > div,
 .signInAndReserveBox,
 header,
 .searchBar form,
-.signInHead,
 .signInBox form,
 .description {
   display: flex;

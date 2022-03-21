@@ -23,8 +23,88 @@
         <h1>台北一日遊</h1>
         <ul class="signInAndReserveBox">
           <li><a href="#">預定行程</a></li>
-          <li><a id="signBt" href="#">登入/註冊</a></li>
+          <li><a id="signInBt" href="#">登入/註冊</a></li>
         </ul>
+      </div>
+      <!-- 登入/註冊 -->
+      <div class="hide wrapForWholeSignInBox" id="wrapForWholeSignInBox">
+        <div class="signINBoxTopColor"></div>
+        <div class="signInBox">
+          <div class="signInHead">
+            <h3>登入會員帳號</h3>
+            <a class="closeBt" id="closeBt" href="#">
+              <img
+                src="{{url_for('static', filename='/imgs/icon_close.png')}}"
+                alt="close icon"
+              />
+            </a>
+          </div>
+
+          <div class="signInBody">
+            <!-- 登入 -->
+            <!-- name跟id取一樣感覺就會有問題 -->
+            <div class="signIn">
+              <form id="signInForm">
+                <input
+                  type="text"
+                  placeholder="輸入電子郵件"
+                  name="userEmail"
+                  id="userEmail"
+                />
+                <input
+                  type="text"
+                  placeholder="輸入密碼"
+                  name="userPassword"
+                  id="userPassword"
+                />
+                <button id="signInBt">登入帳戶</button>
+              </form>
+              <div>
+                <a class="SignUpBt" id="SignUpBt" href="#">
+                  還沒有帳戶？點此註冊
+                </a>
+              </div>
+            </div>
+            <!-- 註冊 -->
+            <div class="signUp hide">
+              <form id="signUpForm">
+                <input
+                  type="text"
+                  placeholder="輸入姓名"
+                  name="userName"
+                  id="userName"
+                />
+                <input
+                  type="text"
+                  placeholder="輸入電子郵件"
+                  name="userEmail"
+                  id="userEmail"
+                />
+                <input
+                  type="text"
+                  placeholder="輸入密碼"
+                  name="userPassword"
+                  id="userPassword"
+                />
+                <button id="signUp">註冊新帳戶</button>
+              </form>
+              <div>
+                <a class="SignInBt" id="SignInBt" href="#">
+                  已經有帳戶了？點此登入
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- <div class="signInfooter">
+            <a class="SignUpBt" id="SignUpBt" href="#">
+              還沒有帳戶？點此註冊
+            </a>
+            <a class="SignInBt" id="SignInBt" href="#">
+              已經有帳戶了？點此登入
+            </a>
+          </div> -->
+        </div>
       </div>
     </nav>
     {% block header %}
@@ -48,13 +128,16 @@
         </form>
       </div>
 
-      <div class="wrapForWholeSignInBox hide" id="wrapForWholeSignInBox">
+      <!-- <div class="wrapForWholeSignInBox" id="wrapForWholeSignInBox">
         <div class="signINBoxTopColor"></div>
         <div class="signInBox">
           <div class="signInHead">
             <h3>登入會員帳號</h3>
             <a href="#">
-              <img src="static/imgs/icon_close.png" alt="close icon" />
+              <img
+                src="{{url_for('static', filename='/imgs/icon_close.png')}}"
+                alt="close icon"
+              />
             </a>
           </div>
           <form>
@@ -76,7 +159,7 @@
             <a href="#"> 還沒有帳戶？點此註冊 </a>
           </div>
         </div>
-      </div>
+      </div> -->
     </header>
     {% endblock %}
     <div class="wrap">
@@ -93,6 +176,7 @@
     </footer>
 
     <!-- scripts -->
+    <script src="{{ url_for('static', filename='scriptSignInBox.js') }}"></script>
     {% block script %}
     <script src="{{url_for('static', filename='script.js')}}"></script>
     {% endblock %}
