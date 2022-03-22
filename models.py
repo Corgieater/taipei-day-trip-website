@@ -1,9 +1,10 @@
+import flask_bcrypt
 from flask import *
 import math
 from dotenv import load_dotenv, find_dotenv
 import os
 import mysql.connector
-from mysql.connector import pooling
+from mysql.connector import pooling, Error
 
 modelsBlueprint = Blueprint(
     'models',
@@ -61,7 +62,6 @@ def searchAttractions():
         searchLength = searchLength[0]
 
         totalPages = math.ceil(searchLength/12)
-        print(totalPages)
         # determine pages, really important
         if int(userInputPage) < totalPages:
             if int(userInputPage) == totalPages-1:
@@ -163,3 +163,80 @@ def searchAttractionById(attractionId):
         }
     finally:
         return attraction
+
+# def returnUserInfo(){
+#     pass
+# #     check database to see if user exist?
+# }
+
+def signInFunc():
+    userInputEmail = request.form.get('userEmail')
+    userInputPassword = flask_bcrypt.generate_password_hash(request.form.get('userPassword'))
+    print(userInputEmail, userInputPassword)
+    return redirect('/')
+
+def checkEmailDuplicate(userInputEmail):
+    searchEmail = ("SELECT userName FROM taipeitripuserinfo WHERE userEmail = %s")
+    cursor.execute(searchEmail, (userInputEmail,))
+    result = cursor.fetchone()
+    if result:
+        return True
+
+
+def signUpFunc():
+    contentType = request.headers.get('Content-Type')
+    if(contentType == 'application/json'):
+        json = request.json
+        print(json)
+        userInputName = json['name']
+        userInputEmail = json['email']
+        userInputPassword = flask_bcrypt.generate_password_hash(json['password'])
+        print(userInputName, userInputEmail, userInputPassword)
+        if checkEmailDuplicate(userInputEmail):
+            error = {
+                'error': True,
+                'message': 'Email already exists'
+                }
+            return error, 400
+        createUser = ('INSERT INTO taipeitripuserinfo VALUES(%s, %s, %s, %s)')
+        cursor.execute(createUser, (None, userInputName, userInputEmail, userInputPassword))
+        connection.commit()
+        data = {
+                'ok': True
+            }
+        return data
+
+
+
+        # try:
+        #     cursor.execute(createUser, (None, userInputName, userInputEmail, userInputPassword))
+        #
+        # except mysql.connector.Error as err:
+        #     if err.errno == 1062:
+        #         print('1062')
+        #         error = {
+        #             'error': True,
+        #             'message': 'Email already exists'
+        #         }
+        #         return error, 400
+        #     # 我本來是想寫except 1062但寫在外面會跳沒有繼承base Exception然後我又不會繼承不知道該怎辦= =
+        #     connection.rollback()
+        #     error = {
+        #         'error': True,
+        #         'message': 'Internal server error'
+        #     }
+        #     return error, 500
+        # else:
+        #     data = {
+        #         'ok': True
+        #     }
+        #     connection.commit()
+        #     return data
+
+    else:
+        error = {
+            'error': True,
+            'message': 'Content-Type not support'
+        }
+        return error, 400
+

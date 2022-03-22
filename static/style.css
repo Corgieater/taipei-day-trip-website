@@ -125,6 +125,7 @@ p {
   color: #666666;
   font-weight: bold;
   font-size: 27px;
+  text-align: center;
 }
 
 .signInBody form > input {
@@ -137,15 +138,13 @@ p {
 .signInBody > div > div {
   margin: 15px 0 0 0;
   text-align: center;
+  /* for bottom message and link */
 }
 
-/* .signInfooter {
-  height: 40px;
-} */
-
-/* .signInfooter, */
-.signInHead {
-  text-align: center;
+.errorMessage {
+  font-size: 18px;
+  color: brown;
+  font-weight: bold;
 }
 
 /* ---main--- */

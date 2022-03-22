@@ -11,11 +11,11 @@ app=Flask(
 	static_folder='static',
 	template_folder='templates'
 )
-app.config["JSON_AS_ASCII"]=False
-app.config["TEMPLATES_AUTO_RELOAD"]=True
+app.config["JSON_AS_ASCII"] = False
+app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 app.register_blueprint(modelsBlueprint)
-from models import searchAttractions, searchAttractionById
+from models import searchAttractions, searchAttractionById, signUpFunc, signInFunc
 
 # Pages
 @app.route("/")
@@ -30,6 +30,38 @@ def searching():
 def searchingById(attractionId):
 	# dynamic route for fuck sake
 	return searchAttractionById(attractionId)
+
+# @app.route("/api/user", methods=['GET'])
+# def returnUserInfo(){
+# # 	check if user and return user
+# # {
+# 	#   "data": {
+# 	#     "id": 1,
+# 	#     "name": "彭彭彭",
+# 	#     "email": "ply@ply.com"
+# 	#   }
+# 	# }
+# }
+
+@app.route("/api/user", methods=['POST'])
+def signUp():
+	return signUpFunc()
+
+@app.route("/api/user", methods=['PATCH'])
+def signin():
+	return signInFunc()
+
+
+# @app.route("/app/user", methods=['DELETE'])
+# def signin(){
+# # 	{
+# 	#   "name": "彭彭彭",
+# 	#   "email": "ply@ply.com",
+# 	#   "password": "12345678"
+# 	# }
+# }
+
+
 
 @app.route("/attraction/<id>")
 def attraction(id):
