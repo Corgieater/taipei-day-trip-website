@@ -141,9 +141,17 @@ p {
   /* for bottom message and link */
 }
 
-.errorMessage {
+.message {
   font-size: 18px;
+}
+
+.error {
   color: brown;
+  font-weight: bold;
+}
+
+.success {
+  color: cadetblue;
   font-weight: bold;
 }
 

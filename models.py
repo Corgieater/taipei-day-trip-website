@@ -164,17 +164,48 @@ def searchAttractionById(attractionId):
     finally:
         return attraction
 
-# def returnUserInfo(){
-#     pass
-# #     check database to see if user exist?
-# }
+def checkUserInfo(email, password):
+    searchUserHashedPassword = ("SELECT userPassword FROM taipeitripuserinfo WHERE userEmail = %s")
+    print(email)
+    cursor.execute(searchUserHashedPassword, (email,))
+    hashedPassword = cursor.fetchone()
+    print(hashedPassword)
+
+    if hashedPassword == None:
+        return False
+
+    if hashedPassword:
+        checkPassword = flask_bcrypt.check_password_hash(hashedPassword[0], password)
+        return checkPassword
 
 def signInFunc():
-    userInputEmail = request.form.get('userEmail')
-    userInputPassword = flask_bcrypt.generate_password_hash(request.form.get('userPassword'))
-    print(userInputEmail, userInputPassword)
-    return redirect('/')
+    contentType = request.headers.get('Content-Type')
+    if contentType == 'application/json':
+        json = request.json
+        userInputEmail = json['email']
+        userInputPassword = json['password']
+        checkPassword = checkUserInfo(userInputEmail, userInputPassword)
 
+        if checkPassword:
+            data = {
+                'ok': True
+            }
+            return data
+        else:
+            error = {
+                'error': True,
+                'message': 'Wrong email or password not match'
+            }
+            return error
+    else:
+        error = {
+            'error': True,
+            'message': 'Content-Type not support'
+        }
+        return error, 400
+
+
+# 這個應該可以切出來ㄅ
 def checkEmailDuplicate(userInputEmail):
     searchEmail = ("SELECT userName FROM taipeitripuserinfo WHERE userEmail = %s")
     cursor.execute(searchEmail, (userInputEmail,))
@@ -187,52 +218,31 @@ def signUpFunc():
     contentType = request.headers.get('Content-Type')
     if(contentType == 'application/json'):
         json = request.json
-        print(json)
         userInputName = json['name']
         userInputEmail = json['email']
         userInputPassword = flask_bcrypt.generate_password_hash(json['password'])
-        print(userInputName, userInputEmail, userInputPassword)
+
         if checkEmailDuplicate(userInputEmail):
             error = {
                 'error': True,
                 'message': 'Email already exists'
                 }
             return error, 400
-        createUser = ('INSERT INTO taipeitripuserinfo VALUES(%s, %s, %s, %s)')
-        cursor.execute(createUser, (None, userInputName, userInputEmail, userInputPassword))
-        connection.commit()
-        data = {
-                'ok': True
+
+        try:
+            createUser = ('INSERT INTO taipeitripuserinfo VALUES(%s, %s, %s, %s)')
+            cursor.execute(createUser, (None, userInputName, userInputEmail, userInputPassword))
+            connection.commit()
+            data = {
+                    'ok': True
+                }
+            return data
+        except:
+            error = {
+                'error': True,
+                'message': 'Internal server error'
             }
-        return data
-
-
-
-        # try:
-        #     cursor.execute(createUser, (None, userInputName, userInputEmail, userInputPassword))
-        #
-        # except mysql.connector.Error as err:
-        #     if err.errno == 1062:
-        #         print('1062')
-        #         error = {
-        #             'error': True,
-        #             'message': 'Email already exists'
-        #         }
-        #         return error, 400
-        #     # 我本來是想寫except 1062但寫在外面會跳沒有繼承base Exception然後我又不會繼承不知道該怎辦= =
-        #     connection.rollback()
-        #     error = {
-        #         'error': True,
-        #         'message': 'Internal server error'
-        #     }
-        #     return error, 500
-        # else:
-        #     data = {
-        #         'ok': True
-        #     }
-        #     connection.commit()
-        #     return data
-
+            return error, 500
     else:
         error = {
             'error': True,
