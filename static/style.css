@@ -8,13 +8,15 @@ nav {
   z-index: 1;
   background-color: white;
   height: 54px;
-  top: 0; /* for staying on top */
+  top: 0;
+  /* for staying on top */
   width: 100%;
   border-color: #e8e8e8;
   border-style: solid;
   border-width: 0 0 1px 0;
   left: 0;
   right: 0;
+  /* are these even work? */
   margin: 0 auto;
 }
 
@@ -45,6 +47,7 @@ header {
   background-position: 80%;
   background-repeat: no-repeat;
   width: 100%;
+  margin-top: 54px;
 }
 .searchBar {
   margin-top: 85px;
@@ -87,10 +90,21 @@ p {
 
 /* 登入/註冊區 */
 .wrapForWholeSignInBox {
+  position: fixed;
+  z-index: 3;
   width: 340px;
   left: 41.5%;
-  position: fixed;
   margin-top: 60px;
+  animation: move 1s ease-in-out;
+}
+/* this looks weird, fix it */
+@keyframes move {
+  from {
+    top: 0;
+  }
+  to {
+    top: 20px;
+  }
 }
 
 .signINBoxTopColor {
@@ -103,7 +117,7 @@ p {
 
 .signInBox {
   width: 100%;
-  border-radius: 0 0 5px 5px;
+  border-radius: 5px;
   border: 1px solid #cccccc;
   background-color: white;
   padding: 15px;
@@ -179,7 +193,7 @@ p {
 .pics img {
   height: 200px;
   width: 100%;
-  border-radius: 5px;
+  border-radius: 5px 5px 0 0;
 }
 
 .pics p {
@@ -472,6 +486,13 @@ input[type="radio"] {
 
   .attractionArea {
     padding: 10px;
+  }
+
+  /* 360-600 rwd for wrapForWholeSignInBox */
+  .wrapForWholeSignInBox {
+    position: fixed;
+    left: 10px;
+    top: 20px;
   }
 }
 

@@ -1,6 +1,8 @@
 "use strict";
 
 const wrapForWholeSignInBox = document.querySelector("#wrapForWholeSignInBox");
+let modalBox = document.querySelector(".modalBox");
+let nav = document.querySelector("nav");
 const signInOrnoAccountBt = document.querySelector("#signInOrnoAccountBt");
 const signOutBt = document.querySelector("#signOutBt");
 const signIn = document.querySelector(".signIn");
@@ -22,13 +24,26 @@ function showOrHide(obj) {
   obj.classList.toggle("hide");
 }
 
+// prevent scrolling
+function preventScroll(e) {
+  e.preventDefault();
+  e.stopPropagation();
+
+  return false;
+}
+
 signInOrnoAccountBt.addEventListener("click", function (e) {
   e.preventDefault();
+  modalBox.addEventListener("wheel", preventScroll, { passive: false });
+  nav.style.backgroundColor = "rgba(0, 0, 0, 0.15)";
+  showOrHide(modalBox);
   showOrHide(wrapForWholeSignInBox);
 });
 
 closeBt.addEventListener("click", function (e) {
   e.preventDefault();
+  nav.style.backgroundColor = "white";
+  showOrHide(modalBox);
   showOrHide(wrapForWholeSignInBox);
 });
 
@@ -135,8 +150,9 @@ async function checkSession() {
   });
   const res = await req.json();
   if (res.data !== null) {
+    let li = document.querySelector(".signInAndReserveBox .hide");
+    showOrHide(li);
     showOrHide(signInOrnoAccountBt);
-    showOrHide(signOutBt);
   }
 }
 

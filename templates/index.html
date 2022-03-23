@@ -18,95 +18,97 @@
     />
   </head>
   <body>
+    <div class="hide modalBox"></div>
+    <!-- 登入/註冊 -->
+    <div class="hide wrapForWholeSignInBox" id="wrapForWholeSignInBox">
+      <div class="signINBoxTopColor"></div>
+      <div class="signInBox">
+        <div class="signInHead">
+          <h3>登入會員帳號</h3>
+          <a class="closeBt" id="closeBt" href="#">
+            <img
+              src="{{url_for('static', filename='/imgs/icon_close.png')}}"
+              alt="close icon"
+            />
+          </a>
+        </div>
+
+        <div class="signInBody">
+          <!-- 登入 -->
+          <!-- name跟id取一樣感覺就會有問題 -->
+          <div class="signIn">
+            <form id="signInForm">
+              <input
+                type="email"
+                placeholder="輸入電子郵件"
+                id="signInUserEmail"
+                required
+              />
+              <input
+                type="password"
+                placeholder="輸入密碼"
+                id="signInUserPassword"
+                required
+              />
+              <button id="signInBt">登入帳戶</button>
+            </form>
+
+            <div class="message" id="signInMessage"></div>
+            <div>
+              <a class="noAccountBt" id="noAccountBt" href="#">
+                <!-- 純粹切換用 沒有其他功能 -->
+                還沒有帳戶？點此註冊
+              </a>
+            </div>
+          </div>
+          <!-- 註冊 -->
+          <div class="signUp hide">
+            <form id="signUpForm">
+              <input
+                type="text"
+                placeholder="輸入姓名"
+                id="signUpUserName"
+                minlength="1"
+                maxlength="10"
+                required
+              />
+              <input
+                type="email"
+                placeholder="輸入電子郵件"
+                id="signUpUserEmail"
+                required
+              />
+              <input
+                type="password"
+                placeholder="輸入密碼"
+                id="signUpUserPassword"
+                minlength="6"
+                maxlength="20"
+                required
+              />
+              <button id="signUp">註冊新帳戶</button>
+            </form>
+            <div class="message" id="signUpMessage"></div>
+            <div>
+              <a class="gotAccountBt" id="gotAccountBt" href="#">
+                <!-- 純粹切換用 沒有其他功能 -->
+                已經有帳戶了？點此登入
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <nav>
       <div>
         <h1>台北一日遊</h1>
         <ul class="signInAndReserveBox">
           <li><a href="#">預定行程</a></li>
           <li><a id="signInOrnoAccountBt" href="#">登入/註冊</a></li>
-          <li><a class="hide" id="signOutBt" href="#">登出</a></li>
+          <li class="hide"><a id="signOutBt" href="#">登出</a></li>
         </ul>
       </div>
-      <!-- 登入/註冊 -->
-      <div class="hide wrapForWholeSignInBox" id="wrapForWholeSignInBox">
-        <div class="signINBoxTopColor"></div>
-        <div class="signInBox">
-          <div class="signInHead">
-            <h3>登入會員帳號</h3>
-            <a class="closeBt" id="closeBt" href="#">
-              <img
-                src="{{url_for('static', filename='/imgs/icon_close.png')}}"
-                alt="close icon"
-              />
-            </a>
-          </div>
-
-          <div class="signInBody">
-            <!-- 登入 -->
-            <!-- name跟id取一樣感覺就會有問題 -->
-            <div class="signIn">
-              <form id="signInForm">
-                <input
-                  type="email"
-                  placeholder="輸入電子郵件"
-                  id="signInUserEmail"
-                  required
-                />
-                <input
-                  type="password"
-                  placeholder="輸入密碼"
-                  id="signInUserPassword"
-                  required
-                />
-                <button id="signInBt">登入帳戶</button>
-              </form>
-
-              <div class="message" id="signInMessage"></div>
-              <div>
-                <a class="noAccountBt" id="noAccountBt" href="#">
-                  <!-- 純粹切換用 沒有其他功能 -->
-                  還沒有帳戶？點此註冊
-                </a>
-              </div>
-            </div>
-            <!-- 註冊 -->
-            <div class="signUp hide">
-              <form id="signUpForm">
-                <input
-                  type="text"
-                  placeholder="輸入姓名"
-                  id="signUpUserName"
-                  minlength="1"
-                  maxlength="10"
-                  required
-                />
-                <input
-                  type="email"
-                  placeholder="輸入電子郵件"
-                  id="signUpUserEmail"
-                  required
-                />
-                <input
-                  type="password"
-                  placeholder="輸入密碼"
-                  id="signUpUserPassword"
-                  minlength="6"
-                  maxlength="20"
-                  required
-                />
-                <button id="signUp">註冊新帳戶</button>
-              </form>
-              <div class="message" id="signUpMessage"></div>
-              <div>
-                <a class="gotAccountBt" id="gotAccountBt" href="#">
-                  <!-- 純粹切換用 沒有其他功能 -->
-                  已經有帳戶了？點此登入
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- 本來放這 -->
     </nav>
     {% block header %}
     <header>
