@@ -6,16 +6,18 @@ environment = os.getenv('FLASK_ENV')
 flask_host = os.getenv('FLASK_HOST')
 
 
-app=Flask(
+app = Flask(
 	__name__,
 	static_folder='static',
 	template_folder='templates'
 )
 app.config["JSON_AS_ASCII"] = False
 app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 app.register_blueprint(modelsBlueprint)
-from models import searchAttractions, searchAttractionById, signUpFunc, signInFunc
+from models import searchAttractions, searchAttractionById, signUpFunc, \
+	signInFunc, userChecker, signOutFunc
 
 # Pages
 @app.route("/")
@@ -43,23 +45,25 @@ def searchingById(attractionId):
 # 	# }
 # }
 
+
 @app.route("/api/user", methods=['POST'])
 def signUp():
 	return signUpFunc()
+
 
 @app.route("/api/user", methods=['PATCH'])
 def signin():
 	return signInFunc()
 
 
-# @app.route("/app/user", methods=['DELETE'])
-# def signin(){
-# # 	{
-# 	#   "name": "彭彭彭",
-# 	#   "email": "ply@ply.com",
-# 	#   "password": "12345678"
-# 	# }
-# }
+@app.route('/api/user', methods=["GET"])
+def checkUserInfo():
+	return userChecker()
+
+
+@app.route("/api/user", methods=["DELETE"])
+def signOut():
+	return signOutFunc()
 
 
 

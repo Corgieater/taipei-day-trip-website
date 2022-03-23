@@ -4,7 +4,7 @@ import math
 from dotenv import load_dotenv, find_dotenv
 import os
 import mysql.connector
-from mysql.connector import pooling, Error
+from mysql.connector import pooling
 
 modelsBlueprint = Blueprint(
     'models',
@@ -164,19 +164,49 @@ def searchAttractionById(attractionId):
     finally:
         return attraction
 
-def checkUserInfo(email, password):
-    searchUserHashedPassword = ("SELECT userPassword FROM taipeitripuserinfo WHERE userEmail = %s")
-    print(email)
-    cursor.execute(searchUserHashedPassword, (email,))
-    hashedPassword = cursor.fetchone()
-    print(hashedPassword)
 
-    if hashedPassword == None:
+# 登入相關
+def checkUserInfoThenReturnInfo(email, password):
+    searchUserInfo = ("SELECT userPassword, Id, userName FROM taipeitripuserinfo WHERE userEmail = %s")
+    cursor.execute(searchUserInfo, (email,))
+    userInfo = cursor.fetchone()
+
+    if userInfo is None:
         return False
 
-    if hashedPassword:
-        checkPassword = flask_bcrypt.check_password_hash(hashedPassword[0], password)
-        return checkPassword
+    if userInfo:
+        hashedPassword = userInfo[0]
+        checkPassword = flask_bcrypt.check_password_hash(hashedPassword, password)
+        if checkPassword:
+            userId = userInfo[1]
+            userName = userInfo[2]
+            return [userId, userName]
+
+
+def userChecker():
+    # 是抓session不是抓cookies:(
+    userId = session.get('userID')
+    userName = session.get('userName')
+    userEmail = session.get('userEmail')
+    print('checker called')
+
+    if userId is None:
+        data = {
+            'data': None
+        }
+        return data
+
+    else:
+        data = {
+            "data": {
+                "id": userId,
+                "name": userName,
+                "email": userEmail
+            }
+        }
+        return data
+
+
 
 def signInFunc():
     contentType = request.headers.get('Content-Type')
@@ -184,12 +214,18 @@ def signInFunc():
         json = request.json
         userInputEmail = json['email']
         userInputPassword = json['password']
-        checkPassword = checkUserInfo(userInputEmail, userInputPassword)
+        result = checkUserInfoThenReturnInfo(userInputEmail, userInputPassword)
 
-        if checkPassword:
+        if result:
             data = {
                 'ok': True
             }
+            # session在這
+            session['userID'] = result[0]
+            session['userName'] = result[1]
+            session['userEmail'] = json['email']
+            print(session['userID'], session['userName'], session['userEmail'])
+
             return data
         else:
             error = {
@@ -204,6 +240,8 @@ def signInFunc():
         }
         return error, 400
 
+
+# 註冊相關
 
 # 這個應該可以切出來ㄅ
 def checkEmailDuplicate(userInputEmail):
@@ -250,3 +288,12 @@ def signUpFunc():
         }
         return error, 400
 
+
+# 登出
+
+def signOutFunc():
+    session.clear()
+    data = {
+        'ok': True
+    }
+    return data

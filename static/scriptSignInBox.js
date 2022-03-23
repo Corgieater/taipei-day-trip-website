@@ -2,6 +2,7 @@
 
 const wrapForWholeSignInBox = document.querySelector("#wrapForWholeSignInBox");
 const signInOrnoAccountBt = document.querySelector("#signInOrnoAccountBt");
+const signOutBt = document.querySelector("#signOutBt");
 const signIn = document.querySelector(".signIn");
 const signUp = document.querySelector(".signUp");
 let title = document.querySelector(".signInHead > h3");
@@ -10,6 +11,11 @@ const noAccountBt = document.querySelector("#noAccountBt");
 const closeBt = document.querySelector("#closeBt");
 const signUpFormBt = document.querySelector("#signUpForm > button");
 const signInFormBt = document.querySelector("#signInForm > button");
+// new
+let signInUserEmail = document.querySelector("#signInUserEmail");
+let signInUserPassword = document.querySelector("#signInUserPassword");
+let signInEmail = null;
+let signInPassword = null;
 
 // show or hide things
 function showOrHide(obj) {
@@ -52,7 +58,7 @@ signUpFormBt.addEventListener("click", async function (e) {
   signUpMessage.classList.remove("error");
   signUpMessage.classList.remove("success");
 
-  // reset message
+  // reqet message
   signUpMessage.textContent = "";
   const userInputData = {
     name: signUpUserName.value,
@@ -60,26 +66,26 @@ signUpFormBt.addEventListener("click", async function (e) {
     password: signUpUserPassword.value,
   };
 
-  const res = await fetch("/api/user", {
+  const req = await fetch("/api/user", {
     method: "POST",
     headers: { content_type: "application/json" },
     body: JSON.stringify(userInputData),
   });
 
-  const data = await res.json();
-  if (data["error"]) {
-    console.log(data["message"]);
-    signUpMessage.textContent = data["message"];
+  const res = await req.json();
+  if (res["error"]) {
+    console.log(res["message"]);
+    signUpMessage.textContent = res["message"];
     signUpMessage.classList.add("error");
   }
-  if (data["ok"]) {
+  if (res["ok"]) {
     signUpMessage.textContent = "Sign up success";
     signUpMessage.classList.add("success");
     // location.reload();
     // 看要不要過幾秒後自動跳轉?
   }
 
-  // reset input
+  // reqet input
   signUpUserName.value = "";
   signUpUserEmail.value = "";
   signUpUserPassword.value = "";
@@ -88,9 +94,11 @@ signUpFormBt.addEventListener("click", async function (e) {
 
 // 登入打API
 signInFormBt.addEventListener("click", async function (e) {
-  let signInUserEmail = document.querySelector("#signInUserEmail");
-  let signInUserPassword = document.querySelector("#signInUserPassword");
+  // let signInUserEmail = document.querySelector("#signInUserEmail");
+  // let signInUserPassword = document.querySelector("#signInUserPassword");
   let signInMessage = document.querySelector("#signInMessage");
+  signInEmail = signInUserEmail.value;
+  signInPassword = signInUserPassword.value;
 
   e.preventDefault();
   signInMessage.classList.remove("error");
@@ -100,21 +108,47 @@ signInFormBt.addEventListener("click", async function (e) {
     password: signInUserPassword.value,
   };
 
-  const res = await fetch("/api/user", {
+  const req = await fetch("/api/user", {
     method: "PATCH",
     headers: { content_type: "application/json" },
     body: JSON.stringify(userInputData),
   });
 
-  const data = await res.json();
+  const res = await req.json();
 
-  if (data.ok) {
+  if (res.ok) {
+    showOrHide(wrapForWholeSignInBox);
     location.reload();
     // 這邊要讓右上角註冊選單消失換成登出
   }
 
-  if (data.error) {
-    signInMessage.textContent = data.message;
+  if (res.error) {
+    signInMessage.textContent = res.message;
     signInMessage.classList.add("error");
   }
 });
+
+// 確認session打API
+async function checkSession() {
+  const req = await fetch("/api/user", {
+    method: "GET",
+  });
+  const res = await req.json();
+  if (res.data !== null) {
+    showOrHide(signInOrnoAccountBt);
+    showOrHide(signOutBt);
+  }
+}
+
+// 登出打API
+signOutBt.addEventListener("click", async function () {
+  console.log("hi");
+  const req = await fetch("/api/user", {
+    method: "DELETE",
+  });
+  const res = await req.json();
+  console.log(res);
+  location.reload();
+});
+
+checkSession();
