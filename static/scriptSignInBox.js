@@ -76,6 +76,14 @@ gotAccountBt.addEventListener("click", function (e) {
   title.textContent = "登入會員帳號";
   showOrHide(signUp);
   showOrHide(signIn);
+  signInUserEmail.value = "";
+  signInUserPassword.value = "";
+  signUpUserName.value = "";
+  signUpUserEmail.value = "";
+  signUpUserPassword.value = "";
+  signUpMessage.value = "";
+  signUpMessage.textContent = "";
+  title.textContent = "登入會員帳號";
 });
 
 noAccountBt.addEventListener("click", function (e) {
@@ -83,6 +91,14 @@ noAccountBt.addEventListener("click", function (e) {
   title.textContent = "註冊會員帳號";
   showOrHide(signUp);
   showOrHide(signIn);
+  signInUserEmail.value = "";
+  signInUserPassword.value = "";
+  signUpUserName.value = "";
+  signUpUserEmail.value = "";
+  signUpUserPassword.value = "";
+  signUpMessage.value = "";
+  signUpMessage.textContent = "";
+  title.textContent = "登入會員帳號";
 });
 
 // 註冊打API
@@ -150,14 +166,12 @@ signInFormBt.addEventListener("click", async function (e) {
       email: signInUserEmail.value,
       password: signInUserPassword.value,
     };
-    console.log("pressed patch");
 
     const req = await fetch("/api/user", {
       method: "PATCH",
       headers: { content_type: "application/json" },
       body: JSON.stringify(userInputData),
     });
-    console.log(req);
 
     const res = await req.json();
 

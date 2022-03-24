@@ -209,8 +209,8 @@ def userChecker():
 
 
 def signInFunc():
-    contentType = request.headers.get('Content-Type')
-    if contentType == 'application/json':
+    # contentType = request.headers.get('Content-Type')
+    # if contentType == 'application/json':
         json = request.json
         userInputEmail = json['email']
         userInputPassword = json['password']
@@ -233,12 +233,12 @@ def signInFunc():
                 'message': '信箱或密碼不符'
             }
             return error
-    else:
-        error = {
-            'error': True,
-            'message': 'Content-Type not support'
-        }
-        return error, 400
+    # else:
+    #     error = {
+    #         'error': True,
+    #         'message': 'Content-Type not support'
+    #     }
+    #     return error, 400
 
 
 # 註冊相關
@@ -253,8 +253,8 @@ def checkEmailDuplicate(userInputEmail):
 
 
 def signUpFunc():
-    contentType = request.headers.get('Content-Type')
-    if(contentType == 'application/json'):
+    # contentType = request.headers.get('Content-Type')
+    # if(contentType == 'application/json'):
         json = request.json
         userInputName = json['name']
         userInputEmail = json['email']
@@ -281,12 +281,12 @@ def signUpFunc():
                 'message': 'Internal server error'
             }
             return error, 500
-    else:
-        error = {
-            'error': True,
-            'message': 'Content-Type not support'
-        }
-        return error, 400
+    # else:
+    #     error = {
+    #         'error': True,
+    #         'message': 'Content-Type not support'
+    #     }
+    #     return error, 400
 
 
 # 登出
