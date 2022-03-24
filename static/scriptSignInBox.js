@@ -13,11 +13,18 @@ const noAccountBt = document.querySelector("#noAccountBt");
 const closeBt = document.querySelector("#closeBt");
 const signUpFormBt = document.querySelector("#signUpForm > button");
 const signInFormBt = document.querySelector("#signInForm > button");
-// new
-let signInUserEmail = document.querySelector("#signInUserEmail");
-let signInUserPassword = document.querySelector("#signInUserPassword");
+
+// 給檢查登入API用
 let signInEmail = null;
 let signInPassword = null;
+
+// 給各個功能抓value用
+let signInUserEmail = document.querySelector("#signInUserEmail");
+let signInUserPassword = document.querySelector("#signInUserPassword");
+let signUpUserName = document.querySelector("#signUpUserName");
+let signUpUserEmail = document.querySelector("#signUpUserEmail");
+let signUpUserPassword = document.querySelector("#signUpUserPassword");
+let signUpMessage = document.querySelector("#signUpMessage");
 
 // show or hide things
 function showOrHide(obj) {
@@ -32,19 +39,34 @@ function preventScroll(e) {
   return false;
 }
 
+// do message
+function makeMessage(messageArea, message, classStyle) {
+  messageArea.textContent = message;
+  messageArea.classList.add(classStyle);
+}
+
+// 感覺很重複 可以精簡嗎
 signInOrnoAccountBt.addEventListener("click", function (e) {
   e.preventDefault();
   modalBox.addEventListener("wheel", preventScroll, { passive: false });
-  nav.style.backgroundColor = "rgba(0, 0, 0, 0.15)";
   showOrHide(modalBox);
   showOrHide(wrapForWholeSignInBox);
 });
 
+// 關閉按鈕 回復先前的設定
 closeBt.addEventListener("click", function (e) {
   e.preventDefault();
-  nav.style.backgroundColor = "white";
   showOrHide(modalBox);
   showOrHide(wrapForWholeSignInBox);
+  signInUserEmail.value = "";
+  signInUserPassword.value = "";
+  signUpUserName.value = "";
+  signUpUserEmail.value = "";
+  signUpUserPassword.value = "";
+  signUpMessage.value = "";
+  signUpMessage.textContent = "";
+  showOrHide(signUp);
+  showOrHide(signIn);
 });
 
 // 還可以再精簡嗎?
@@ -64,47 +86,59 @@ noAccountBt.addEventListener("click", function (e) {
 
 // 註冊打API
 signUpFormBt.addEventListener("click", async function (e) {
-  let signUpUserName = document.querySelector("#signUpUserName");
-  let signUpUserEmail = document.querySelector("#signUpUserEmail");
-  let signUpUserPassword = document.querySelector("#signUpUserPassword");
-  let signUpMessage = document.querySelector("#signUpMessage");
-
   e.preventDefault();
   signUpMessage.classList.remove("error");
   signUpMessage.classList.remove("success");
 
-  // reqet message
+  // reset message
   signUpMessage.textContent = "";
-  const userInputData = {
-    name: signUpUserName.value,
-    email: signUpUserEmail.value,
-    password: signUpUserPassword.value,
-  };
 
-  const req = await fetch("/api/user", {
-    method: "POST",
-    headers: { content_type: "application/json" },
-    body: JSON.stringify(userInputData),
-  });
+  if (
+    // 先判斷有沒有東西沒填
+    signUpUserName.value === "" ||
+    signUpUserEmail.value === "" ||
+    signUpUserPassword.value === ""
+  ) {
+    makeMessage(signUpMessage, "好像有東西沒填喔:(", "error");
+    // signUpMessage.textContent = "好像有東西沒填喔:(";
+    // signUpMessage.classList.add("error");
+  } else {
+    // 東西都有填就判斷email格式
+    if (signUpUserEmail.value.indexOf("@") === -1) {
+      makeMessage(signUpMessage, "信箱的格式有誤", "error");
+      // signUpMessage.textContent = "信箱的格式有誤";
+      // signUpMessage.classList.add("error");
+    } else {
+      const userInputData = {
+        name: signUpUserName.value,
+        email: signUpUserEmail.value,
+        password: signUpUserPassword.value,
+      };
 
-  const res = await req.json();
-  if (res["error"]) {
-    console.log(res["message"]);
-    signUpMessage.textContent = res["message"];
-    signUpMessage.classList.add("error");
+      const req = await fetch("/api/user", {
+        method: "POST",
+        headers: { content_type: "application/json" },
+        body: JSON.stringify(userInputData),
+      });
+
+      const res = await req.json();
+      if (res["error"]) {
+        makeMessage(signUpMessage, res["message"], "error");
+        // signUpMessage.textContent = res["message"];
+        // signUpMessage.classList.add("error");
+      }
+      if (res["ok"]) {
+        makeMessage(signUpMessage, "Sign up success", "success");
+        // signUpMessage.textContent = "Sign up success";
+        // signUpMessage.classList.add("success");
+        signUpUserName.value = "";
+        signUpUserEmail.value = "";
+        signUpUserPassword.value = "";
+        signUpMessage.value = "";
+        // 看要不要做看看過幾秒後自動跳轉?
+      }
+    }
   }
-  if (res["ok"]) {
-    signUpMessage.textContent = "Sign up success";
-    signUpMessage.classList.add("success");
-    // location.reload();
-    // 看要不要過幾秒後自動跳轉?
-  }
-
-  // reqet input
-  signUpUserName.value = "";
-  signUpUserEmail.value = "";
-  signUpUserPassword.value = "";
-  signUpMessage.value = "";
 });
 
 // 登入打API
@@ -118,28 +152,33 @@ signInFormBt.addEventListener("click", async function (e) {
   e.preventDefault();
   signInMessage.classList.remove("error");
 
-  const userInputData = {
-    email: signInUserEmail.value,
-    password: signInUserPassword.value,
-  };
+  if (signInUserEmail.value === "" || signInUserPassword.value === "") {
+    makeMessage(signInMessage, "請輸入帳號密碼登入", "error");
+  } else {
+    const userInputData = {
+      email: signInUserEmail.value,
+      password: signInUserPassword.value,
+    };
 
-  const req = await fetch("/api/user", {
-    method: "PATCH",
-    headers: { content_type: "application/json" },
-    body: JSON.stringify(userInputData),
-  });
+    const req = await fetch("/api/user", {
+      method: "PATCH",
+      headers: { content_type: "application/json" },
+      body: JSON.stringify(userInputData),
+    });
 
-  const res = await req.json();
+    const res = await req.json();
 
-  if (res.ok) {
-    showOrHide(wrapForWholeSignInBox);
-    location.reload();
-    // 這邊要讓右上角註冊選單消失換成登出
-  }
+    if (res.ok) {
+      showOrHide(wrapForWholeSignInBox);
+      location.reload();
+      // 這邊要讓右上角註冊選單消失換成登出
+    }
 
-  if (res.error) {
-    signInMessage.textContent = res.message;
-    signInMessage.classList.add("error");
+    if (res.error) {
+      makeMessage(signInMessage, res.message, "error");
+      // signInMessage.textContent = res.message;
+      // signInMessage.classList.add("error");
+    }
   }
 });
 

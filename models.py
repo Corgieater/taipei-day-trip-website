@@ -230,7 +230,7 @@ def signInFunc():
         else:
             error = {
                 'error': True,
-                'message': 'Wrong email or password not match'
+                'message': '信箱或密碼不符'
             }
             return error
     else:
@@ -263,7 +263,7 @@ def signUpFunc():
         if checkEmailDuplicate(userInputEmail):
             error = {
                 'error': True,
-                'message': 'Email already exists'
+                'message': '信箱已被使用'
                 }
             return error, 400
 
