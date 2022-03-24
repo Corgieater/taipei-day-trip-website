@@ -101,14 +101,10 @@ signUpFormBt.addEventListener("click", async function (e) {
     signUpUserPassword.value === ""
   ) {
     makeMessage(signUpMessage, "好像有東西沒填喔:(", "error");
-    // signUpMessage.textContent = "好像有東西沒填喔:(";
-    // signUpMessage.classList.add("error");
   } else {
     // 東西都有填就判斷email格式
     if (signUpUserEmail.value.indexOf("@") === -1) {
       makeMessage(signUpMessage, "信箱的格式有誤", "error");
-      // signUpMessage.textContent = "信箱的格式有誤";
-      // signUpMessage.classList.add("error");
     } else {
       const userInputData = {
         name: signUpUserName.value,
@@ -125,13 +121,9 @@ signUpFormBt.addEventListener("click", async function (e) {
       const res = await req.json();
       if (res["error"]) {
         makeMessage(signUpMessage, res["message"], "error");
-        // signUpMessage.textContent = res["message"];
-        // signUpMessage.classList.add("error");
       }
       if (res["ok"]) {
         makeMessage(signUpMessage, "Sign up success", "success");
-        // signUpMessage.textContent = "Sign up success";
-        // signUpMessage.classList.add("success");
         signUpUserName.value = "";
         signUpUserEmail.value = "";
         signUpUserPassword.value = "";
@@ -144,8 +136,6 @@ signUpFormBt.addEventListener("click", async function (e) {
 
 // 登入打API
 signInFormBt.addEventListener("click", async function (e) {
-  // let signInUserEmail = document.querySelector("#signInUserEmail");
-  // let signInUserPassword = document.querySelector("#signInUserPassword");
   let signInMessage = document.querySelector("#signInMessage");
   signInEmail = signInUserEmail.value;
   signInPassword = signInUserPassword.value;
@@ -160,12 +150,14 @@ signInFormBt.addEventListener("click", async function (e) {
       email: signInUserEmail.value,
       password: signInUserPassword.value,
     };
+    console.log("pressed patch");
 
     const req = await fetch("/api/user", {
       method: "PATCH",
       headers: { content_type: "application/json" },
       body: JSON.stringify(userInputData),
     });
+    console.log(req);
 
     const res = await req.json();
 
@@ -177,8 +169,6 @@ signInFormBt.addEventListener("click", async function (e) {
 
     if (res.error) {
       makeMessage(signInMessage, res.message, "error");
-      // signInMessage.textContent = res.message;
-      // signInMessage.classList.add("error");
     }
   }
 });

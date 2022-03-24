@@ -106,6 +106,7 @@ rightArrow.addEventListener("click", async function (e) {
   let imgShouldChanged = document.querySelector(
     "#attractionImgContainer > img"
   );
+  console.log(imgShouldChanged);
   imgShouldChanged.src = currentImgs[rightClickCount];
   leftClickCount = rightClickCount;
 
