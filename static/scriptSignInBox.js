@@ -26,7 +26,6 @@ let signUpUserName = document.querySelector("#signUpUserName");
 let signUpUserEmail = document.querySelector("#signUpUserEmail");
 let signUpUserPassword = document.querySelector("#signUpUserPassword");
 let signUpMessage = document.querySelector("#signUpMessage");
-console.log(signInMessage);
 
 // show or hide things
 function showOrHide(obj) {
@@ -51,7 +50,7 @@ function makeMessage(messageArea, message, classStyle) {
 function returnDefaultValue(messageReset) {
   signInUserEmail.value = "";
   signInUserPassword.value = "";
-  signInMessage.value = "";
+  signInMessage.textContent = "";
   signUpUserName.value = "";
   signUpUserEmail.value = "";
   signUpUserPassword.value = "";
@@ -74,14 +73,6 @@ closeBt.addEventListener("click", function (e) {
   showOrHide(modalBox);
   showOrHide(wrapForWholeSignInBox);
   returnDefaultValue("登入會員帳號");
-  // signInUserEmail.value = "";
-  // signInUserPassword.value = "";
-  // signUpUserName.value = "";
-  // signUpUserEmail.value = "";
-  // signUpUserPassword.value = "";
-  // signUpMessage.value = "";
-  // signUpMessage.textContent = "";
-  // title.textContent = "登入會員帳號";
   signUp.classList.add("hide");
   signIn.classList.remove("hide");
 });
@@ -94,14 +85,6 @@ gotAccountBt.addEventListener("click", function (e) {
   showOrHide(signUp);
   showOrHide(signIn);
   returnDefaultValue("登入會員帳號");
-  // signInUserEmail.value = "";
-  // signInUserPassword.value = "";
-  // signUpUserName.value = "";
-  // signUpUserEmail.value = "";
-  // signUpUserPassword.value = "";
-  // signUpMessage.value = "";
-  // signUpMessage.textContent = "";
-  // title.textContent = "登入會員帳號";
 });
 
 // 沒帳號按鈕
@@ -111,16 +94,9 @@ noAccountBt.addEventListener("click", function (e) {
   showOrHide(signUp);
   showOrHide(signIn);
   returnDefaultValue("註冊會員帳號");
-  // signInUserEmail.value = "";
-  // signInUserPassword.value = "";
-  // signUpUserName.value = "";
-  // signUpUserEmail.value = "";
-  // signUpUserPassword.value = "";
-  // signUpMessage.value = "";
-  // signUpMessage.textContent = "";
-  // title.textContent = "登入會員帳號";
 });
 
+// ***出問題的功能***
 // 註冊打API
 signUpFormBt.addEventListener("click", async function (e) {
   e.preventDefault();
@@ -170,6 +146,7 @@ signUpFormBt.addEventListener("click", async function (e) {
   }
 });
 
+// ***出問題的功能***
 // 登入打API
 signInFormBt.addEventListener("click", async function (e) {
   let signInMessage = document.querySelector("#signInMessage");
@@ -211,6 +188,8 @@ signInFormBt.addEventListener("click", async function (e) {
   }
 });
 
+// 在EC2上沒辦法測，
+// 目前在local測，在不切google模擬裝置的情況下登入，然後切去goole模擬器在各個頁面切來切去，目前看起來沒問題
 // 確認session打API
 async function checkSession() {
   const req = await fetch("/api/user", {
@@ -224,6 +203,7 @@ async function checkSession() {
   }
 }
 
+// 用上面的方法測看起來沒問題
 // 登出打API
 signOutBt.addEventListener("click", async function () {
   console.log("hi");
