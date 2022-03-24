@@ -5,6 +5,7 @@ from dotenv import load_dotenv, find_dotenv
 import os
 import mysql.connector
 from mysql.connector import pooling
+import json
 
 modelsBlueprint = Blueprint(
     'models',
@@ -209,36 +210,29 @@ def userChecker():
 
 
 def signInFunc():
-    # contentType = request.headers.get('Content-Type')
-    # if contentType == 'application/json':
-        json = request.json
-        userInputEmail = json['email']
-        userInputPassword = json['password']
-        result = checkUserInfoThenReturnInfo(userInputEmail, userInputPassword)
+    data = request.json
+    print(data)
+    userInputEmail = data['email']
+    userInputPassword = data['password']
+    result = checkUserInfoThenReturnInfo(userInputEmail, userInputPassword)
 
-        if result:
-            data = {
-                'ok': True
-            }
-            # session在這
-            session['userID'] = result[0]
-            session['userName'] = result[1]
-            session['userEmail'] = json['email']
-            print(session['userID'], session['userName'], session['userEmail'])
+    if result:
+        data = {
+            'ok': True
+        }
+        # session在這
+        session['userID'] = result[0]
+        session['userName'] = result[1]
+        session['userEmail'] = userInputEmail
+        print(session['userID'], session['userName'], session['userEmail'])
 
-            return data
-        else:
-            error = {
-                'error': True,
-                'message': '信箱或密碼不符'
-            }
-            return error
-    # else:
-    #     error = {
-    #         'error': True,
-    #         'message': 'Content-Type not support'
-    #     }
-    #     return error, 400
+        return data
+    else:
+        error = {
+            'error': True,
+            'message': '信箱或密碼不符'
+        }
+        return error
 
 
 # 註冊相關
@@ -253,40 +247,33 @@ def checkEmailDuplicate(userInputEmail):
 
 
 def signUpFunc():
-    # contentType = request.headers.get('Content-Type')
-    # if(contentType == 'application/json'):
-        json = request.json
-        userInputName = json['name']
-        userInputEmail = json['email']
-        userInputPassword = flask_bcrypt.generate_password_hash(json['password'])
+    data = request.get_json()
+    print(data)
+    userInputName = data['name']
+    userInputEmail = data['email']
+    userInputPassword = flask_bcrypt.generate_password_hash(data['password'])
 
-        if checkEmailDuplicate(userInputEmail):
-            error = {
-                'error': True,
-                'message': '信箱已被使用'
-                }
-            return error, 400
-
-        try:
-            createUser = ('INSERT INTO taipeitripuserinfo VALUES(%s, %s, %s, %s)')
-            cursor.execute(createUser, (None, userInputName, userInputEmail, userInputPassword))
-            connection.commit()
-            data = {
-                    'ok': True
-                }
-            return data
-        except:
-            error = {
-                'error': True,
-                'message': 'Internal server error'
+    if checkEmailDuplicate(userInputEmail):
+        error = {
+            'error': True,
+            'message': '信箱已被使用'
             }
-            return error, 500
-    # else:
-    #     error = {
-    #         'error': True,
-    #         'message': 'Content-Type not support'
-    #     }
-    #     return error, 400
+        return error, 400
+
+    try:
+        createUser = ('INSERT INTO taipeitripuserinfo VALUES(%s, %s, %s, %s)')
+        cursor.execute(createUser, (None, userInputName, userInputEmail, userInputPassword))
+        connection.commit()
+        data = {
+                'ok': True
+            }
+        return data
+    except:
+        error = {
+            'error': True,
+            'message': 'Internal server error'
+        }
+        return error, 500
 
 
 # 登出

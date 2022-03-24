@@ -52,7 +52,7 @@ def signUp():
 
 
 @app.route("/api/user", methods=['PATCH'])
-def signin():
+def signIn():
 	return signInFunc()
 
 

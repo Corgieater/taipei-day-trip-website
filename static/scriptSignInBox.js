@@ -21,10 +21,12 @@ let signInPassword = null;
 // 給各個功能抓value用
 let signInUserEmail = document.querySelector("#signInUserEmail");
 let signInUserPassword = document.querySelector("#signInUserPassword");
+let signInMessage = document.querySelector("#signInMessage");
 let signUpUserName = document.querySelector("#signUpUserName");
 let signUpUserEmail = document.querySelector("#signUpUserEmail");
 let signUpUserPassword = document.querySelector("#signUpUserPassword");
 let signUpMessage = document.querySelector("#signUpMessage");
+console.log(signInMessage);
 
 // show or hide things
 function showOrHide(obj) {
@@ -45,6 +47,19 @@ function makeMessage(messageArea, message, classStyle) {
   messageArea.classList.add(classStyle);
 }
 
+// 清空欄位變換title
+function returnDefaultValue(messageReset) {
+  signInUserEmail.value = "";
+  signInUserPassword.value = "";
+  signInMessage.value = "";
+  signUpUserName.value = "";
+  signUpUserEmail.value = "";
+  signUpUserPassword.value = "";
+  signUpMessage.value = "";
+  signUpMessage.textContent = "";
+  title.textContent = messageReset;
+}
+
 // 感覺很重複 可以精簡嗎
 signInOrnoAccountBt.addEventListener("click", function (e) {
   e.preventDefault();
@@ -58,47 +73,52 @@ closeBt.addEventListener("click", function (e) {
   e.preventDefault();
   showOrHide(modalBox);
   showOrHide(wrapForWholeSignInBox);
-  signInUserEmail.value = "";
-  signInUserPassword.value = "";
-  signUpUserName.value = "";
-  signUpUserEmail.value = "";
-  signUpUserPassword.value = "";
-  signUpMessage.value = "";
-  signUpMessage.textContent = "";
-  title.textContent = "登入會員帳號";
+  returnDefaultValue("登入會員帳號");
+  // signInUserEmail.value = "";
+  // signInUserPassword.value = "";
+  // signUpUserName.value = "";
+  // signUpUserEmail.value = "";
+  // signUpUserPassword.value = "";
+  // signUpMessage.value = "";
+  // signUpMessage.textContent = "";
+  // title.textContent = "登入會員帳號";
   signUp.classList.add("hide");
   signIn.classList.remove("hide");
 });
 
+// 有帳號按鈕
 // 還可以再精簡嗎?
 gotAccountBt.addEventListener("click", function (e) {
   e.preventDefault();
   title.textContent = "登入會員帳號";
   showOrHide(signUp);
   showOrHide(signIn);
-  signInUserEmail.value = "";
-  signInUserPassword.value = "";
-  signUpUserName.value = "";
-  signUpUserEmail.value = "";
-  signUpUserPassword.value = "";
-  signUpMessage.value = "";
-  signUpMessage.textContent = "";
-  title.textContent = "登入會員帳號";
+  returnDefaultValue("登入會員帳號");
+  // signInUserEmail.value = "";
+  // signInUserPassword.value = "";
+  // signUpUserName.value = "";
+  // signUpUserEmail.value = "";
+  // signUpUserPassword.value = "";
+  // signUpMessage.value = "";
+  // signUpMessage.textContent = "";
+  // title.textContent = "登入會員帳號";
 });
 
+// 沒帳號按鈕
 noAccountBt.addEventListener("click", function (e) {
   e.preventDefault();
   title.textContent = "註冊會員帳號";
   showOrHide(signUp);
   showOrHide(signIn);
-  signInUserEmail.value = "";
-  signInUserPassword.value = "";
-  signUpUserName.value = "";
-  signUpUserEmail.value = "";
-  signUpUserPassword.value = "";
-  signUpMessage.value = "";
-  signUpMessage.textContent = "";
-  title.textContent = "登入會員帳號";
+  returnDefaultValue("註冊會員帳號");
+  // signInUserEmail.value = "";
+  // signInUserPassword.value = "";
+  // signUpUserName.value = "";
+  // signUpUserEmail.value = "";
+  // signUpUserPassword.value = "";
+  // signUpMessage.value = "";
+  // signUpMessage.textContent = "";
+  // title.textContent = "登入會員帳號";
 });
 
 // 註冊打API
@@ -155,17 +175,19 @@ signInFormBt.addEventListener("click", async function (e) {
   let signInMessage = document.querySelector("#signInMessage");
   signInEmail = signInUserEmail.value;
   signInPassword = signInUserPassword.value;
+  console.log(signInEmail, signInPassword);
 
   e.preventDefault();
   signInMessage.classList.remove("error");
 
-  if (signInUserEmail.value === "" || signInUserPassword.value === "") {
+  if (signInEmail === "" || signInPassword === "") {
     makeMessage(signInMessage, "請輸入帳號密碼登入", "error");
   } else {
     const userInputData = {
-      email: signInUserEmail.value,
-      password: signInUserPassword.value,
+      email: signInEmail,
+      password: signInPassword,
     };
+    console.log(userInputData);
 
     const req = await fetch("/api/user", {
       method: "PATCH",
@@ -174,10 +196,12 @@ signInFormBt.addEventListener("click", async function (e) {
     });
 
     const res = await req.json();
+    console.log(res);
 
     if (res.ok) {
       showOrHide(wrapForWholeSignInBox);
-      location.reload();
+      // location.reload();
+      // 為了觀察暫時註解掉
       // 這邊要讓右上角註冊選單消失換成登出
     }
 
