@@ -65,8 +65,9 @@ closeBt.addEventListener("click", function (e) {
   signUpUserPassword.value = "";
   signUpMessage.value = "";
   signUpMessage.textContent = "";
-  showOrHide(signUp);
-  showOrHide(signIn);
+  title.textContent = "登入會員帳號";
+  signUp.classList.add("hide");
+  signIn.classList.remove("hide");
 });
 
 // 還可以再精簡嗎?
