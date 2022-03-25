@@ -209,31 +209,74 @@ def userChecker():
 
 # ********從這裡開始出問題******
 def signInFunc():
-    data = request.json
-    print(data)
-    # 這邊如果純粹用local測也不改裝置的話就會正常運作
-    # 如果改裝置或是放到EC2上，data會變成None，但前端那邊確實有傳過來
-    userInputEmail = data['email']
-    userInputPassword = data['password']
-    result = checkUserInfoThenReturnInfo(userInputEmail, userInputPassword)
-
-    if result:
-        data = {
+    # 純粹測試用
+    req = request.get_data()
+    print(req)
+    if req:
+        return {
             'ok': True
         }
-        # session在這
-        session['userID'] = result[0]
-        session['userName'] = result[1]
-        session['userEmail'] = userInputEmail
-        print(session['userID'], session['userName'], session['userEmail'])
+    # req = request.get_json()
+    # print(req)
+    # print(type(req))
+    #
+    # userInputEmail = req['email']
+    # userInputPassword = req['password']
+    # result = checkUserInfoThenReturnInfo(userInputEmail, userInputPassword)
+    #
+    # if result:
+    #     data = {
+    #         'ok': True
+    #     }
+    #     # session在這
+    #     session['userID'] = result[0]
+    #     session['userName'] = result[1]
+    #     session['userEmail'] = userInputEmail
+    #     print(session['userID'], session['userName'], session['userEmail'])
+    #
+    #     return data
+    # else:
+    #     error = {
+    #         'error': True,
+    #         'message': '信箱或密碼不符'
+    #     }
+    #     return error
 
-        return data
-    else:
-        error = {
-            'error': True,
-            'message': '信箱或密碼不符'
-        }
-        return error
+    # 只要有轉json都不行
+    # req = request.json
+    #
+    # if req:
+    #     res = {
+    #         'ok': True
+    #     }
+    #     return res
+
+
+    # data = request.get_json()
+    # print(data)
+    # # 這邊如果純粹用local測也不改裝置的話就會正常運作
+    # # 如果改裝置或是放到EC2上，data會變成None，但前端那邊確實有傳過來
+    # userInputEmail = data['email']
+    # userInputPassword = data['password']
+    # result = checkUserInfoThenReturnInfo(userInputEmail, userInputPassword)
+    #
+    # if result:
+    #     data = {
+    #         'ok': True
+    #     }
+    #     # session在這
+    #     session['userID'] = result[0]
+    #     session['userName'] = result[1]
+    #     session['userEmail'] = userInputEmail
+    #     print(session['userID'], session['userName'], session['userEmail'])
+    #
+    #     return data
+    # else:
+    #     error = {
+    #         'error': True,
+    #         'message': '信箱或密碼不符'
+    #     }
+    #     return error
 
 
 # 註冊相關

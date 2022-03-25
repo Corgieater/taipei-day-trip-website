@@ -166,7 +166,7 @@ signInFormBt.addEventListener("click", async function (e) {
     };
     console.log(userInputData);
 
-    const req = await fetch("/api/user", {
+    const req = await fetch("api/user", {
       method: "PATCH",
       headers: { content_type: "application/json" },
       body: JSON.stringify(userInputData),
