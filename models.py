@@ -164,7 +164,7 @@ def searchAttractionById(attractionId):
     finally:
         return attraction
 
-
+# -----登入功能------
 # 登入相關小功能
 def checkUserInfoThenReturnInfo(email, password):
     searchUserInfo = ("SELECT userPassword, Id, userName FROM taipeitripuserinfo WHERE userEmail = %s")
@@ -188,7 +188,6 @@ def userChecker():
     userId = session.get('userID')
     userName = session.get('userName')
     userEmail = session.get('userEmail')
-    print('checker called')
 
     if userId is None:
         data = {
@@ -206,13 +205,8 @@ def userChecker():
         }
         return data
 
-
-# ********從這裡開始出問題******
 def signInFunc():
     data = request.get_json()
-    print(data)
-    # 這邊如果純粹用local測也不改裝置的話就會正常運作
-    # 如果改裝置或是放到EC2上，data會變成None，但前端那邊確實有傳過來
     userInputEmail = data['email']
     userInputPassword = data['password']
     result = checkUserInfoThenReturnInfo(userInputEmail, userInputPassword)
@@ -248,9 +242,6 @@ def checkEmailDuplicate(userInputEmail):
 
 def signUpFunc():
     data = request.json
-    print(data)
-    # 這邊如果純粹用local測也不改裝置的話就會正常運作
-    # 如果改裝置或是放到EC2上，data會變成None，但前端那邊確實有傳過來
     userInputName = data['name']
     userInputEmail = data['email']
     userInputPassword = flask_bcrypt.generate_password_hash(data['password'])
