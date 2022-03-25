@@ -210,9 +210,9 @@ def userChecker():
 # ********從這裡開始出問題******
 def signInFunc():
     # 純粹測試用
-    req = request.get_data()
+    req = request
     print(req)
-    if req:
+    if req != None:
         return {
             'ok': True
         }
