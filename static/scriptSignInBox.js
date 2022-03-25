@@ -97,7 +97,7 @@ noAccountBt.addEventListener("click", function (e) {
 });
 
 // ***出問題的功能***
-// 註冊打API
+// 註冊打API 作業過了再寫一些比較複雜的判斷
 signUpFormBt.addEventListener("click", async function (e) {
   e.preventDefault();
   signUpMessage.classList.remove("error");
@@ -197,13 +197,11 @@ async function checkSession() {
   }
 }
 
-signOutBt.addEventListener("click", async function () {
-  console.log("hi");
-  const req = await fetch("/api/user", {
+signOutBt.addEventListener("click", async function (e) {
+  e.preventDefault()
+  await fetch("/api/user", {
     method: "DELETE",
   });
-  const res = await req.json();
-  console.log(res);
   location.reload();
 });
 
