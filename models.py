@@ -1,3 +1,4 @@
+import flask_bcrypt
 from flask import *
 import math
 from dotenv import load_dotenv, find_dotenv
@@ -61,7 +62,6 @@ def searchAttractions():
         searchLength = searchLength[0]
 
         totalPages = math.ceil(searchLength/12)
-        print(totalPages)
         # determine pages, really important
         if int(userInputPage) < totalPages:
             if int(userInputPage) == totalPages-1:
@@ -163,3 +163,124 @@ def searchAttractionById(attractionId):
         }
     finally:
         return attraction
+
+# -----登入功能------
+# 登入相關小功能
+def checkUserInfoThenReturnInfo(email, password):
+    searchUserInfo = ("SELECT userPassword, Id, userName FROM taipeitripuserinfo WHERE userEmail = %s")
+    cursor.execute(searchUserInfo, (email,))
+    userInfo = cursor.fetchone()
+
+    if userInfo is None:
+        return False
+
+    if userInfo:
+        hashedPassword = userInfo[0]
+        checkPassword = flask_bcrypt.check_password_hash(hashedPassword, password)
+        if checkPassword:
+            userId = userInfo[1]
+            userName = userInfo[2]
+            return [userId, userName]
+
+
+def userChecker():
+    # 是抓session不是抓cookies:(
+    userId = session.get('userID')
+    userName = session.get('userName')
+    userEmail = session.get('userEmail')
+
+    if userId is None:
+        data = {
+            'data': None
+        }
+        return data
+
+    else:
+        data = {
+            "data": {
+                "id": userId,
+                "name": userName,
+                "email": userEmail
+            }
+        }
+        return data
+
+def signInFunc():
+    try:
+        data = request.get_json()
+        userInputEmail = data['email']
+        userInputPassword = data['password']
+        result = checkUserInfoThenReturnInfo(userInputEmail, userInputPassword)
+
+        if result:
+            data = {
+                'ok': True
+            }
+            # session在這
+            session['userID'] = result[0]
+            session['userName'] = result[1]
+            session['userEmail'] = userInputEmail
+            print(session['userID'], session['userName'], session['userEmail'])
+
+            return data, 200
+        else:
+            error = {
+                'error': True,
+                'message': '信箱或密碼不符'
+            }
+            return error
+    except:
+        error = {
+            'error': True,
+            'message': 'Internal server error'
+        }
+        return error, 500
+
+
+# 註冊相關
+
+def checkEmailDuplicate(userInputEmail):
+    searchEmail = ("SELECT userName FROM taipeitripuserinfo WHERE userEmail = %s")
+    cursor.execute(searchEmail, (userInputEmail,))
+    result = cursor.fetchone()
+    if result:
+        return True
+
+
+def signUpFunc():
+    data = request.json
+    userInputName = data['name']
+    userInputEmail = data['email']
+    userInputPassword = flask_bcrypt.generate_password_hash(data['password'])
+
+    if checkEmailDuplicate(userInputEmail):
+        error = {
+            'error': True,
+            'message': '信箱已被使用'
+            }
+        return error, 400
+
+    try:
+        createUser = ('INSERT INTO taipeitripuserinfo VALUES(%s, %s, %s, %s)')
+        cursor.execute(createUser, (None, userInputName, userInputEmail, userInputPassword))
+        connection.commit()
+        data = {
+                'ok': True
+            }
+        return data, 200
+    except:
+        error = {
+            'error': True,
+            'message': 'Internal server error'
+        }
+        return error, 500
+
+
+# 登出
+
+def signOutFunc():
+    session.clear()
+    data = {
+        'ok': True
+    }
+    return data

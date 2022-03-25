@@ -1,6 +1,5 @@
 "user strict";
-const searchBt = document.querySelector("#searchBt");
-const signBt = document.querySelector("#signBt");
+// const searchBt = document.querySelector("#searchBt");
 let userInput = "";
 let currentPage = 0;
 // after are for lazy loading preventing multiple fetch per page
@@ -8,8 +7,6 @@ let resStatus = null;
 const endPoint = document.querySelector("#endPoint");
 let urlIsLoading = false;
 // 判斷url是不是在fetching
-
-let attractionId = null;
 
 // 製作li放圖片
 function makeLi(picAddress, name, mrt, category, picId) {
@@ -152,46 +149,5 @@ if (searchBt) {
     } else {
       deleteLis();
     }
-  });
-}
-
-// 這邊會一直貼signinBox所以看是要按一次清一次還是改成本來隱藏按下去出現:(
-if (signBt) {
-  signBt.addEventListener("click", function () {
-    const header = document.querySelector("header");
-    const div = document.createElement("div");
-    div.classList.add("signBox");
-    const formContent = `
-    <div class='signHead'>
-    <h3>登入會員帳號</h3>
-    <a href="#">
-    <img
-    src="static/imgs/icon_close.png"
-    alt="close icon"/>
-    </a>
-    </div>
-    <form>
-    <input
-                type="text"
-                placeholder="輸入電子郵件"
-                name="userEmail"
-                id="userEmail"
-              />
-    <input
-              type="text"
-              placeholder="輸入密碼"
-              name="userPassword"
-              id="userPassword"
-            />
-    <button id="signInBt">
-                登入帳戶
-    </button>
-    <a href="#">
-    還沒有帳戶？點此註冊
-    </a>
-    </form>
-    `;
-    div.innerHTML = formContent;
-    header.append(div);
   });
 }

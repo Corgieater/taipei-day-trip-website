@@ -1,0 +1,107 @@
+/* ---public--- */
+html {
+  box-sizing: border-box;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+.wrap,
+nav > div {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 1200px;
+}
+
+body {
+  font-size: 16px;
+  /* padding-top: 54px; */
+  /* make fixed nav not cover the content */
+}
+
+body * {
+  font-family: "Noto Sans TC";
+}
+
+/* buttons collection*/
+.searchBar button,
+.signInBox form > button,
+.attractionArea button {
+  background-color: #448899;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  box-shadow: none;
+  border: none;
+  padding: 10px;
+}
+
+img {
+  object-fit: cover;
+  /* prevent images blur */
+}
+
+a {
+  text-decoration: none;
+  color: #666666;
+}
+
+.h1Title {
+  color: #448899;
+}
+
+.main {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* display flex collection */
+nav > div,
+.signInAndReserveBox,
+header,
+.searchBar form,
+.signInBox form,
+.description {
+  display: flex;
+}
+
+/* display flex column */
+.signInBox form {
+  flex-direction: column;
+}
+
+nav h1,
+.searchBar h2,
+.searchBar input,
+.signInBox h3,
+.attractionName h2,
+.pTitles {
+  font-weight: bold;
+}
+
+.showCase,
+nav,
+.showCase li,
+header,
+.signInBox,
+.attractionImgContainer,
+.attractionArea,
+.wrapForNameAndArea,
+.circleBtGroup {
+  box-sizing: border-box;
+}
+
+.hide {
+  display: none;
+}
+
+.modalBox {
+  position: fixed;
+  top: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.15);
+}

@@ -7,7 +7,7 @@
         alt="arrow"
       />
     </a>
-    <img src="" alt="pic" />
+    <img class="fadeIn" src="" alt="pic" />
     <a class="rightArrow" id="rightArrow" href="#">
       <img
         src="{{url_for('static', filename='imgs/btn_rightArrow.png')}}"
@@ -32,7 +32,12 @@
       <p>以此景點為中心的一日行程，帶您探索城市角落故事</p>
       <form action="#">
         <label for="bookingDate" class="pTitles">選擇日期 : </label>
-        <input type="date" name="bookingDate" id="bookingDate" />
+        <input
+          type="date"
+          name="bookingDate"
+          id="bookingDate"
+          class="bookingDate"
+        />
         <br />
         <div class="radioGroup">
           <div>
