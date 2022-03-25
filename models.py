@@ -206,28 +206,35 @@ def userChecker():
         return data
 
 def signInFunc():
-    data = request.get_json()
-    userInputEmail = data['email']
-    userInputPassword = data['password']
-    result = checkUserInfoThenReturnInfo(userInputEmail, userInputPassword)
+    try:
+        data = request.get_json()
+        userInputEmail = data['email']
+        userInputPassword = data['password']
+        result = checkUserInfoThenReturnInfo(userInputEmail, userInputPassword)
 
-    if result:
-        data = {
-            'ok': True
-        }
-        # session在這
-        session['userID'] = result[0]
-        session['userName'] = result[1]
-        session['userEmail'] = userInputEmail
-        print(session['userID'], session['userName'], session['userEmail'])
+        if result:
+            data = {
+                'ok': True
+            }
+            # session在這
+            session['userID'] = result[0]
+            session['userName'] = result[1]
+            session['userEmail'] = userInputEmail
+            print(session['userID'], session['userName'], session['userEmail'])
 
-        return data
-    else:
+            return data, 200
+        else:
+            error = {
+                'error': True,
+                'message': '信箱或密碼不符'
+            }
+            return error
+    except:
         error = {
             'error': True,
-            'message': '信箱或密碼不符'
+            'message': 'Internal server error'
         }
-        return error
+        return error, 500
 
 
 # 註冊相關
@@ -260,7 +267,7 @@ def signUpFunc():
         data = {
                 'ok': True
             }
-        return data
+        return data, 200
     except:
         error = {
             'error': True,

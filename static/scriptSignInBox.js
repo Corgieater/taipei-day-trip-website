@@ -151,7 +151,6 @@ signInFormBt.addEventListener("click", async function (e) {
   let signInMessage = document.querySelector("#signInMessage");
   signInEmail = signInUserEmail.value;
   signInPassword = signInUserPassword.value;
-  console.log(signInEmail, signInPassword);
 
   e.preventDefault();
   signInMessage.classList.remove("error");
@@ -163,7 +162,6 @@ signInFormBt.addEventListener("click", async function (e) {
       email: signInEmail,
       password: signInPassword,
     };
-    console.log(userInputData);
 
     const req = await fetch("/api/user", {
       method: "PATCH",
@@ -172,7 +170,6 @@ signInFormBt.addEventListener("click", async function (e) {
     });
 
     const res = await req.json();
-    console.log(res);
 
     if (res.ok) {
       showOrHide(wrapForWholeSignInBox);

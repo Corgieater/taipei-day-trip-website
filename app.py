@@ -33,18 +33,6 @@ def searchingById(attractionId):
 	# dynamic route for fuck sake
 	return searchAttractionById(attractionId)
 
-# @app.route("/api/user", methods=['GET'])
-# def returnUserInfo(){
-# # 	check if user and return user
-# # {
-# 	#   "data": {
-# 	#     "id": 1,
-# 	#     "name": "彭彭彭",
-# 	#     "email": "ply@ply.com"
-# 	#   }
-# 	# }
-# }
-
 
 @app.route("/api/user", methods=['POST'])
 def signUp():
