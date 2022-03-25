@@ -3,7 +3,7 @@
 const wrapForWholeSignInBox = document.querySelector("#wrapForWholeSignInBox");
 let modalBox = document.querySelector(".modalBox");
 let nav = document.querySelector("nav");
-const signInOrnoAccountBt = document.querySelector("#signInOrnoAccountBt");
+const signInOrSignUpBt = document.querySelector("#signInOrSignUpBt");
 const signOutBt = document.querySelector("#signOutBt");
 const signIn = document.querySelector(".signIn");
 const signUp = document.querySelector(".signUp");
@@ -60,7 +60,7 @@ function returnDefaultValue(messageReset) {
 }
 
 // 感覺很重複 可以精簡嗎
-signInOrnoAccountBt.addEventListener("click", function (e) {
+signInOrSignUpBt.addEventListener("click", function (e) {
   e.preventDefault();
   modalBox.addEventListener("wheel", preventScroll, { passive: false });
   showOrHide(modalBox);
@@ -126,7 +126,7 @@ signUpFormBt.addEventListener("click", async function (e) {
 
       const req = await fetch("/api/user", {
         method: "POST",
-        headers: { content_type: "application/json" },
+        headers: {'content-type': "application/json" },
         body: JSON.stringify(userInputData),
       });
 
@@ -146,7 +146,6 @@ signUpFormBt.addEventListener("click", async function (e) {
   }
 });
 
-// ***出問題的功能***
 // 登入打API
 signInFormBt.addEventListener("click", async function (e) {
   let signInMessage = document.querySelector("#signInMessage");
@@ -160,15 +159,15 @@ signInFormBt.addEventListener("click", async function (e) {
   if (signInEmail === "" || signInPassword === "") {
     makeMessage(signInMessage, "請輸入帳號密碼登入", "error");
   } else {
-    const userInputData = {
+    let userInputData = {
       email: signInEmail,
       password: signInPassword,
     };
     console.log(userInputData);
 
-    const req = await fetch("api/user", {
+    const req = await fetch("/api/user", {
       method: "PATCH",
-      headers: { content_type: "application/json" },
+      headers: {'content-type': "application/json"},
       body: JSON.stringify(userInputData),
     });
 
@@ -177,9 +176,7 @@ signInFormBt.addEventListener("click", async function (e) {
 
     if (res.ok) {
       showOrHide(wrapForWholeSignInBox);
-      // location.reload();
-      // 為了觀察暫時註解掉
-      // 這邊要讓右上角註冊選單消失換成登出
+      location.reload();
     }
 
     if (res.error) {
@@ -188,9 +185,6 @@ signInFormBt.addEventListener("click", async function (e) {
   }
 });
 
-// 在EC2上沒辦法測，
-// 目前在local測，在不切google模擬裝置的情況下登入，然後切去goole模擬器在各個頁面切來切去，目前看起來沒問題
-// 確認session打API
 async function checkSession() {
   const req = await fetch("/api/user", {
     method: "GET",
@@ -199,12 +193,10 @@ async function checkSession() {
   if (res.data !== null) {
     let li = document.querySelector(".signInAndReserveBox .hide");
     showOrHide(li);
-    showOrHide(signInOrnoAccountBt);
+    showOrHide(signInOrSignUpBt);
   }
 }
 
-// 用上面的方法測看起來沒問題
-// 登出打API
 signOutBt.addEventListener("click", async function () {
   console.log("hi");
   const req = await fetch("/api/user", {
