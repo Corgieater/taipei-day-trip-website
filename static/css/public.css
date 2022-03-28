@@ -26,9 +26,11 @@ body * {
 }
 
 /* buttons collection*/
-.searchBar button,
+/* .searchBar button,
 .signInBox form > button,
-.attractionArea button {
+.attractionArea button,
+.bookingBodyWrap > form > button  */
+button {
   background-color: #448899;
   border-radius: 5px;
   color: white;
@@ -97,11 +99,207 @@ header,
   display: none;
 }
 
-.modalBox {
+.mask {
   position: fixed;
   top: 0;
   z-index: 2;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* ---nav--- */
+nav {
+  position: fixed;
+  z-index: 1;
+  background-color: white;
+  height: 54px;
+  top: 0;
+  /* for staying on top */
+  width: 100%;
+  border-color: #e8e8e8;
+  border-style: solid;
+  border-width: 0 0 1px 0;
+  margin: 0 auto;
+}
+
+nav > div {
+  justify-content: space-between;
+}
+
+nav h1 {
+  color: #448899;
+  font-size: 30px;
+  padding: 10px 0;
+}
+
+nav ul > li > a {
+  line-height: 3.5;
+  font-weight: normal;
+}
+
+.signInAndReserveBox li {
+  padding: 0px 20px 0 0;
+}
+
+/* ---header--- */
+header {
+  height: 320px;
+  margin: 54px 0 50px 0;
+  /* width: 100%; */
+}
+
+/* 登入/註冊區 */
+.wrapForWholeSignInBox {
+  position: fixed;
+  z-index: 3;
+  width: 340px;
+  left: 41.5%;
+  top: 80px;
+  animation: move 1s ease-in-out;
+}
+
+@keyframes move {
+  from {
+    top: 0;
+  }
+  to {
+    top: 80px;
+  }
+}
+
+.signINBoxTopColor {
+  border-radius: 5px 5px 0 0;
+  height: 10px;
+  width: 100%;
+  background: linear-gradient(270deg, #337788 0%, #66aabb);
+  position: absolute;
+}
+
+.signInBox {
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid #cccccc;
+  background-color: white;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.signInHead {
+  position: relative;
+  margin: 10px 0 15px 0;
+}
+
+.closeBt {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.signInHead h3 {
+  color: #666666;
+  font-weight: bold;
+  font-size: 27px;
+  text-align: center;
+}
+
+.signInBody form > input {
+  margin-bottom: 10px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.signInBody > div > div {
+  margin: 15px 0 0 0;
+  text-align: center;
+  /* for bottom message and link */
+}
+
+.message {
+  font-size: 18px;
+}
+
+.error {
+  color: brown;
+  font-weight: bold;
+}
+
+.success {
+  color: cadetblue;
+  font-weight: bold;
+}
+
+/* ---footer--- */
+footer {
+  height: 90px;
+  background-color: #757575;
+  margin-top: 55px;
+}
+footer p {
+  text-align: center;
+  line-height: 5.5;
+  color: white;
+}
+
+/* rwd*/
+@media screen and (min-width: 360px) and (max-width: 600px) {
+  nav {
+    min-width: 360px;
+    max-width: 600px;
+    padding: 10px;
+    left: 0;
+  }
+
+  .signInAndReserveBox,
+  nav h1 {
+    padding: 0;
+    margin: 0;
+  }
+  .signInAndReserveBox li {
+    padding: 10px;
+    margin-bottom: 15px;
+  }
+
+  nav ul > li > a {
+    line-height: 1;
+    font-size: 16px;
+  }
+
+  header {
+    height: 280px;
+  }
+
+  /* 360-600 rwd for wrapForWholeSignInBox */
+  .wrapForWholeSignInBox {
+    position: fixed;
+    left: 10px;
+    top: 80px;
+  }
+}
+
+@media screen and (min-width: 600px) and (max-width: 1400px) {
+  nav {
+    padding: 10px 100px;
+    justify-content: space-between;
+  }
+
+  .signInAndReserveBox,
+  nav h1 {
+    padding: 0;
+    margin: 0;
+  }
+
+  .signInAndReserveBox li {
+    padding: 10px;
+  }
+
+  nav ul > li > a {
+    line-height: 1;
+    font-size: 16px;
+  }
+
+  header {
+    height: 280px;
+  }
 }
