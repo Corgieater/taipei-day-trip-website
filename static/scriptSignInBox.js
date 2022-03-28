@@ -1,7 +1,7 @@
 "use strict";
 
 const wrapForWholeSignInBox = document.querySelector("#wrapForWholeSignInBox");
-let modalBox = document.querySelector(".modalBox");
+let mask = document.querySelector(".mask");
 let nav = document.querySelector("nav");
 const signInOrSignUpBt = document.querySelector("#signInOrSignUpBt");
 const signOutBt = document.querySelector("#signOutBt");
@@ -62,15 +62,15 @@ function returnDefaultValue(messageReset) {
 // 感覺很重複 可以精簡嗎
 signInOrSignUpBt.addEventListener("click", function (e) {
   e.preventDefault();
-  modalBox.addEventListener("wheel", preventScroll, { passive: false });
-  showOrHide(modalBox);
+  mask.addEventListener("wheel", preventScroll, { passive: false });
+  showOrHide(mask);
   showOrHide(wrapForWholeSignInBox);
 });
 
 // 關閉按鈕 回復先前的設定
 closeBt.addEventListener("click", function (e) {
   e.preventDefault();
-  showOrHide(modalBox);
+  showOrHide(mask);
   showOrHide(wrapForWholeSignInBox);
   returnDefaultValue("登入會員帳號");
   signUp.classList.add("hide");
@@ -96,7 +96,6 @@ noAccountBt.addEventListener("click", function (e) {
   returnDefaultValue("註冊會員帳號");
 });
 
-// ***出問題的功能***
 // 註冊打API 作業過了再寫一些比較複雜的判斷
 signUpFormBt.addEventListener("click", async function (e) {
   e.preventDefault();
@@ -126,7 +125,7 @@ signUpFormBt.addEventListener("click", async function (e) {
 
       const req = await fetch("/api/user", {
         method: "POST",
-        headers: {'content-type': "application/json" },
+        headers: { "content-type": "application/json" },
         body: JSON.stringify(userInputData),
       });
 
@@ -165,14 +164,14 @@ signInFormBt.addEventListener("click", async function (e) {
 
     const req = await fetch("/api/user", {
       method: "PATCH",
-      headers: {'content-type': "application/json"},
+      headers: { "content-type": "application/json" },
       body: JSON.stringify(userInputData),
     });
 
     const res = await req.json();
-
     if (res.ok) {
       showOrHide(wrapForWholeSignInBox);
+
       location.reload();
     }
 
@@ -195,7 +194,7 @@ async function checkSession() {
 }
 
 signOutBt.addEventListener("click", async function (e) {
-  e.preventDefault()
+  e.preventDefault();
   await fetch("/api/user", {
     method: "DELETE",
   });

@@ -1,0 +1,92 @@
+{% extends 'base.html' %} {% block link %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{url_for('static', filename='css/bookingStyle.css')}}"
+/>
+{% endblock %} {% block header %} {% endblock %} {% block main%}
+<header>
+  <div class="bookingTitle">
+    <h2 class="bold">
+      您好，<span id="bookingName">使用者</span>，待預定的行程如下：
+    </h2>
+  </div>
+  <div class="bookingDescriptionAndImgWrap">
+    <div class="bookingImgWrap"><img id="bookingImg" src="" alt="pic" /></div>
+    <div class="bookingDescription">
+      <h3 class="bold cyan" id="bookingTitle">
+        台北一日遊：<span id="bookingAttractionName">地點</span>
+      </h3>
+
+      <p class="bold">
+        日期：<span class="normal" id="bookingDate">2021-04-23</span>
+      </p>
+      <p class="bold">
+        時間：<span class="normal" id="bookingTime">早上9點到下午4點</span>
+      </p>
+      <p class="bold">
+        費用：<span class="normal" id="bookingFee">新台幣 2000 元</span>
+      </p>
+      <p class="bold">
+        地點：<span class="normal" id="bookingArea"
+          >臺北市 大安區忠孝東路4段</span
+        >
+      </p>
+      <a class="bookingDelete" id="bookingDelete" href="#">
+        <img
+          src="{{url_for('static',filename='imgs/icon_delete.png')}}"
+          alt="delete"
+        />
+      </a>
+    </div>
+  </div>
+</header>
+<main>
+  <div class="bookingTitle">
+    <h2 class="bold">您的聯絡資訊</h2>
+  </div>
+  <div class="bookingBodyWrap">
+    <form action="#">
+      <div class="contactInfo">
+        <label for="contactName">聯絡姓名：</label>
+        <input type="text" name="contactName" id="contactName" />
+        <br />
+        <label for="contactEmail">聯絡信箱：</label>
+        <input type="Email" name="contactEmail" id="contactEmail" />
+        <br />
+        <label for="contactPhone">聯絡電話：</label>
+        <input type="tel" name="contactPhone" id="contactPhone" />
+        <p class="bold">
+          請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。
+        </p>
+      </div>
+      <div class="paymentInfo">
+        <label for="card">卡片號碼：</label>
+        <input
+          type="password"
+          name="paymentCard"
+          id="paymentCard"
+          placeholder="**** **** **** ****"
+        />
+        <!-- 感覺要達到信用卡卡號每幾個字後有空格應該要用JS控制 打四個字就強迫插一個space之類的-->
+        <br />
+        <label for="cardExpire">過期時間：</label>
+        <!-- 下面分類對嗎? -->
+        <input
+          type="datetime"
+          name="cardExpire"
+          id="cardExpire"
+          placeholder="MM / YY"
+        />
+        <br />
+        <label for="cardCvv">驗證密碼：</label>
+        <input type="password" name="cardCvv" id="cardCvv" placeholder="CVV" />
+      </div>
+      <div class="moneyAndButton">
+        <h2 class="bold">總價：新台幣 <span>2000</span> 元</h2>
+        <button>確認訂購並付款</button>
+      </div>
+    </form>
+  </div>
+</main>
+{% endblock %} {% block messagePlace%} {% endblock %}
