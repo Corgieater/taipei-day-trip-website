@@ -59,6 +59,17 @@ function returnDefaultValue(messageReset) {
   title.textContent = messageReset;
 }
 
+// 確認登入與否
+async function checkSignIn() {
+  const req = await fetch("/api/user", {
+    method: "GET",
+  });
+  const res = await req.json();
+  if (res.data !== null) {
+    return true;
+  }
+}
+
 // 感覺很重複 可以精簡嗎
 signInOrSignUpBt.addEventListener("click", function (e) {
   e.preventDefault();
@@ -181,12 +192,10 @@ signInFormBt.addEventListener("click", async function (e) {
   }
 });
 
-async function checkSession() {
-  const req = await fetch("/api/user", {
-    method: "GET",
-  });
-  const res = await req.json();
-  if (res.data !== null) {
+// 有登入的話要秀登出鈕而不是登入註冊鈕
+async function showOrHideSignInAndReserveBox() {
+  const signIn = await checkSignIn();
+  if (signIn) {
     let li = document.querySelector(".signInAndReserveBox .hide");
     showOrHide(li);
     showOrHide(signInOrSignUpBt);
@@ -201,4 +210,4 @@ signOutBt.addEventListener("click", async function (e) {
   location.reload();
 });
 
-checkSession();
+showOrHideSignInAndReserveBox();

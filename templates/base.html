@@ -89,7 +89,7 @@
       <div>
         <h1><a class="h1Title" href="/">台北一日遊</a></h1>
         <ul class="signInAndReserveBox">
-          <li><a href="#">預定行程</a></li>
+          <li><a id="navReserveBt" href="#">預定行程</a></li>
           <li><a id="signInOrSignUpBt" href="#">登入/註冊</a></li>
           <li class="hide"><a id="signOutBt" href="#">登出</a></li>
         </ul>
@@ -115,6 +115,7 @@
 
     <!-- scripts -->
     <script src="{{ url_for('static', filename='scriptSignInBox.js') }}"></script>
+    <script src="{{ url_for('static', filename='scriptReservation.js') }}"></script>
     {% block script %} {% endblock %}
   </body>
 </html>

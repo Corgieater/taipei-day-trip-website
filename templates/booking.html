@@ -89,4 +89,6 @@
     </form>
   </div>
 </main>
-{% endblock %} {% block messagePlace%} {% endblock %}
+{% endblock %} {% block messagePlace%} {% endblock %} {% block script %}
+<script src="{{url_for('static', filename='scriptBooking.js')}}"></script>
+{%endblock %}
