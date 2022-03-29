@@ -59,7 +59,7 @@ function returnDefaultValue(messageReset) {
   title.textContent = messageReset;
 }
 
-// 確認登入與否
+// 確認登入與否然後回傳使用者名稱
 async function checkSignIn() {
   const req = await fetch("/api/user", {
     method: "GET",

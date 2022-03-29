@@ -189,7 +189,7 @@ def checkUserInfoThenReturnInfo(email, password):
 
 
 def userChecker():
-    token = request.cookies.get('jwt')
+    token = request.cookies.get('userInfo')
     try:
         data = jwt.decode(token, secretKey, algorithms=["HS256"])
     except:
@@ -220,7 +220,7 @@ def signInFunc():
             }
             res = make_response(data, 200)
             # upon equal to return data, 200
-            res.set_cookie('jwt', token, datetime.timedelta(minutes=30))
+            res.set_cookie('userInfo', token, datetime.timedelta(minutes=30))
             # herreeeeeeee
             return res
         else:
@@ -280,31 +280,71 @@ def signUpFunc():
 
 def signOutFunc():
     res = Response('delete cookies')
-    res.set_cookie(key='jwt', value='', expires=0)
+    res.set_cookie(key='userInfo', value='', expires=0)
     return res
 
 
 # 取得預定行程
+def checkReservation():
+    token = request.cookies.get('userReservation')
+    print(token)
+
+    # 如果使用者根本沒預定就連try都不用了
+    if token is None:
+        data = {
+            'data': None
+        }
+        return data
+
+    try:
+        userReservation = jwt.decode(token, secretKey, algorithms=["HS256"])
+        print(userReservation)
+
+        if userReservation:
+            attractionId = userReservation['attractionId']
+            attraction = searchAttractionById(attractionId)['data']
+            attractionName = attraction['name']
+            attractionAddress = attraction['address']
+            attractionImg = attraction['images'][0]
+            data = {
+                'data': {
+                    'attraction': {
+                        'id': attractionId,
+                        'name': attractionName,
+                        'address': attractionAddress,
+                        'image': attractionImg
+                    },
+                    'date': userReservation['date'],
+                    'time': userReservation['time'],
+                    'price': userReservation['price']
+                }
+            }
+
+    except:
+        print('except')
+        data = {
+            'error': True,
+            'message': '請先登入'
+        }
+
+    finally:
+        return data
 
 # 預定行程
 def doReservation():
-    token = request.cookies.get('jwt')
+    token = request.cookies.get('userInfo')
     try:
         data = jwt.decode(token, secretKey, algorithms=["HS256"])
-        print(data)
         if data:
-            print('data')
             userReservation = request.json
-            print(userReservation)
             jwtEncoded = jwt.encode(userReservation, secretKey, algorithm="HS256")
-            print(jwtEncoded)
 
             resp = {
                 "ok": True
             }
             print(resp)
             res = make_response(resp)
-            res.set_cookie('reservation', jwtEncoded)
+            res.set_cookie('userReservation', jwtEncoded)
 
             return res
 
