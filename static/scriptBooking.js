@@ -14,6 +14,7 @@ let bookingDescriptionAndImgWrap = document.querySelector(
 );
 let body = document.querySelector(".body");
 let messagePlace = document.querySelector("#messagePlace");
+const bookingDelete = document.querySelector("#bookingDelete");
 
 // 從登入資訊拿使用者姓名然後改頁面資訊
 async function getUserInfoAndShow() {
@@ -70,8 +71,19 @@ async function getReservationStatus() {
     }
     bookingFee.textContent = res.data["price"];
     bookingArea.textContent = res.data["attraction"]["address"];
-    footerWrap.style.height = "90px;";
   }
 }
 
+// 刪除預定
+bookingDelete.addEventListener("click", async function (e) {
+  e.preventDefault();
+  const req = await fetch("/api/booking", {
+    method: "DELETE",
+  });
+  location.reload();
+});
+
 getReservationStatus();
+
+// 不知道有沒有辦法在沒有登入時，選完日期時間後登入，登入完選的選項還在，或是直接進到預約後的頁面
+// 或許是這邊就要率先存cookie?不確定，通過作業再來看看

@@ -38,6 +38,24 @@ function changeChosenCircle(clickCount) {
   circleGroup[clickCount].classList.add("chosenCircle");
 }
 
+// 禁止選擇當天或過去的日期
+function forbidDates() {
+  let dateForm = document.querySelector("#bookingDate");
+  let today = new Date();
+  let dd = today.getDate() + 1;
+  let mm = today.getMonth() + 1;
+  let yyyy = today.getFullYear();
+
+  if (dd < 10) {
+    dd = "0" + dd;
+  }
+  if (mm < 10) {
+    mm = "0" + mm;
+  }
+  today = yyyy + "-" + mm + "-" + dd;
+  dateForm.setAttribute("min", today);
+}
+
 async function fetchAttractionById() {
   const attraction = await fetchData();
   const imgs = document.querySelector("#attractionImgContainer > img");
@@ -119,17 +137,12 @@ rightArrow.addEventListener("click", async function (e) {
 // 預定按鈕
 attractionReserveBt.addEventListener("click", async function (e) {
   e.preventDefault();
-  // let attractionId = currentId;
   let date = document.querySelector("#bookingDate").value;
   let time = document.querySelector(
     'input[name="bookingTimeFrame"]:checked'
   ).value;
   let price = document.querySelector("#money").textContent;
   const signIn = await checkSignIn();
-
-  // sudo
-  // 點按鈕 => 回傳沒登入就跳登入視窗
-  // 登入之後再點按鈕 => 確認已經登入不要再跳視窗了 => 拿到資料跳轉
 
   const data = {
     attractionId: currentId,
@@ -150,9 +163,17 @@ attractionReserveBt.addEventListener("click", async function (e) {
       const res = await req.json();
       if (res.ok) {
         window.location.replace("/booking");
-      } else {
+      } else if (res.error && res.message == "請先登入") {
         // 預防有人沒登入還是跑進來 雖然我也不知道要怎麼做到
         activeSignInBoxAndMask();
+      } else if (res.error && res.message == "請勿預定過去或當日的日期") {
+        // 這邊太重複
+        let message = document.querySelector(
+          ".attractionArea > form >.message"
+        );
+        message.innerHTML = res.message;
+        message.classList.remove("hide");
+        message.classList.add("error");
       }
     } else {
       // 如果日期沒選就沒有進一步動作
@@ -168,36 +189,7 @@ attractionReserveBt.addEventListener("click", async function (e) {
   } else {
     activeSignInBoxAndMask();
   }
-
-  // if (date == "") {
-  //   // 如果日期沒選就沒有進一步動作
-  //   let message = document.querySelector(".attractionArea > form >.message");
-  //   let dateInput = document.querySelector("#bookingDate");
-  //   let bookingDateLabel = document.querySelector("#bookingDateLabel");
-  //   message.classList.remove("hide");
-  //   message.classList.add("error");
-  //   message.innerHTML = "請選擇日期";
-  //   dateInput.classList.add("redBorder");
-  //   bookingDateLabel.classList.add("error");
-  // } else {
-  //   const data = {
-  //     attractionId: currentId,
-  //     date: date,
-  //     time: time,
-  //     price: price,
-  //   };
-  //   const req = await fetch("/api/booking", {
-  //     method: "POST",
-  //     headers: { "content-type": "application/json" },
-  //     body: JSON.stringify(data),
-  //   });
-  //   const res = await req.json();
-  //   if (res.error && res.message === "請先登入") {
-  //     mask.addEventListener("wheel", preventScroll, { passive: false });
-  //     showOrHide(mask);
-  //     showOrHide(wrapForWholeSignInBox);
-  //   }
-  // }
 });
 
 fetchAttractionById();
+forbidDates();

@@ -17,7 +17,7 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 app.register_blueprint(modelsBlueprint)
 from models import searchAttractions, searchAttractionById, signUpFunc, \
-	signInFunc, userChecker, signOutFunc, doReservation, checkReservation
+	signInFunc, userChecker, signOutFunc, doReservation, checkReservation, removeReservation
 
 # Pages
 @app.route("/")
@@ -65,9 +65,9 @@ def getReservation():
 def makeReservation():
 	return doReservation()
 
-# @app.route("/api/booking", methods=['DELETE])
-# def deleteReservation():
-# 	return removeReservation()
+@app.route("/api/booking", methods=['DELETE'])
+def deleteReservation():
+	return removeReservation()
 
 # ----don't touch-----
 
