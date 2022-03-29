@@ -96,7 +96,7 @@ header,
 }
 
 .hide {
-  display: none;
+  display: none !important;
 }
 
 .mask {
@@ -232,7 +232,7 @@ header {
 
 /* ---footer--- */
 footer {
-  height: 90px;
+  /* height: 90px; */
   background-color: #757575;
   margin-top: 55px;
 }

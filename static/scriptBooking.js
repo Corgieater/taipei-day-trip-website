@@ -9,6 +9,11 @@ const bookingFee = document.querySelector("#bookingFee");
 const bookingArea = document.querySelector("#bookingArea");
 const contactName = document.querySelector("#contactName");
 const contactEmail = document.querySelector("#contactEmail");
+let bookingDescriptionAndImgWrap = document.querySelector(
+  ".bookingDescriptionAndImgWrap"
+);
+let body = document.querySelector(".body");
+let messagePlace = document.querySelector("#messagePlace");
 
 // 從登入資訊拿使用者姓名然後改頁面資訊
 async function getUserInfoAndShow() {
@@ -26,6 +31,9 @@ async function getUserInfoAndShow() {
 
 // 檢驗使用者有沒有預約的行程
 async function getReservationStatus() {
+  // footer延伸與否用
+  let footerWrap = document.querySelector(".footerWrap");
+  let footer = document.querySelector("footer");
   // 拿使用者資料
   const userInfo = await getUserInfoAndShow();
   console.log(userInfo);
@@ -34,23 +42,36 @@ async function getReservationStatus() {
     method: "GET",
   });
   const res = await req.json();
-  console.log(res.data);
-  // 如果這邊資料是null要把有資料的大頁藏起來
-  // 讓footer延伸然後做另一個回覆
+  console.log(res);
   bookingName.textContent = userInfo["userName"];
-  contactName.value = userInfo["userName"];
-  contactEmail.value = userInfo["userEmail"];
-  bookingImg.src = res.data["attraction"]["image"];
-  bookingAttractionName.textContent = res.data["attraction"]["name"];
-  bookingDate.textContent = res.data["date"];
-  const time = res.data["time"];
-  if (time === "morning") {
-    bookingTime.textContent = "早上9點到下午4點";
+
+  if (res.data === null) {
+    // 使用者沒預定就把footer拉高秀沒有預定的字樣
+    bookingDescriptionAndImgWrap.classList.add("hide");
+    body.classList.add("hide");
+    let p = document.createElement("p");
+    p.textContent = "目前沒有任何待預定的行程";
+    messagePlace.append(p);
+    footerWrap.classList.add("footerWrapHeight");
+    footer.classList.add("footerStrech");
   } else {
-    bookingTime.textContent = "下午5點到晚上9點";
+    // 有預定footer正常秀資料
+    footer.classList.add("footerNormal");
+    contactName.value = userInfo["userName"];
+    contactEmail.value = userInfo["userEmail"];
+    bookingImg.src = res.data["attraction"]["image"];
+    bookingAttractionName.textContent = res.data["attraction"]["name"];
+    bookingDate.textContent = res.data["date"];
+    const time = res.data["time"];
+    if (time === "morning") {
+      bookingTime.textContent = "早上9點到下午4點";
+    } else {
+      bookingTime.textContent = "下午5點到晚上9點";
+    }
+    bookingFee.textContent = res.data["price"];
+    bookingArea.textContent = res.data["attraction"]["address"];
+    footerWrap.style.height = "90px;";
   }
-  bookingFee.textContent = res.data["price"];
-  bookingArea.textContent = res.data["attraction"]["address"];
 }
 
 getReservationStatus();

@@ -148,10 +148,12 @@ attractionReserveBt.addEventListener("click", async function (e) {
       });
 
       const res = await req.json();
-      if (res.error && res.message === "請先登入") {
+      if (res.ok) {
+        window.location.replace("/booking");
+      } else {
+        // 預防有人沒登入還是跑進來 雖然我也不知道要怎麼做到
         activeSignInBoxAndMask();
       }
-      console.log(res);
     } else {
       // 如果日期沒選就沒有進一步動作
       let message = document.querySelector(".attractionArea > form >.message");

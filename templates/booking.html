@@ -5,33 +5,23 @@
   href="{{url_for('static', filename='css/bookingStyle.css')}}"
 />
 {% endblock %} {% block header %} {% endblock %} {% block main%}
-<header>
+<div class="head">
   <div class="bookingTitle">
     <h2 class="bold">
-      您好，<span id="bookingName">使用者</span>，待預定的行程如下：
+      您好，<span id="bookingName"></span>，待預定的行程如下：
     </h2>
   </div>
   <div class="bookingDescriptionAndImgWrap">
     <div class="bookingImgWrap"><img id="bookingImg" src="" alt="pic" /></div>
     <div class="bookingDescription">
       <h3 class="bold cyan" id="bookingTitle">
-        台北一日遊：<span id="bookingAttractionName">地點</span>
+        台北一日遊：<span id="bookingAttractionName"></span>
       </h3>
 
-      <p class="bold">
-        日期：<span class="normal" id="bookingDate">2021-04-23</span>
-      </p>
-      <p class="bold">
-        時間：<span class="normal" id="bookingTime">早上9點到下午4點</span>
-      </p>
-      <p class="bold">
-        費用：<span class="normal" id="bookingFee">新台幣 2000 元</span>
-      </p>
-      <p class="bold">
-        地點：<span class="normal" id="bookingArea"
-          >臺北市 大安區忠孝東路4段</span
-        >
-      </p>
+      <p class="bold">日期：<span class="normal" id="bookingDate"></span></p>
+      <p class="bold">時間：<span class="normal" id="bookingTime"></span></p>
+      <p class="bold">費用：<span class="normal" id="bookingFee"></span></p>
+      <p class="bold">地點：<span class="normal" id="bookingArea"></span></p>
       <a class="bookingDelete" id="bookingDelete" href="#">
         <img
           src="{{url_for('static',filename='imgs/icon_delete.png')}}"
@@ -40,8 +30,8 @@
       </a>
     </div>
   </div>
-</header>
-<main>
+</div class="head">
+<div class="body">
   <div class="bookingTitle">
     <h2 class="bold">您的聯絡資訊</h2>
   </div>
@@ -88,7 +78,15 @@
       </div>
     </form>
   </div>
-</main>
-{% endblock %} {% block messagePlace%} {% endblock %} {% block script %}
+</div>
+
+<!-- <div class="footerWrap">
+  <footer>
+      <p>COPYRIGHT &copy 2021台北一日遊</p>
+  </footer>
+  </div> -->
+
+{% endblock %}
+ {% block script %}
 <script src="{{url_for('static', filename='scriptBooking.js')}}"></script>
 {%endblock %}

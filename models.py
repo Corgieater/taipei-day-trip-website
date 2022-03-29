@@ -288,9 +288,9 @@ def signOutFunc():
 def checkReservation():
     token = request.cookies.get('userReservation')
     print(token)
-
     # 如果使用者根本沒預定就連try都不用了
     if token is None:
+        print('on')
         data = {
             'data': None
         }

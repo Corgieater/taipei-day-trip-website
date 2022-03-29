@@ -107,11 +107,13 @@
     <!-- 看有沒有要顯示message的地方 -->
     {% block messagePlace%}
     <div id="messagePlace"></div>
+    {% endblock%} {% block footer %}
+    <div class="footerWrap">
+      <footer>
+        <p>COPYRIGHT &copy 2021台北一日遊</p>
+      </footer>
+    </div>
     {% endblock%}
-
-    <footer>
-      <p>COPYRIGHT &copy 2021台北一日遊</p>
-    </footer>
 
     <!-- scripts -->
     <script src="{{ url_for('static', filename='scriptSignInBox.js') }}"></script>
