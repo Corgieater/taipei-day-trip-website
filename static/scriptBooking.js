@@ -22,7 +22,6 @@ async function getUserInfoAndShow() {
     method: "GET",
   });
   const res = await req.json();
-  console.log(res["userName"]);
   // 查不到使用者姓名直接丟回首頁
   if (res["userName"] === undefined) {
     window.location.replace("/");
@@ -37,13 +36,11 @@ async function getReservationStatus() {
   let footer = document.querySelector("footer");
   // 拿使用者資料
   const userInfo = await getUserInfoAndShow();
-  console.log(userInfo);
   // 拿使用者預定資料
   const req = await fetch("/api/booking", {
     method: "GET",
   });
   const res = await req.json();
-  console.log(res);
   bookingName.textContent = userInfo["userName"];
 
   if (res.data === null) {

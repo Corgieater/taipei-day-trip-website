@@ -1,6 +1,11 @@
 @import url("cssReset.css");
 @import url("public.css");
 
+.main {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
 /* header */
 .headerBackground {
   background: url("../imgs/welcome1.png"),

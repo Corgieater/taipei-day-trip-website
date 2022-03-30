@@ -48,12 +48,14 @@ input {
   font-weight: normal;
   display: flex;
   flex-direction: column;
-  width: 1200px;
+  max-width: 1200px;
+  min-width: 360px;
   margin: 54px auto 0 auto;
 }
 
 .bookingTitle {
-  width: 600px;
+  max-width: 600px;
+  min-width: 200px;
   margin: 46px 0 35px 8%;
 }
 
@@ -90,7 +92,7 @@ input {
   line-height: 2;
 }
 
-.bookingDescription a {
+.bookingDelete {
   position: absolute;
   top: 0;
   right: 0;
@@ -162,3 +164,48 @@ input {
   height: 90px;
   bottom: 0;
 }
+
+/* rwd 360-600*/
+@media screen and (min-width: 360px) and (max-width: 600px) {
+  .bookingTitle {
+    margin: 46px 35px 10px 10px;
+  }
+
+  .bookingDescriptionAndImgWrap {
+    flex-direction: column;
+  }
+
+  .bookingImgWrap {
+    width: 340px;
+  }
+
+  .bookingImgWrap {
+    margin: 30px auto;
+  }
+
+  .bookingDescription {
+    margin: 60px 0;
+    max-width: 600px;
+    min-width: 360px;
+    padding: 10px;
+  }
+
+  .bookingDelete {
+    top: 100%;
+    padding: 10px;
+  }
+
+  .contactInfo,
+  .paymentInfo {
+    padding: 10px;
+  }
+
+  input {
+    width: 200px;
+  }
+
+  .moneyAndButton {
+    width: 50%;
+    margin: 43px 0 0 auto;
+  }
+} ;

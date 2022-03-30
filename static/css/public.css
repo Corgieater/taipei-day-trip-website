@@ -17,19 +17,12 @@ nav > div {
 
 body {
   font-size: 16px;
-  /* padding-top: 54px; */
-  /* make fixed nav not cover the content */
 }
 
 body * {
   font-family: "Noto Sans TC";
 }
 
-/* buttons collection*/
-/* .searchBar button,
-.signInBox form > button,
-.attractionArea button,
-.bookingBodyWrap > form > button  */
 button {
   background-color: #448899;
   border-radius: 5px;
@@ -52,11 +45,6 @@ a {
 
 .h1Title {
   color: #448899;
-}
-
-.main {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
 }
 
 /* display flex collection */
@@ -146,7 +134,6 @@ nav ul > li > a {
 header {
   height: 320px;
   margin: 54px 0 50px 0;
-  /* width: 100%; */
 }
 
 /* 登入/註冊區 */
@@ -232,7 +219,6 @@ header {
 
 /* ---footer--- */
 footer {
-  /* height: 90px; */
   background-color: #757575;
   margin-top: 55px;
 }
