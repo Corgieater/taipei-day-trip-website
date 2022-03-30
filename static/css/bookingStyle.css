@@ -134,7 +134,8 @@ input {
 
 /* messagePlace */
 #messagePlace {
-  width: 600px;
+  max-width: 600px;
+  min-width: 200px;
   margin: 0 24%;
 }
 
@@ -206,6 +207,11 @@ input {
 
   .moneyAndButton {
     width: 50%;
-    margin: 43px 0 0 auto;
+    margin: 43px 10px 0 auto;
+  }
+
+  /* if no reservation */
+  #messagePlace {
+    margin: 0 10px;
   }
 } ;
