@@ -5,6 +5,10 @@ from dotenv import load_dotenv, find_dotenv
 import os
 import mysql.connector
 from mysql.connector import pooling
+import jwt
+from datetime import datetime, timedelta
+# import datetime
+
 
 modelsBlueprint = Blueprint(
     'models',
@@ -19,6 +23,8 @@ MYSQL_DB_NAME = os.getenv('MYSQL_DB_NAME')
 MYSQL_HOST = os.getenv('MYSQL_HOST')
 MYSQL_USER = os.getenv('MYSQL_USER')
 MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD')
+
+secretKey = os.getenv('SECRET_KEY')
 
 pool = mysql.connector.pooling.MySQLConnectionPool(
     pool_name='myPool',
@@ -164,6 +170,7 @@ def searchAttractionById(attractionId):
     finally:
         return attraction
 
+
 # -----登入功能------
 # 登入相關小功能
 def checkUserInfoThenReturnInfo(email, password):
@@ -184,26 +191,16 @@ def checkUserInfoThenReturnInfo(email, password):
 
 
 def userChecker():
-    # 是抓session不是抓cookies:(
-    userId = session.get('userID')
-    userName = session.get('userName')
-    userEmail = session.get('userEmail')
-
-    if userId is None:
-        data = {
+    token = request.cookies.get('userInfo')
+    try:
+        data = jwt.decode(token, secretKey, algorithms=["HS256"])
+    except:
+        return {
             'data': None
         }
-        return data
 
-    else:
-        data = {
-            "data": {
-                "id": userId,
-                "name": userName,
-                "email": userEmail
-            }
-        }
-        return data
+    return jsonify(data)
+
 
 def signInFunc():
     try:
@@ -213,16 +210,20 @@ def signInFunc():
         result = checkUserInfoThenReturnInfo(userInputEmail, userInputPassword)
 
         if result:
+            dataDict = {
+                'userID': result[0],
+                'userName': result[1],
+                'userEmail': userInputEmail
+            }
+            token = jwt.encode(dataDict, secretKey, algorithm='HS256')
+
             data = {
                 'ok': True
             }
-            # session在這
-            session['userID'] = result[0]
-            session['userName'] = result[1]
-            session['userEmail'] = userInputEmail
-            print(session['userID'], session['userName'], session['userEmail'])
-
-            return data, 200
+            res = make_response(data, 200)
+            # upon equal to return data, 200
+            res.set_cookie('userInfo', token, timedelta(days=31))
+            return res
         else:
             error = {
                 'error': True,
@@ -279,8 +280,110 @@ def signUpFunc():
 # 登出
 
 def signOutFunc():
-    session.clear()
     data = {
         'ok': True
     }
-    return data
+    res = Response(data)
+    res.set_cookie(key='userInfo', value='', expires=0)
+    return res
+
+
+# 取得預定行程
+def checkReservation():
+    token = request.cookies.get('userReservation')
+    # 如果使用者根本沒預定就連try都不用了
+    if token is None:
+        data = {
+            'data': None
+        }
+        return data
+
+    try:
+        userReservation = jwt.decode(token, secretKey, algorithms=["HS256"])
+
+        if userReservation:
+            attractionId = userReservation['attractionId']
+            attraction = searchAttractionById(attractionId)['data']
+            attractionName = attraction['name']
+            attractionAddress = attraction['address']
+            attractionImg = attraction['images'][0]
+            data = {
+                'data': {
+                    'attraction': {
+                        'id': attractionId,
+                        'name': attractionName,
+                        'address': attractionAddress,
+                        'image': attractionImg
+                    },
+                    'date': userReservation['date'],
+                    'time': userReservation['time'],
+                    'price': userReservation['price']
+                }
+            }
+
+    except:
+        data = {
+            'error': True,
+            'message': '請先登入'
+        }
+
+    finally:
+        return data
+
+# 預定行程
+
+def doReservation():
+    token = request.cookies.get('userInfo')
+    try:
+        userInfo = jwt.decode(token, secretKey, algorithms=["HS256"])
+        if userInfo:
+            userReservation = request.json
+            jwtEncoded = jwt.encode(userReservation, secretKey, algorithm="HS256")
+            userReservationDate = userReservation['date']
+            today = str(datetime.today().date())
+            print(userReservationDate, today)
+            # 轉str因為datetime這功能回的東西type不是str
+            if userReservationDate <= today:
+                data = {
+                    'error': True,
+                    'message': '請勿預定過去或當日的日期'
+                }
+                return data, 400
+
+            data = {
+                "ok": True
+            }
+            res = make_response(data)
+            res.set_cookie('userReservation', jwtEncoded, timedelta(days=31))
+
+            return res, 200
+
+
+    except :
+        data = {
+            'error': True,
+            'message': '請先登入'
+        }
+        return data, 403
+
+
+
+
+# 刪除預定
+def removeReservation():
+    token = request.cookies.get('userInfo')
+    userInfo = jwt.decode(token, secretKey, algorithms=["HS256"])
+    if userInfo:
+        data = {
+            'ok': True
+        }
+        res = make_response(data)
+        res.set_cookie('userReservation', value='', expires=0)
+        return res, 200
+    else:
+        data = {
+            'error': True,
+            'message': '要登出的話要先登入喔:('
+        }
+        return data, 403
+

@@ -17,13 +17,14 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 app.register_blueprint(modelsBlueprint)
 from models import searchAttractions, searchAttractionById, signUpFunc, \
-	signInFunc, userChecker, signOutFunc
+	signInFunc, userChecker, signOutFunc, doReservation, checkReservation, removeReservation
 
 # Pages
 @app.route("/")
 def index():
 	return render_template("index.html")
 
+# -----景點資訊相關-----
 @app.route("/api/attractions")
 def searching():
 	return searchAttractions()
@@ -34,6 +35,7 @@ def searchingById(attractionId):
 	return searchAttractionById(attractionId)
 
 
+# -----登入登出相關-----
 @app.route("/api/user", methods=['POST'])
 def signUp():
 	return signUpFunc()
@@ -54,6 +56,20 @@ def signOut():
 	return signOutFunc()
 
 
+# -----預定相關-----
+@app.route("/api/booking", methods=['GET'])
+def getReservation():
+	return checkReservation()
+
+@app.route("/api/booking", methods=['POST'])
+def makeReservation():
+	return doReservation()
+
+@app.route("/api/booking", methods=['DELETE'])
+def deleteReservation():
+	return removeReservation()
+
+# ----don't touch-----
 
 @app.route("/attraction/<id>")
 def attraction(id):

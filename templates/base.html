@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>台北一日遊</title>
+    {% block link%} {% endblock %}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- 通用 -->
+    <div class="hide mask"></div>
+    <!-- 登入/註冊 -->
+    <div class="hide wrapForWholeSignInBox" id="wrapForWholeSignInBox">
+      <div class="signINBoxTopColor"></div>
+      <div class="signInBox">
+        <div class="signInHead">
+          <h3>登入會員帳號</h3>
+          <a class="closeBt" id="closeBt" href="#">
+            <img
+              src="{{url_for('static', filename='/imgs/icon_close.png')}}"
+              alt="close icon"
+            />
+          </a>
+        </div>
+
+        <div class="signInBody">
+          <!-- 登入 -->
+          <!-- name跟id取一樣感覺就會有問題 -->
+          <div class="signIn">
+            <form id="signInForm">
+              <input
+                type="email"
+                placeholder="輸入電子郵件"
+                id="signInUserEmail"
+              />
+              <input
+                type="password"
+                placeholder="輸入密碼"
+                id="signInUserPassword"
+              />
+              <button>登入帳戶</button>
+            </form>
+
+            <div class="message" id="signInMessage"></div>
+            <div>
+              <a class="noAccountBt" id="noAccountBt" href="#">
+                <!-- 純粹切換用 沒有其他功能 -->
+                還沒有帳戶？點此註冊
+              </a>
+            </div>
+          </div>
+          <!-- 註冊 -->
+          <div class="signUp hide">
+            <form id="signUpForm">
+              <input type="text" placeholder="輸入姓名" id="signUpUserName" />
+              <input
+                type="email"
+                placeholder="輸入電子郵件"
+                id="signUpUserEmail"
+              />
+              <input
+                type="password"
+                placeholder="輸入密碼"
+                id="signUpUserPassword"
+                minlength="6"
+                maxlength="20"
+              />
+              <button>註冊新帳戶</button>
+            </form>
+            <div class="message" id="signUpMessage"></div>
+            <div>
+              <a class="gotAccountBt" id="gotAccountBt" href="#">
+                <!-- 純粹切換用 沒有其他功能 -->
+                已經有帳戶了？點此登入
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <nav>
+      <div>
+        <h1><a class="h1Title" href="/">台北一日遊</a></h1>
+        <ul class="signInAndReserveBox">
+          <li><a id="navReserveBt" href="#">預定行程</a></li>
+          <li><a id="signInOrSignUpBt" href="#">登入/註冊</a></li>
+          <li class="hide"><a id="signOutBt" href="#">登出</a></li>
+        </ul>
+      </div>
+    </nav>
+    <!-- 通用結束 -->
+    {% block header %}
+    <!-- 看有沒有header要用 -->
+    <header></header>
+    {% endblock %}
+    <div class="wrap">
+      <!-- 不同的main -->
+      <main>{% block main%} {% endblock %}</main>
+    </div>
+    <!-- 看有沒有要顯示message的地方 -->
+    {% block messagePlace%}
+    <div id="messagePlace"></div>
+    {% endblock%} {% block footer %}
+    <div class="footerWrap">
+      <footer>
+        <p>COPYRIGHT &copy 2021台北一日遊</p>
+      </footer>
+    </div>
+    {% endblock%}
+
+    <!-- scripts -->
+    <script src="{{ url_for('static', filename='scriptSignInBox.js') }}"></script>
+    <script src="{{ url_for('static', filename='scriptReservation.js') }}"></script>
+    {% block script %} {% endblock %}
+  </body>
+</html>
