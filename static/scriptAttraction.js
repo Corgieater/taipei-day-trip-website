@@ -11,9 +11,10 @@ let cutPosition = currentUrl.indexOf("n/") + 2;
 let currentId = currentUrl.substring(cutPosition);
 let currentImgs = null;
 
-const attractionReserveBt = document.querySelector(
-  ".attractionArea > form > button"
-);
+const attractionReserveBt = document.querySelector("#attractionReserveBt");
+
+// 購物車
+const addToCartBt = document.querySelector("#addToCartBt");
 
 async function fetchData() {
   const res = await fetch("/api/attraction/" + currentId);
@@ -188,6 +189,55 @@ attractionReserveBt.addEventListener("click", async function (e) {
     }
   } else {
     activeSignInBoxAndMask();
+  }
+});
+
+// 購物車
+// 不需要強制登入才可以使用購物車，但付款要
+addToCartBt.addEventListener("click", async function (e) {
+  e.preventDefault();
+  let date = document.querySelector("#bookingDate").value;
+  let time = document.querySelector(
+    'input[name="bookingTimeFrame"]:checked'
+  ).value;
+  let price = document.querySelector("#money").textContent;
+
+  const data = {
+    attractionId: currentId,
+    date: date,
+    time: time,
+    price: price,
+  };
+
+  console.log(data);
+
+  if (date !== "") {
+    const req = await fetch("/api/cart", {
+      method: "PATCH",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    const res = await req.json();
+    if (res.ok) {
+      console.log(res);
+    } else if (res.error && res.message == "請勿預定過去或當日的日期") {
+      // 這邊太重複
+      let message = document.querySelector(".attractionArea > form >.message");
+      message.innerHTML = res.message;
+      message.classList.remove("hide");
+      message.classList.add("error");
+    }
+  } else {
+    // 如果日期沒選就沒有進一步動作
+    let message = document.querySelector(".attractionArea > form >.message");
+    let dateInput = document.querySelector("#bookingDate");
+    let bookingDateLabel = document.querySelector("#bookingDateLabel");
+    message.classList.remove("hide");
+    message.classList.add("error");
+    message.innerHTML = "請選擇日期";
+    dateInput.classList.add("redBorder");
+    bookingDateLabel.classList.add("error");
   }
 });
 

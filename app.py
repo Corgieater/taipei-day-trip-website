@@ -17,7 +17,9 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 app.register_blueprint(modelsBlueprint)
 from models import searchAttractions, searchAttractionById, signUpFunc, \
-	signInFunc, userChecker, signOutFunc, doReservation, checkReservation, removeReservation
+	signInFunc, userChecker, signOutFunc, doReservation, checkReservation, removeReservation, \
+	checkCartItems, addItemToCart, deleteItemFromCart, makeOrder
+
 
 # Pages
 @app.route("/")
@@ -68,6 +70,30 @@ def makeReservation():
 @app.route("/api/booking", methods=['DELETE'])
 def deleteReservation():
 	return removeReservation()
+
+# 購物車
+@app.route("/cart")
+def cart():
+	return render_template("cart.html")
+
+# check cart and add to cart should be two func
+@app.route('/api/cart', methods=['GET'])
+def getCartItems():
+	return checkCartItems()
+
+@app.route('/api/cart', methods=['PATCH'])
+def addItem():
+	return addItemToCart()
+
+@app.route('/api/cart/<cartId>', methods=['DELETE'])
+def deleteItem(cartId):
+	return deleteItemFromCart(cartId)
+
+
+# 付款相關
+@app.route('/api/orders', methods=['POST'])
+def makeNewOrder():
+	return makeOrder()
 
 # ----don't touch-----
 

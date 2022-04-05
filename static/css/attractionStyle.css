@@ -33,7 +33,7 @@ label,
 }
 
 /* 找方法做照片fade in效果 */
-/* .fadeIn {
+.fadeIn {
   animation: fadeIn 2s ease-in-out;
 }
 
@@ -44,7 +44,7 @@ label,
   to {
     opacity: 1;
   }
-} */
+}
 
 .leftArrow,
 .rightArrow {

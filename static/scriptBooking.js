@@ -41,6 +41,7 @@ async function getReservationStatus() {
     method: "GET",
   });
   const res = await req.json();
+  console.log(res);
   bookingName.textContent = userInfo["userName"];
 
   if (res.data === null) {
@@ -57,17 +58,17 @@ async function getReservationStatus() {
     footer.classList.add("footerNormal");
     contactName.value = userInfo["userName"];
     contactEmail.value = userInfo["userEmail"];
-    bookingImg.src = res.data["attraction"]["image"];
-    bookingAttractionName.textContent = res.data["attraction"]["name"];
-    bookingDate.textContent = res.data["date"];
-    const time = res.data["time"];
+    bookingImg.src = res.data[0]["attraction"]["image"];
+    bookingAttractionName.textContent = res.data[0]["attraction"]["name"];
+    bookingDate.textContent = res.data[0]["date"];
+    const time = res.data[0]["time"];
     if (time === "morning") {
       bookingTime.textContent = "早上9點到下午4點";
     } else {
       bookingTime.textContent = "下午5點到晚上9點";
     }
-    bookingFee.textContent = res.data["price"];
-    bookingArea.textContent = res.data["attraction"]["address"];
+    bookingFee.textContent = res.data[0]["price"];
+    bookingArea.textContent = res.data[0]["attraction"]["address"];
   }
 }
 

@@ -1,4 +1,6 @@
 "user strict";
+
+const showCase = document.querySelector("#showCase");
 // const searchBt = document.querySelector("#searchBt");
 let userInput = "";
 let currentPage = 0;
@@ -8,13 +10,23 @@ const endPoint = document.querySelector("#endPoint");
 let urlIsLoading = false;
 // 判斷url是不是在fetching
 
+// 要做載入動畫的話整個main結構都要改掉
+// 可能要變成這樣
+// <main>
+// <div 我猜外面還可以包個大包?>
+// <div showCase>
+// <div card>
+// <div animtion>
+// 要改成每次生成card就要連showCase和animation div一起加入
+// 一旦圖片讀完就要把animation div移除
+
 // 製作li放圖片
 function makeLi(picAddress, name, mrt, category, picId) {
   const li = document.createElement("li");
   const aLink = document.createElement("a");
   aLink.href = `/attraction/` + picId;
 
-  const showCase = document.querySelector("#showCase");
+  // const showCase = document.querySelector("#showCase");
   const div1 = document.createElement("div");
   div1.classList.add("pics");
   const div2 = document.createElement("div");
@@ -55,6 +67,16 @@ function appendAttractionsToLi(attractions) {
     picId = attractions[i]["id"];
     makeLi(picPlace, picName, picMrt, picCategory, picId);
   }
+  // // 加動畫div
+  // let animationDiv = document.createElement("div");
+  // let animationWrap = document.createElement("div");
+  // animationWrap.classList.add("animationWrap");
+  // animationWrap.style.width = "100%";
+  // // 為了讓動畫置中又不會跑版
+  // animationWrap.append(animationDiv);
+  // animationDiv.classList.add("dots-bars-6");
+  // showCase.append(animationWrap);
+  // doLoadingAnimation();
 }
 
 // 刪除一些小廢訊息
@@ -101,6 +123,8 @@ if (endPoint) {
 async function callback(entries) {
   if (entries[0].isIntersecting && urlIsLoading !== true) {
     urlIsLoading = true;
+    picsAreLoading = true;
+
     // 結果是這個沒有擺在最一開始才有問題
     // 試著把觸發流程寫一遍
     const res = await fetch(
@@ -119,8 +143,12 @@ async function callback(entries) {
       const attractions = data.data;
       const nextPage = data.nextPage;
       currentPage = nextPage;
-
       appendAttractionsToLi(attractions);
+      // let animationDiv = document.createElement("div");
+      // animationDiv.classList.add("dots-bars-6");
+      // let main = document.querySelector("main");
+      // doLoadingAnimation();
+
       urlIsLoading = false;
       // 資料都貼完了所以改回false
       if (nextPage === null) {
@@ -151,3 +179,70 @@ if (searchBt) {
     }
   });
 }
+
+// let loadginAnimation = document.querySelector("#loadingAnimation");
+
+async function doLoadingAnimation() {
+  let animationWrap = document.querySelector(".animationWrap");
+  if (document.readyState === "complete") {
+    let lis = document.querySelectorAll(".showCase li");
+    console.log(document.readyState);
+    animationWrap.classList.add("hide");
+    for (let i = 0; i < lis.length; i++) {
+      lis[i].classList.remove("hide");
+    }
+  } else if (document.readyState === "interactive") {
+    let lis = document.querySelectorAll(".showCase li");
+    // DOM ready! Images, frames, and other subresources are still downloading.
+    animationWrap.classList.remove("hide");
+    for (let i = 0; i < lis.length; i++) {
+      lis[i].classList.add("hide");
+    }
+  } else {
+    // Loading still in progress.
+    // To wait for it to complete, add "DOMContentLoaded" or "load" listeners.
+
+    window.addEventListener("DOMContentLoaded", async () => {
+      // DOM ready! Images, frames, and other subresources are still downloading.
+      let lis = document.querySelectorAll(".showCase li");
+      animationWrap.classList.remove("hide");
+      for (let i = 0; i < lis.length; i++) {
+        lis[i].classList.add("hide");
+      }
+    });
+
+    window.addEventListener("load", async () => {
+      // Fully loaded!
+      let lis = document.querySelectorAll(".showCase li");
+      animationWrap.classList.add("hide");
+      for (let i = 0; i < lis.length; i++) {
+        lis[i].classList.remove("hide");
+      }
+    });
+  }
+}
+
+// if (document.readyState === "complete") {
+//   console.log(document.readyState);
+//   loadginAnimation.classList.add("hide");
+//   showCase.classList.remove("hide");
+// } else if (document.readyState === "interactive") {
+//   // DOM ready! Images, frames, and other subresources are still downloading.
+//   loadginAnimation.classList.remove("hide");
+//   showCase.classList.add("hide");
+// } else {
+//   // Loading still in progress.
+//   // To wait for it to complete, add "DOMContentLoaded" or "load" listeners.
+
+//   window.addEventListener("DOMContentLoaded", () => {
+//     // DOM ready! Images, frames, and other subresources are still downloading.
+//     loadginAnimation.classList.remove("hide");
+//     showCase.classList.add("hide");
+//   });
+
+//   window.addEventListener("load", () => {
+//     // Fully loaded!
+//     loadginAnimation.classList.add("hide");
+//     showCase.classList.remove("hide");
+//   });
+// }

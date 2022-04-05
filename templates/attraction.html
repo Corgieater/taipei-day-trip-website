@@ -6,6 +6,7 @@
 />
 {% endblock %} {% block header %} {% endblock %}{% block main %}
 <div class="attractionHead">
+  <!-- 目前看起來如果要自動播放或是有動畫效果就要打掉重寫 -->
   <div class="attractionImgContainer" id="attractionImgContainer">
     <a class="leftArrow" id="leftArrow" href="#">
       <img
@@ -13,7 +14,7 @@
         alt="arrow"
       />
     </a>
-    <img class="fadeIn" src="" alt="pic" />
+    <img src="" alt="pic" />
     <a class="rightArrow" id="rightArrow" href="#">
       <img
         src="{{url_for('static', filename='imgs/btn_rightArrow.png')}}"
@@ -74,7 +75,8 @@
           #導覽費用 : 新台幣 <span id="money">2000</span> 元
         </p>
         <!-- i think this will need if else -->
-        <button>開始預訂行程</button>
+        <button id="attractionReserveBt">開始預訂行程</button>
+        <button id="addToCartBt">add to cart</button>
       </form>
     </div>
   </div>

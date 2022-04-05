@@ -132,40 +132,6 @@ input {
   font-size: 19px;
 }
 
-/* messagePlace */
-#messagePlace {
-  max-width: 600px;
-  min-width: 200px;
-  margin: 0 24%;
-}
-
-#messagePlace p {
-  color: #666666;
-}
-
-/* footer */
-.footerWrap {
-  position: relative;
-  margin-top: 30px;
-}
-
-.footerWrapHeight {
-  height: 79.3vh;
-}
-
-.footerStrech {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-}
-
-.footerNormal {
-  height: 90px;
-  bottom: 0;
-}
-
 /* rwd 360-600*/
 @media screen and (min-width: 360px) and (max-width: 600px) {
   .bookingTitle {

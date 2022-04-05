@@ -1,0 +1,140 @@
+@import url("cssReset.css");
+@import url("public.css");
+
+h2,
+.dataRow p,
+label,
+.userPaymentInfo p,
+.contactInfo p {
+  color: #666666;
+}
+
+h2 {
+  font-size: 19px;
+}
+
+.cartWrap {
+  margin-top: 100px;
+  display: grid;
+  grid-template-columns: 30% 20% 20% 20% 10%;
+}
+
+.cartHead,
+.dataRow {
+  display: grid;
+  grid-template-columns: 30% 20% 20% 20% 10%;
+  grid-column-start: 1;
+  grid-column-end: end;
+  padding: 20px;
+  align-items: center;
+  text-align: center;
+}
+
+.grayBottomBorder {
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.cartHead {
+  color: white;
+  background-color: #337788;
+  font-size: 19px;
+}
+
+.dataRow {
+  border-bottom: 1px solid #e8e8e8;
+  height: 80px;
+}
+
+.totalPrice {
+  margin-top: 50px;
+  grid-column: 4/4;
+}
+
+.totalPrice p {
+  font-size: 19px;
+  font-weight: bold;
+  color: #666666;
+}
+
+.nextStepBt {
+  grid-column: 4/4;
+  margin-top: 10px;
+}
+
+/* infoWrap */
+.infoWrap {
+  max-width: 1200px;
+  margin-top: 80px;
+}
+
+.userPaymentInfo,
+.contactInfo {
+  margin-top: 44px;
+  padding-bottom: 45px;
+  padding-left: 10%;
+}
+
+.bookingTitle,
+.contactInfo,
+.userPaymentTitle,
+.userPaymentInfo {
+  padding-left: 20%;
+}
+
+.contactInfo input,
+.userPaymentInfo input,
+.tpfield {
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  padding: 10px;
+  color: #666666;
+}
+
+.contactInfo input,
+.userPaymentInfo input {
+  margin-bottom: 15px;
+}
+
+.contactInfo > p {
+  margin-top: 15px;
+}
+
+.userPaymentInfo > div {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.tpfield {
+  height: 46.8px;
+  width: 257.2px;
+}
+
+.userPaymentTitle {
+  margin-top: 40px;
+}
+
+.moneyAndButton {
+  margin-top: 30px;
+  display: flex;
+  justify-content: space-evenly;
+  font-size: 35px;
+  align-items: center;
+}
+
+/* messagePlace */
+#messagePlace {
+  margin-top: 50x;
+}
+
+#messagePlace > p {
+  font-size: 20px;
+  font-weight: bold;
+  color: darkred;
+  padding-left: 50%;
+}
+
+/* last step */
+.lastStepBt {
+  position: fixed;
+}

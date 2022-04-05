@@ -1,0 +1,69 @@
+{% extends 'base.html' %} {% block link %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{url_for('static', filename='css/cartStyle.css')}}"
+/>
+{% endblock %} {% block header %} {% endblock %} {% block main%}
+<div class="cartWrap">
+  <div class="cartHead">
+    <div><p>行程地點</p></div>
+    <div><p>日期</p></div>
+    <div><p>時間區段</p></div>
+    <div><p>價格</p></div>
+  </div>
+</div>
+<div class="infoWrap hide">
+  <button class="lastStepBt">回上一步</button>
+  <div class="bookingTitle">
+    <h2 class="bold">您的聯絡資訊</h2>
+  </div>
+  <div class="bookingBodyWrap">
+    <form action="#">
+      <div class="grayBottomBorder">
+        <div class="contactInfo">
+          <label for="contactName">聯絡姓名：</label>
+          <input type="text" name="contactName" id="contactName" />
+          <br />
+          <label for="contactEmail">聯絡信箱：</label>
+          <input type="Email" name="contactEmail" id="contactEmail" />
+          <br />
+          <label for="contactPhone">聯絡電話：</label>
+          <input type="tel" name="contactPhone" id="contactPhone" />
+          <p class="bold">
+            請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。
+          </p>
+        </div>
+      </div>
+      <div class="grayBottomBorder">
+        <div class="userPaymentTitle">
+          <h2 class="bold">您的付款資訊</h2>
+        </div>
+        <div class="userPaymentInfo">
+          <div>
+            <p>卡片號碼：</p>
+            <div class="tpfield" id="card-number"></div>
+          </div>
+          <div>
+            <p>過期時間：</p>
+            <div class="tpfield" id="card-expiration-date"></div>
+          </div>
+          <div>
+            <p>驗證密碼：</p>
+            <div class="tpfield" id="card-ccv"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="moneyAndButton">
+        <h2 class="bold">共 <span id="totalItems"></span> 個品項</h2>
+        <h2 class="bold">總價：新台幣 <span id="totalMoney"></span> 元</h2>
+        <button id="confirmAndPayBt">確認訂購並付款</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %} {% block script %}
+<script src="https://js.tappaysdk.com/tpdirect/v5.9.0"></script>
+<script src="{{url_for('static', filename='scriptCart.js')}}"></script>
+{%endblock %}
