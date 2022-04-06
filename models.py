@@ -296,8 +296,8 @@ def signOutFunc():
 
 # 取得預定行程
 def checkReservation():
-    token = request.cookies.get('userReservation')
-    # 如果使用者根本沒預定就連try都不用了
+    token = request.cookies.get('userInfo')
+    # 使用者沒登入就不用try了
     if token is None:
         data = {
             'data': None
@@ -305,43 +305,41 @@ def checkReservation():
         return data
 
     try:
-        userReservation = jwt.decode(token, secretKey, algorithms=["HS256"])
+        userInfo = jwt.decode(token, secretKey, algorithms=["HS256"])
+        userId = userInfo['userID']
+        if userId:
+            searchOrders = 'SELECT number FROM orders WHERE userId = %s'
+            cursor.execute(searchOrders, (userId,))
+            result = cursor.fetchall()
 
-        if userReservation:
-            attractionId = userReservation['attractionId']
-            attraction = searchAttractionById(attractionId)['data']
-            attractionName = attraction['name']
-            attractionAddress = attraction['address']
-            attractionImg = attraction['images'][0]
-
-            newReservation = {
-                'attraction': {
-                    'id': attractionId,
-                    'name': attractionName,
-                    'address': attractionAddress,
-                    'image': attractionImg
-                },
-                'date': userReservation['date'],
-                'time': userReservation['time'],
-                'price': userReservation['price']
+            data = {
+                'data': {
+                    'userOrders': []
+                }
             }
-            data['data'].append(newReservation)
-            print(data)
+            for order in result:
+                data['data']['userOrders'].append(order[0])
 
-            # old one can only reserve one spot
-            # data = {
-            #     'data': {
-            #         'attraction': {
-            #             'id': attractionId,
-            #             'name': attractionName,
-            #             'address': attractionAddress,
-            #             'image': attractionImg
-            #         },
-            #         'date': userReservation['date'],
-            #         'time': userReservation['time'],
-            #         'price': userReservation['price']
-            #     }
-            # }
+        # if userReservation:
+        #     attractionId = userReservation['attractionId']
+        #     attraction = searchAttractionById(attractionId)['data']
+        #     attractionName = attraction['name']
+        #     attractionAddress = attraction['address']
+        #     attractionImg = attraction['images'][0]
+        #
+        #     newReservation = {
+        #         'attraction': {
+        #             'id': attractionId,
+        #             'name': attractionName,
+        #             'address': attractionAddress,
+        #             'image': attractionImg
+        #         },
+        #         'date': userReservation['date'],
+        #         'time': userReservation['time'],
+        #         'price': userReservation['price']
+        #     }
+        #     data['data'].append(newReservation)
+        #     print(data)
 
     except:
         data = {
@@ -353,59 +351,59 @@ def checkReservation():
         return data
 
 
-# 預定行程
+# 預定行程 有購物車了先蓋掉
 
-def doReservation():
-    token = request.cookies.get('userInfo')
-    try:
-        userInfo = jwt.decode(token, secretKey, algorithms=["HS256"])
-        if userInfo:
-            userReservation = request.json
-            jwtEncoded = jwt.encode(userReservation, secretKey, algorithm="HS256")
-            userReservationDate = userReservation['date']
-            today = str(datetime.today().date())
-            # 轉str因為datetime這功能回的東西type不是str
-            if userReservationDate <= today:
-                data = {
-                    'error': True,
-                    'message': '請勿預定過去或當日的日期'
-                }
-                return data, 400
-
-            data = {
-                "ok": True
-            }
-            res = make_response(data)
-            res.set_cookie('userReservation', jwtEncoded, timedelta(days=31))
-
-            return res, 200
-
-
-    except:
-        data = {
-            'error': True,
-            'message': '請先登入'
-        }
-        return data, 403
+# def doReservation():
+#     token = request.cookies.get('userInfo')
+#     try:
+#         userInfo = jwt.decode(token, secretKey, algorithms=["HS256"])
+#         if userInfo:
+#             userReservation = request.json
+#             jwtEncoded = jwt.encode(userReservation, secretKey, algorithm="HS256")
+#             userReservationDate = userReservation['date']
+#             today = str(datetime.today().date())
+#             # 轉str因為datetime這功能回的東西type不是str
+#             if userReservationDate <= today:
+#                 data = {
+#                     'error': True,
+#                     'message': '請勿預定過去或當日的日期'
+#                 }
+#                 return data, 400
+#
+#             data = {
+#                 "ok": True
+#             }
+#             res = make_response(data)
+#             res.set_cookie('userReservation', jwtEncoded, timedelta(days=31))
+#
+#             return res, 200
+#
+#
+#     except:
+#         data = {
+#             'error': True,
+#             'message': '請先登入'
+#         }
+#         return data, 403
 
 
 # 刪除預定
-def removeReservation():
-    token = request.cookies.get('userInfo')
-    userInfo = jwt.decode(token, secretKey, algorithms=["HS256"])
-    if userInfo:
-        data = {
-            'ok': True
-        }
-        res = make_response(data)
-        res.set_cookie('userReservation', value='', expires=0)
-        return res, 200
-    else:
-        data = {
-            'error': True,
-            'message': '要登出的話要先登入喔:('
-        }
-        return data, 403
+# def removeReservation():
+#     token = request.cookies.get('userInfo')
+#     userInfo = jwt.decode(token, secretKey, algorithms=["HS256"])
+#     if userInfo:
+#         data = {
+#             'ok': True
+#         }
+#         res = make_response(data)
+#         res.set_cookie('userReservation', value='', expires=0)
+#         return res, 200
+#     else:
+#         data = {
+#             'error': True,
+#             'message': '要登出的話要先登入喔:('
+#         }
+#         return data, 403
 
 
 # 購物車相關
@@ -631,3 +629,73 @@ def makeOrder():
             'error': True,
             'message': '請先登入'
         }
+
+
+# 確認訂單資訊
+
+# string轉list 因為我資料庫有用type json 傳回來會全部變成str所以要做處理
+def turnStringToList(strData):
+    unwantedC = ['"', '[', ']', ',']
+
+    for c in unwantedC:
+        strData = strData.replace(c, '')
+    list = strData.split(' ')
+    return list
+
+
+def checkOrder(orderNumber):
+    searchOrder = 'SELECT * FROM orders WHERE number = %s'
+    cursor.execute(searchOrder, (orderNumber,))
+    order = cursor.fetchone()
+    orderNum = order[1]
+    orderPrice = order[2]
+    orderAttIds = turnStringToList(order[3])
+    orderDates = turnStringToList(order[4])
+    orderTimes = turnStringToList(order[5])
+
+    orderName = order[6]
+    orderEmail = order[7]
+    orderPhone = order[8]
+    paymentStatus = order[9]
+
+    data = {
+        "data": {
+            "number": orderNum,
+            "price": orderPrice,
+            "trip": {
+                "attraction": []
+            },
+            "contact": {
+                "name": orderName,
+                "email": orderEmail,
+                "phone": orderPhone
+            },
+            "status": paymentStatus
+        }
+    }
+
+    for i in range(len(orderAttIds)):
+        attraction = {
+            "id": orderAttIds[i],
+            "name": None,
+            "address": None,
+            "image": None,
+            "date": None,
+            "time": None
+        }
+        # 這樣一直查不知道會不會爆炸
+        attractionInfo = 'SELECT name, address, images FROM taipeitrip WHERE id = %s'
+        cursor.execute(attractionInfo, (i+1,))
+        result = cursor.fetchone()
+        attraction['name'] = result[0]
+        attraction['address'] = result[1]
+        image = result[2].split('https://')
+        attraction['image'] = 'https://'+image[1][:-1]
+        attraction['date'] = orderDates[i]
+        attraction['time'] = orderTimes[i]
+        data['data']['trip']['attraction'].append(attraction)
+
+    return data
+
+# 購物車是空的要有所對應
+# 預定行程是空的要顯示沒有東西

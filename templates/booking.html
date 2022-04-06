@@ -8,10 +8,11 @@
 <div class="head">
   <div class="bookingTitle">
     <h2 class="bold">
-      您好，<span id="bookingName"></span>，待預定的行程如下：
+      您好，<span id="bookingName"></span>，已預定的行程如下：
     </h2>
   </div>
-  <div class="bookingDescriptionAndImgWrap">
+  <div class="orderListWrap"></div>
+  <div class="bookingDescriptionAndImgWrap hide">
     <div class="bookingImgWrap"><img id="bookingImg" src="" alt="pic" /></div>
     <div class="bookingDescription">
       <h3 class="bold cyan" id="bookingTitle">
@@ -30,8 +31,8 @@
       </a>
     </div>
   </div>
-</div class="head">
-<div class="body">
+</div>
+<div class="body hide">
   <div class="bookingTitle">
     <h2 class="bold">您的聯絡資訊</h2>
   </div>
@@ -80,13 +81,6 @@
   </div>
 </div>
 
-<!-- <div class="footerWrap">
-  <footer>
-      <p>COPYRIGHT &copy 2021台北一日遊</p>
-  </footer>
-  </div> -->
-
-{% endblock %}
- {% block script %}
+{% endblock %} {% block script %}
 <script src="{{url_for('static', filename='scriptBooking.js')}}"></script>
 {%endblock %}

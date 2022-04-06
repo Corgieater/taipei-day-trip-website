@@ -278,7 +278,9 @@ async function onSubmit(event) {
         let res = await req.json();
         let orderNum = res["data"]["number"];
         if (orderNum) {
-          window.location.replace("/thankyou");
+          window.location.replace(`/thankyou`);
+          document.cookie =
+            "userCart= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
         }
       }
 

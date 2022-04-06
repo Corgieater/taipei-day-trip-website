@@ -17,8 +17,8 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 app.register_blueprint(modelsBlueprint)
 from models import searchAttractions, searchAttractionById, signUpFunc, \
-	signInFunc, userChecker, signOutFunc, doReservation, checkReservation, removeReservation, \
-	checkCartItems, addItemToCart, deleteItemFromCart, makeOrder
+	signInFunc, userChecker, signOutFunc, checkReservation,\
+	checkCartItems, addItemToCart, deleteItemFromCart, makeOrder, checkOrder
 
 
 # Pages
@@ -63,13 +63,15 @@ def signOut():
 def getReservation():
 	return checkReservation()
 
-@app.route("/api/booking", methods=['POST'])
-def makeReservation():
-	return doReservation()
+# 有購物車了所以先蓋掉
+# @app.route("/api/booking", methods=['POST'])
+# def makeReservation():
+# 	return doReservation()
 
-@app.route("/api/booking", methods=['DELETE'])
-def deleteReservation():
-	return removeReservation()
+# 有購物車了不用
+# @app.route("/api/booking", methods=['DELETE'])
+# def deleteReservation():
+# 	return removeReservation()
 
 # 購物車
 @app.route("/cart")
@@ -89,11 +91,15 @@ def addItem():
 def deleteItem(cartId):
 	return deleteItemFromCart(cartId)
 
-
 # 付款相關
 @app.route('/api/orders', methods=['POST'])
 def makeNewOrder():
 	return makeOrder()
+
+# 查詢訂單內容
+@app.route('/api/orders/<orderNumber>', methods=['GET'])
+def getOrderDetails(orderNumber):
+	return checkOrder(orderNumber)
 
 # ----don't touch-----
 

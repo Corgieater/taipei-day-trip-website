@@ -132,6 +132,46 @@ input {
   font-size: 19px;
 }
 
+/* 訂單資訊 */
+.orderHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.order,
+.orderDetails {
+  max-width: 1200px;
+  margin: 0 0 0 10%;
+}
+
+.order {
+  margin-bottom: 20px;
+  /* border-bottom: 1px solid #e8e8e8;
+  padding: 5px; */
+}
+
+.orderDetails {
+  margin-bottom: 15px;
+}
+
+.orderWrap {
+  margin-top: 10px;
+  padding: 15px 0;
+  display: flex;
+  justify-content: space-around;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+}
+
+.orderImg {
+  max-width: 250px;
+  max-height: 200px;
+}
+
+.orderImg > img {
+  width: 100%;
+  border-radius: 5px;
+}
+
 /* rwd 360-600*/
 @media screen and (min-width: 360px) and (max-width: 600px) {
   .bookingTitle {
