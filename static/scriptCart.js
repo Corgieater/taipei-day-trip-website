@@ -276,7 +276,10 @@ async function onSubmit(event) {
         });
 
         let res = await req.json();
-        console.log(res);
+        let orderNum = res["data"]["number"];
+        if (orderNum) {
+          window.location.replace("/thankyou");
+        }
       }
 
       // send prime to your server, to pay with Pay by Prime API .

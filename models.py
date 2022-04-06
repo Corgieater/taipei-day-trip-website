@@ -1,3 +1,5 @@
+import json
+
 import flask_bcrypt
 from flask import *
 import math
@@ -201,7 +203,6 @@ def userChecker():
         return {
             'data': None
         }
-
     return jsonify(data)
 
 
@@ -518,22 +519,22 @@ def deleteItemFromCart(cartId):
 
 # 把訂單存到資料庫
 
-# 你忘了記userID:( 資料砍砍寫一寫ㄅ
-def saveOrderToDatabase(cartData ,number, money, name, email, phone):
-    ids = []
+def saveOrderToDatabase(cartData ,number, money, name, email, phone, userId):
+    attIds = []
     dates = []
     times = []
     for item in cartData['order']['trip']:
-        ids.append(item['attraction']['id'])
+        attIds.append(item['attraction']['id'])
         dates.append(item['date'])
         times.append(item['time'])
-    ids = json.dumps(ids)
+
+    attIds = json.dumps(attIds)
     dates = json.dumps(dates)
     times = json.dumps(times)
 
     try:
-        createOrder= ('INSERT INTO orders VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)')
-        cursor.execute(createOrder, (None, number, money, ids, dates, times, name, email, phone, 0))
+        createOrder= ('INSERT INTO orders VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)')
+        cursor.execute(createOrder, (None, number, money, attIds, dates, times, name, email, phone, 0, userId))
         connection.commit()
         orderSaved = True
     except Exception as e:
@@ -572,9 +573,11 @@ def sendReqToTappay(partnerKey, paymentData):
 
 def makeOrder():
     # 首先先確定使用者是否登入
-    userSignIn = userChecker()
-    # 有驗到而且確定可以decode
-    if userSignIn:
+    token = request.cookies.get('userInfo')
+    decodeToken = jwt.decode(token, secretKey, algorithms=["HS256"])
+    userId = decodeToken['userID']
+
+    if userId:
         cartData = request.get_json()
         print('data for makeNewOrder ', cartData)
         prime = cartData['prime']
@@ -582,11 +585,12 @@ def makeOrder():
         number = datetime.now().strftime('%Y%m%d%H%M%S')
         # 不確定要不要做訂單編號驗證 會這麼巧撞號嗎?
         money = cartData['order']['price']
-        phone = cartData['contact']['name']
-        name = cartData['contact']['phone']
+        name = cartData['contact']['name']
         email = cartData['contact']['email']
+        phone = cartData['contact']['phone']
 
-        orderSaved = saveOrderToDatabase(cartData, number, money, name, email, phone)
+
+        orderSaved = saveOrderToDatabase(cartData, number, money, name, email, phone, userId)
 
         paymentData = {
             "prime": prime,
