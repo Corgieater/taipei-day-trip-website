@@ -295,8 +295,11 @@ def signOutFunc():
 
 
 # 取得預定行程
+global startIndex
+tartIndex = 0
 def checkReservation():
     token = request.cookies.get('userInfo')
+    global startIndex
     # 使用者沒登入就不用try了
     if token is None:
         data = {
@@ -308,15 +311,29 @@ def checkReservation():
         userInfo = jwt.decode(token, secretKey, algorithms=["HS256"])
         userId = userInfo['userID']
         if userId:
-            searchOrders = 'SELECT number FROM orders WHERE userId = %s'
-            cursor.execute(searchOrders, (userId,))
+            countOrder = 'SELECT COUNT(*) FROM orders WHERE userId = %s'
+            cursor.execute(countOrder, (userId,))
+            orderLen = cursor.fetchone()[0]
+            totalPages = math.ceil(orderLen/5)
+            userInput = request.args.get('page')
+
+            print(userInput)
+            searchOrders = 'SELECT number FROM orders WHERE userId = %s LIMIT %s, 5'
+            startIndex = 0
+            if userInput:
+                startIndex = int(userInput) * 5
+                print('starIndex', startIndex)
+            cursor.execute(searchOrders, (userId, startIndex))
             result = cursor.fetchall()
+            print(result)
 
             data = {
                 'data': {
                     'userOrders': []
-                }
+                },
+                'totalPages': totalPages
             }
+
             for order in result:
                 data['data']['userOrders'].append(order[0])
 
@@ -425,7 +442,8 @@ def checkCartItems():
         for i in range(len(userCart)):
             item = userCart[i]
             attractionId = item['attractionId']
-            attraction = searchAttractionById(attractionId)['data']
+            attraction = searchAttractionById(attractionId)
+            attraction = attraction['data']
             attractionName = attraction['name']
             attractionAddress = attraction['address']
             attractionImg = attraction['images'][0]
@@ -447,18 +465,31 @@ def checkCartItems():
     return cartItemCollection
 
 
-        # newReservation = {
-        #     'attraction': {
-        #         'id': attractionId,
-        #         'name': attractionName,
-        #         'address': attractionAddress,
-        #         'image': attractionImg
-        #     },
-        #     'date': userReservation['date'],
-        #     'time': userReservation['time'],
-        #     'price': userReservation['price']
-        # }
-        # return newReservation
+# 確認購物車有多少品項
+def checkCartLen():
+    token = request.cookies.get('userCart')
+    if token :
+        try:
+            decode = jwt.decode(token, secretKey, algorithms=['HS256'])
+            cartLen = len(decode['data'])
+            data = {
+                'data': {'len': cartLen}
+            }
+        except Exception as e:
+            print(e)
+            data = {
+                'error': True,
+                'message': 'Token有誤'
+            }
+        finally:
+            return data
+
+    else:
+        return {
+            'error': True,
+            'message': '購物車沒東西'
+        }
+
 
 
 # 加入購物車
@@ -521,6 +552,7 @@ def saveOrderToDatabase(cartData ,number, money, name, email, phone, userId):
     attIds = []
     dates = []
     times = []
+    orderSaved = None
     for item in cartData['order']['trip']:
         attIds.append(item['attraction']['id'])
         dates.append(item['date'])
@@ -556,8 +588,6 @@ def changeOrderPaymentStatus(orderNumber):
         return payStatusChanged
 
 
-
-
 # 打API給TAPPAY
 def sendReqToTappay(partnerKey, paymentData):
     headers = {'Content-Type': 'application/json',
@@ -567,6 +597,17 @@ def sendReqToTappay(partnerKey, paymentData):
     res = req.json()
     # 要轉json不然會是byte
     return res
+
+
+# 把tappay資訊傳給前端
+def sendTappayInfo():
+    data = {
+        'data': {
+            'appId': os.getenv('APP_ID'),
+            'appKey': os.getenv('APP_KEY')
+        }
+    }
+    return data
 
 
 def makeOrder():
@@ -618,11 +659,12 @@ def makeOrder():
                                 'message': '付款成功'
                             }
                         }
-                    }
+                    }, 200
             else:
                 return {
                     'error': True,
-                    "message": "付款失敗，請確認付款資訊"
+                    "message": "付款失敗，請確認付款資訊",
+                    'number': number
                 }
     else:
         return{
@@ -697,5 +739,5 @@ def checkOrder(orderNumber):
 
     return data
 
-# 購物車是空的要有所對應
-# 預定行程是空的要顯示沒有東西
+# 如果付款失敗要回傳單號 訂單狀態是否要顯示付款失敗或成功?
+# 訂單不要一次SHOW全部要limit

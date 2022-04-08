@@ -17,6 +17,11 @@ h2 {
   margin-top: 100px;
   display: grid;
   grid-template-columns: 30% 20% 20% 20% 10%;
+  grid-template-rows: auto auto 1fr 1fr 1fr auto auto;
+}
+
+.cratWrapMinHeight {
+  min-height: 76vh;
 }
 
 .cartHead,
@@ -28,6 +33,7 @@ h2 {
   padding: 20px;
   align-items: center;
   text-align: center;
+  grid-template-rows: auto auto 1fr 1fr 1fr auto auto;
 }
 
 .grayBottomBorder {
@@ -59,12 +65,14 @@ h2 {
 .nextStepBt {
   grid-column: 4/4;
   margin-top: 10px;
+  height: 50px;
 }
 
 /* infoWrap */
 .infoWrap {
   max-width: 1200px;
   margin-top: 80px;
+  min-height: 78vh;
 }
 
 .userPaymentInfo,
@@ -137,4 +145,37 @@ h2 {
 /* last step */
 .lastStepBt {
   position: fixed;
+}
+
+@media screen and (min-width: 360px) and (max-width: 600px) {
+  .lastStepBt {
+    position: absolute;
+    bottom: -79px;
+    left: 38%;
+  }
+
+  #messagePlace > p {
+    padding: 0;
+    text-indent: 40px;
+  }
+
+  .contactInfo {
+    padding: 0 5px;
+  }
+
+  .contactInfo > p {
+    margin-bottom: 20px;
+  }
+
+  .userPaymentInfo {
+    padding: 0 5px;
+  }
+
+  .moneyAndButton {
+    flex-direction: column;
+  }
+
+  .moneyAndButton > button {
+    margin: 80px 0;
+  }
 }

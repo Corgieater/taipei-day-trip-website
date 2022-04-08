@@ -1,2 +1,38 @@
 @import url("cssReset.css");
 @import url("public.css");
+
+main {
+  margin-top: 200px;
+  max-width: 1200px;
+  min-height: 56.5vh;
+}
+
+.thxBox {
+  width: 50%;
+  margin: 0 auto;
+}
+
+.thxBox h2 {
+  text-align: center;
+  line-height: 2;
+}
+
+.thxHead {
+  height: 50px;
+  background-color: #337788;
+  border-radius: 5px 5px 0 0;
+}
+
+.thxHead > h2 {
+  color: white;
+  font-size: 25px;
+}
+
+.thxBody {
+  border: 1px solid #cccccc;
+  border-radius: 0 0 5px 5px;
+}
+
+.thxBody > h2 {
+  font-size: 18px;
+}

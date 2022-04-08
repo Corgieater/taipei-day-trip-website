@@ -130,6 +130,25 @@ nav ul > li > a {
   padding: 0px 20px 0 0;
 }
 
+.cartBtAndCircleWrap {
+  position: relative;
+}
+
+.countCircle {
+  position: absolute;
+  right: 5%;
+  top: 5%;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background-color: #448899;
+  color: white;
+  text-align: center;
+  line-height: 1.5;
+  font-weight: bold;
+  font-size: 13px;
+}
+
 /* ---header--- */
 header {
   height: 320px;
@@ -249,7 +268,7 @@ footer p {
 }
 
 .footerWrapHeight {
-  height: 79.3vh;
+  height: 85.1vh;
 }
 
 .footerStrech {
@@ -280,7 +299,7 @@ footer p {
     margin: 0;
   }
   .signInAndReserveBox li {
-    padding: 10px;
+    padding: 5px;
     margin-bottom: 15px;
   }
 
@@ -291,6 +310,11 @@ footer p {
 
   header {
     height: 280px;
+  }
+
+  .countCircle {
+    right: -5px;
+    top: -10px;
   }
 
   /* 360-600 rwd for wrapForWholeSignInBox */
@@ -325,10 +349,16 @@ footer p {
   header {
     height: 280px;
   }
+
+  .countCircle {
+    right: -5px;
+    top: -5px;
+  }
 }
 
 /* loading animation I borrowed  from T. Afif*/
-.dots-bars-6 {
+/* currently not available */
+/* .dots-bars-6 {
   width: 40px;
   height: 20px;
   --c: radial-gradient(farthest-side, currentColor 93%, #0000);
@@ -412,4 +442,4 @@ footer p {
   90% {
     transform: translate(26px);
   }
-}
+} */

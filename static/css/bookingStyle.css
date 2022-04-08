@@ -53,6 +53,9 @@ input {
   margin: 54px auto 0 auto;
 }
 
+.headMinHeight {
+  min-height: 81vh;
+}
 .bookingTitle {
   max-width: 600px;
   min-width: 200px;
@@ -138,8 +141,7 @@ input {
   justify-content: space-between;
   align-items: center;
 }
-.order,
-.orderDetails {
+.order {
   max-width: 1200px;
   margin: 0 0 0 10%;
 }
@@ -152,6 +154,11 @@ input {
 
 .orderDetails {
   margin-bottom: 15px;
+  width: 50%;
+}
+
+.orderListWrap {
+  position: relative;
 }
 
 .orderWrap {
@@ -160,6 +167,7 @@ input {
   display: flex;
   justify-content: space-around;
   box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+  border-radius: 5px;
 }
 
 .orderImg {
@@ -172,6 +180,20 @@ input {
   border-radius: 5px;
 }
 
+.pageArea {
+  width: 50%;
+  position: absolute;
+  bottom: -10%;
+  left: 50%;
+}
+
+.pageArea a {
+  font-size: 20px;
+  padding: 0 10px;
+  color: #448899;
+  font-weight: bold;
+}
+
 /* rwd 360-600*/
 @media screen and (min-width: 360px) and (max-width: 600px) {
   .bookingTitle {
@@ -180,6 +202,20 @@ input {
 
   .bookingDescriptionAndImgWrap {
     flex-direction: column;
+  }
+
+  .order {
+    margin: 0 0 20px 0;
+    padding: 0 10px;
+  }
+
+  .orderHead > button {
+    width: 20%;
+  }
+
+  .orderWrap {
+    flex-direction: column;
+    align-items: center;
   }
 
   .bookingImgWrap {
@@ -219,5 +255,11 @@ input {
   /* if no reservation */
   #messagePlace {
     margin: 0 10px;
+  }
+
+  /* page */
+  .pageArea {
+    bottom: 0;
+    left: 40%;
   }
 } ;

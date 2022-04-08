@@ -90,9 +90,16 @@
         <h1><a class="h1Title" href="/">台北一日遊</a></h1>
         <ul class="signInAndReserveBox">
           <li><a id="navReserveBt" href="#">預定行程</a></li>
-          <li><a id="cartBt" href="/cart">購物車</a></li>
-          <li><a id="signInOrSignUpBt" href="#">登入/註冊</a></li>
-          <li class="hide"><a id="signOutBt" href="#">登出</a></li>
+          <li class="cartBtAndCircleWrap">
+            <a id="cartBt" href="#">購物車</a>
+            <div class="countCircle hide"></div>
+          </li>
+          <li id="signInOrSignUpBtWrap">
+            <a id="signInOrSignUpBt" href="#">登入/註冊</a>
+          </li>
+          <li class="hide signOutBtWrap">
+            <a id="signOutBt" href="#">登出</a>
+          </li>
         </ul>
       </div>
     </nav>
@@ -121,7 +128,7 @@
 
     <!-- scripts -->
     <script src="{{ url_for('static', filename='scriptSignInBox.js') }}"></script>
-    <script src="{{ url_for('static', filename='scriptReservation.js') }}"></script>
+    <script src="{{ url_for('static', filename='scriptReservationAndCart.js') }}"></script>
     {% block script %} {% endblock %}
   </body>
 </html>

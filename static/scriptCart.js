@@ -3,12 +3,6 @@ let prime = null;
 let totalPrice = 0;
 let totalItems = 0;
 
-TPDirect.setupSDK(
-  123969,
-  "app_aS0u43RGzYXwxrr15xC0cgIhjsE0m6QCSaxeenoBvhstNhMUvv6KBpd4c3Kl",
-  "sandbox"
-);
-
 // 底下footer伸縮用
 let footerWrap = document.querySelector(".footerWrap");
 let footer = document.querySelector("footer");
@@ -27,6 +21,14 @@ let contactPhonePlace = document.querySelector("#contactPhone");
 
 // 回上一步鈕
 let lastStepBt = document.querySelector(".lastStepBt");
+
+async function reqTappayInfo() {
+  const getTappayInfo = await fetch("/api/orfers/tappayInfo", {
+    method: "GET",
+  });
+  const tappayInfo = await getTappayInfo.json();
+  TPDirect.setupSDK(tappayInfo.data.appId, tappayInfo.data.appKey, "sandbox");
+}
 
 async function getUserInfo() {
   const req = await fetch("/api/user", {
@@ -59,19 +61,18 @@ async function getReservationStatus() {
     method: "GET",
   });
   const res = await req.json();
-  console.log(res["data"]);
-  totalItems = res["data"].length;
 
   if (res["data"] === null || res["data"].length === 0) {
     let p = document.createElement("p");
-    p.textContent = "目前沒有任何待預定的行程";
+    cartWrap.classList.remove("cratWrapMinHeight");
+    p.textContent = "購物車是空的";
 
     messagePlace.append(p);
     footerWrap.classList.add("footerWrapHeight");
     footer.classList.add("footerStrech");
   } else {
     let divFortotalPrice = document.createElement("div");
-
+    totalItems = res["data"].length;
     for (let i = 0; i < res["data"].length; i++) {
       let name = res["data"][i]["attraction"]["name"];
       let date = res["data"][i]["date"];
@@ -100,11 +101,15 @@ async function getReservationStatus() {
       img.src = "/static/imgs/icon_delete.png";
       aLink.append(img);
       aLink.setAttribute("id", "cartDelete");
+      // 刪除功能
       aLink.addEventListener("click", async function (e) {
         e.preventDefault();
         const req = await fetch(`/api/cart/${i}`, {
           method: "DELETE",
         });
+        let countCircle = document.querySelector(".countCircle");
+        let count = countCircle.textContent;
+        countCircle.textContent = count - 1;
         location.reload();
       });
       divForDataRow.append(aLink);
@@ -239,15 +244,8 @@ async function makeUserOrderJsonData(primeId) {
 
 async function onSubmit(event) {
   event.preventDefault();
-  // 取得 TapPay Fields 的 status
-  // const tappayStatus = TPDirect.card.getTappayFieldsStatus();
+
   let jsonData = null;
-  // 確認是否可以 getPrime
-  // if (tappayStatus.canGetPrime === false) {
-  //   let p = document.createElement("p");
-  //   p.textContent = "無法取得Prime，請檢查付款資訊";
-  //   messagePlace.append(p);
-  // }
   let p = document.querySelector("#messagePlace p");
   if (p) {
     messagePlace.removeChild(p);
@@ -278,7 +276,7 @@ async function onSubmit(event) {
         let res = await req.json();
         let orderNum = res["data"]["number"];
         if (orderNum) {
-          window.location.replace(`/thankyou`);
+          window.location.replace(`/thankyou?number=${orderNum}`);
           document.cookie =
             "userCart= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
         }
@@ -301,4 +299,5 @@ lastStepBt.addEventListener("click", function () {
 
 confirmAndPayBt.addEventListener("click", onSubmit);
 
+reqTappayInfo();
 getReservationStatus();

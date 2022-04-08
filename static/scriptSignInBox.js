@@ -196,9 +196,10 @@ signInFormBt.addEventListener("click", async function (e) {
 async function showOrHideSignInAndReserveBox() {
   const signIn = await checkSignIn();
   if (signIn) {
-    let li = document.querySelector(".signInAndReserveBox .hide");
-    showOrHide(li);
-    showOrHide(signInOrSignUpBt);
+    let signOutBtWrap = document.querySelector(".signOutBtWrap");
+    let signInOrSignUpBtWrap = document.querySelector("#signInOrSignUpBtWrap");
+    showOrHide(signOutBtWrap);
+    showOrHide(signInOrSignUpBtWrap);
   }
 }
 

@@ -16,6 +16,8 @@ let body = document.querySelector(".body");
 let messagePlace = document.querySelector("#messagePlace");
 const bookingDelete = document.querySelector("#bookingDelete");
 
+let orderListWrap = document.querySelector(".orderListWrap");
+
 // 從登入資訊拿使用者姓名然後改頁面資訊
 async function getUserInfo() {
   const req = await fetch("/api/user", {
@@ -35,12 +37,60 @@ async function getReservation(orderNum) {
     method: "GET",
   });
   const res = await req.json();
-  // item = res.data.trip.attraction;
-  // let itemList = [];
-  // for (let i = 0; i < item.length; i++) {
-  //   itemList.push(item[i]);
-  // }
   return res;
+}
+
+// booking頁面顯示用的小功能
+// 做整個訂單包
+function createWholeOrder(orderList, price) {
+  let div = document.createElement("div");
+  div.classList.add("wholeOrder");
+
+  div.innerHTML = `<div class="order">
+  <div class="orderHead">
+    <h2 id="orderNum">訂單編號：${orderList}</h2>
+    <h2 id="orderTotalPrice">總價： ${price}</h2>
+    <button>訂單詳細</button>
+  </div>
+  <div class="orderBody hide">
+  </div>
+</div>`;
+  orderListWrap.append(div);
+}
+
+// 做order打開後的細項內容
+function makeOrderDetails(item, orderBody) {
+  let div2 = document.createElement("div");
+  let time = null;
+  let money = null;
+  if (item["time"] === "morning") {
+    time = "早上9點到下午4點";
+    money = 2000;
+  } else {
+    time = "下午5點到晚上9點";
+    money = 2500;
+  }
+  div2.innerHTML = `
+  <div class="orderWrap">
+  <div class="orderDetails">
+  <p class="bold">品項： <p>${item["name"]}</p></p>
+  <p class="bold">日期：<p>${item["date"]}</p> </p>
+  <p class="bold">時間： <p>${time}</p></p>
+  <p class="bold">價錢： <p>${money} 元 新台幣</p></p>
+</div>
+<div class="orderImg">
+<img src="${item["image"]}" alt="pic">
+ </div>
+ </div>
+`;
+  orderBody.append(div2);
+}
+
+// 幫訂單詳細加上功能
+function addFuncToorderDetailBt(orderDetailBt, orderBody) {
+  orderDetailBt.addEventListener("click", async function () {
+    orderBody.classList.toggle("hide");
+  });
 }
 
 // 檢驗使用者有沒有購買的行程
@@ -56,9 +106,12 @@ async function getReservationStatus() {
   });
   const res = await req.json();
   bookingName.textContent = userInfo["userName"];
+  console.log(res);
 
-  if (res.data === null) {
+  if (res.data.userOrders.length === 0) {
     // 使用者沒預定就把footer拉高秀沒有預定的字樣
+    let head = document.querySelector(".head");
+    head.classList.remove("headMinHeight");
     bookingDescriptionAndImgWrap.classList.add("hide");
     body.classList.add("hide");
     let p = document.createElement("p");
@@ -67,99 +120,84 @@ async function getReservationStatus() {
     footerWrap.classList.add("footerWrapHeight");
     footer.classList.add("footerStrech");
   } else {
-    let orderListWrap = document.querySelector(".orderListWrap");
+    // 使用者成立的訂單資料，正常來說一頁五筆
     let orderList = res.data.userOrders;
+    orderListWrap.classList.remove("hide");
 
     for (let i = 0; i < orderList.length; i++) {
+      // 要訂單成立後的詳細資料
       let orderDetails = await getReservation(orderList[i]);
       console.log(orderDetails);
       let itemList = orderDetails.data.trip.attraction;
-      let div = document.createElement("div");
-
-      div.innerHTML = `<div class="order">
-      <div class="orderHead">
-        <h2 id="orderNum">訂單編號：${orderList[i]}</h2>
-        <h2 id="orderTotalPrice">總價： ${orderDetails.data.price}</h2>
-        <button>訂單詳細</button>
-      </div>
-      <div class="orderBody hide">
-      </div>
-    </div>`;
-      orderListWrap.append(div);
+      createWholeOrder(orderDetails.data.number, orderDetails.data.price);
 
       for (let j = 0; j < itemList.length; j++) {
-        let div2 = document.createElement("div");
         let orderBodies = document.querySelectorAll(".orderBody");
-        let time = null;
-        let money = null;
-        if (itemList[j]["time"] === "morning") {
-          time = "早上9點到下午4點";
-          money = 2000;
-        } else {
-          time = "下午5點到晚上9點";
-          money = 2500;
-        }
-        div2.innerHTML = `
-        <div class="orderWrap">
-        <div class="orderDetails">
-        <p class="bold">品項： <p>${itemList[j]["name"]}</p></p>
-        <p class="bold">日期：<p>${itemList[j]["date"]}</p> </p>
-        <p class="bold">時間： <p>${time}</p></p>
-        <p class="bold">價錢： <p>${money} 元 新台幣</p></p>
-      </div>
-      <div class="orderImg">
-      <img src="${itemList[j]["image"]}" alt="pic">
-       </div>
-       </div>
-      `;
-        orderBodies[i].append(div2);
+        makeOrderDetails(itemList[j], orderBodies[i]);
       }
 
+      // 幫訂單細節按鈕加上功能
       let orderDetailBt = document.querySelectorAll(".orderHead button");
-      orderDetailBt[i].addEventListener("click", async function () {
-        let orderBodies = document.querySelectorAll(".orderBody");
-        orderBodies[i].classList.toggle("hide");
-        // const req = await fetch(`/api/orders/${orderList[i]}`, {
-        //   method: "GET",
-        // });
-        // const res = await req.json();
-        // console.log(res);
-        // item = res.data.trip.attraction;
-        // let itemList = [];
-        // for (let i = 0; i < item.length; i++) {
-        //   itemList.push(item[i]);
-        // }
-      });
+      let orderBodies = document.querySelectorAll(".orderBody");
+      addFuncToorderDetailBt(orderDetailBt[i], orderBodies[i]);
     }
-
-    // 有預定footer正常秀資料
-    //   footer.classList.add("footerNormal");
-    //   contactName.value = userInfo["userName"];
-    //   contactEmail.value = userInfo["userEmail"];
-    //   bookingImg.src = res.data[0]["attraction"]["image"];
-    //   bookingAttractionName.textContent = res.data[0]["attraction"]["name"];
-    //   bookingDate.textContent = res.data[0]["date"];
-    //   const time = res.data[0]["time"];
-    //   if (time === "morning") {
-    //     bookingTime.textContent = "早上9點到下午4點";
-    //   } else {
-    //     bookingTime.textContent = "下午5點到晚上9點";
-    //   }
-    //   bookingFee.textContent = res.data[0]["price"];
-    //   bookingArea.textContent = res.data[0]["attraction"]["address"];
-    // }
   }
 }
-// 刪除預定
-// bookingDelete.addEventListener("click", async function (e) {
-//   e.preventDefault();
-//   const req = await fetch("/api/booking", {
-//     method: "DELETE",
-//   });
-//   location.reload();
-// });
+
+async function makePages() {
+  const req = await fetch("/api/booking", {
+    method: "GET",
+  });
+  const res = await req.json();
+  let totalPages = res.totalPages;
+  // 做頁碼區
+  let div = document.createElement("div");
+  div.classList.add("pageArea");
+  orderListWrap.append(div);
+
+  // 做頁碼
+  for (let i = 0; i < totalPages; i++) {
+    let aLink = document.createElement("a");
+    aLink.classList.add("pages");
+    aLink.href = `#`;
+    aLink.textContent = i + 1;
+    div.append(aLink);
+
+    // 幫頁碼加功能
+    aLink.addEventListener("click", async function (e) {
+      // 要資料庫資料，後端是每五筆一頁
+      e.preventDefault();
+      const req = await fetch(`/api/booking?page=${i}`, {
+        method: "GET",
+      });
+      const res = await req.json();
+      console.log("res", res);
+      let nextPageItems = res.data.userOrders;
+      // 刪掉前個頁面的東西
+      let wholeOrders = document.querySelectorAll(".wholeOrder");
+      for (let i = 0; i < wholeOrders.length; i++) {
+        wholeOrders[i].remove();
+      }
+      for (let i = 0; i < nextPageItems.length; i++) {
+        let orderDetails = await getReservation(nextPageItems[i]);
+        console.log("oder", orderDetails);
+        let itemList = orderDetails.data.trip.attraction;
+        console.log("item", itemList);
+        createWholeOrder(orderDetails.data.number, orderDetails.data.price);
+        for (let j = 0; j < itemList.length; j++) {
+          let orderBodies = document.querySelectorAll(".orderBody");
+          makeOrderDetails(itemList[j], orderBodies[i]);
+        }
+        let orderDetailBt = document.querySelectorAll(".orderHead button");
+        let orderBodies = document.querySelectorAll(".orderBody");
+        addFuncToorderDetailBt(orderDetailBt[i], orderBodies[i]);
+      }
+    });
+  }
+}
 
 getReservationStatus();
-
+makePages();
 // 不知道有沒有辦法在沒有登入時，選完日期時間後登入，登入完選的選項還在，或是直接進到預約後的頁面
 // 或許是這邊就要率先存cookie?不確定，通過作業再來看看
+// 上面功能應該還可以再包

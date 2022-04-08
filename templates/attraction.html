@@ -74,10 +74,16 @@
         <p class="pTitles">
           #導覽費用 : 新台幣 <span id="money">2000</span> 元
         </p>
-        <!-- i think this will need if else -->
-        <!-- <button id="attractionReserveBt">開始預訂行程</button> -->
         <button id="addToCartBt">加入購物車</button>
       </form>
+    </div>
+    <div class="success popMessage hide">
+      已加入購物車
+      <a href="#" id="popCloseBt">
+        <img
+          src="{{url_for('static', filename='/imgs/icon_close.png')}}"
+          alt="close icon"
+      /></a>
     </div>
   </div>
 </div>

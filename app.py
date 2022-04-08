@@ -18,7 +18,8 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 app.register_blueprint(modelsBlueprint)
 from models import searchAttractions, searchAttractionById, signUpFunc, \
 	signInFunc, userChecker, signOutFunc, checkReservation,\
-	checkCartItems, addItemToCart, deleteItemFromCart, makeOrder, checkOrder
+	checkCartItems, addItemToCart, deleteItemFromCart, makeOrder, checkOrder, sendTappayInfo,\
+	checkCartLen
 
 
 # Pages
@@ -59,6 +60,7 @@ def signOut():
 
 
 # -----預定相關-----
+# changed
 @app.route("/api/booking", methods=['GET'])
 def getReservation():
 	return checkReservation()
@@ -83,6 +85,11 @@ def cart():
 def getCartItems():
 	return checkCartItems()
 
+# 給購物車計數用
+@app.route('/api/cart/len', methods=['GET'])
+def getCartLen():
+	return checkCartLen()
+
 @app.route('/api/cart', methods=['PATCH'])
 def addItem():
 	return addItemToCart()
@@ -95,6 +102,10 @@ def deleteItem(cartId):
 @app.route('/api/orders', methods=['POST'])
 def makeNewOrder():
 	return makeOrder()
+
+@app.route('/api/orfers/tappayInfo', methods=['GET'])
+def getTappayInfo():
+	return sendTappayInfo()
 
 # 查詢訂單內容
 @app.route('/api/orders/<orderNumber>', methods=['GET'])

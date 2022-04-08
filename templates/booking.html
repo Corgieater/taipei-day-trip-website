@@ -5,13 +5,14 @@
   href="{{url_for('static', filename='css/bookingStyle.css')}}"
 />
 {% endblock %} {% block header %} {% endblock %} {% block main%}
-<div class="head">
+<div class="head headMinHeight">
   <div class="bookingTitle">
     <h2 class="bold">
       您好，<span id="bookingName"></span>，已預定的行程如下：
     </h2>
   </div>
-  <div class="orderListWrap"></div>
+  <div class="orderListWrap hide"></div>
+  <!-- 下面應該都要刪了 -->
   <div class="bookingDescriptionAndImgWrap hide">
     <div class="bookingImgWrap"><img id="bookingImg" src="" alt="pic" /></div>
     <div class="bookingDescription">

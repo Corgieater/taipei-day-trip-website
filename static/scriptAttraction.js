@@ -16,6 +16,10 @@ const attractionReserveBt = document.querySelector("#attractionReserveBt");
 // 購物車
 const addToCartBt = document.querySelector("#addToCartBt");
 
+// 彈跳視窗
+const popMessage = document.querySelector(".popMessage");
+const popCloseBt = document.querySelector("#popCloseBt");
+
 async function fetchData() {
   const res = await fetch("/api/attraction/" + currentId);
   const data = await res.json();
@@ -217,6 +221,8 @@ addToCartBt.addEventListener("click", async function (e) {
     const res = await req.json();
     if (res.ok) {
       console.log(res);
+      // 顯示彈跳視窗
+      popMessage.classList.remove("hide");
     } else if (res.error && res.message == "請勿預定過去或當日的日期") {
       // 這邊太重複
       let message = document.querySelector(".attractionArea > form >.message");
@@ -235,6 +241,11 @@ addToCartBt.addEventListener("click", async function (e) {
     dateInput.classList.add("redBorder");
     bookingDateLabel.classList.add("error");
   }
+});
+
+// 關閉彈跳視窗
+popCloseBt.addEventListener("click", function () {
+  popMessage.classList.add("hide");
 });
 
 fetchAttractionById();
