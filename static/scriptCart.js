@@ -64,9 +64,15 @@ async function getReservationStatus() {
 
   if (res["data"] === null || res["data"].length === 0) {
     let p = document.createElement("p");
+    let h2 = document.createElement("h2");
     cartWrap.classList.remove("cratWrapMinHeight");
-    p.textContent = "購物車是空的";
+    h2.textContent = `您好，${name}：`;
+    h2.classList.add("bold");
+    p.textContent = "購物車目前是空的";
+    p.style.color = "#666666";
+    p.style.fontWeight = "normal";
 
+    messagePlace.append(h2);
     messagePlace.append(p);
     footerWrap.classList.add("footerWrapHeight");
     footer.classList.add("footerStrech");
@@ -159,23 +165,6 @@ TPDirect.card.setup({
     input: {
       color: "gray",
     },
-    // Styling ccv field
-    "input.ccv": {
-      // 'font-size': '16px'
-    },
-    // Styling expiration-date field
-    "input.expiration-date": {
-      // 'font-size': '16px'
-    },
-    // Styling card-number field
-    "input.card-number": {
-      // 'font-size': '16px'
-    },
-    // style focus state
-    ":focus": {
-      // 'color': 'black'
-    },
-    // style valid state
     ".valid": {
       color: "green",
     },

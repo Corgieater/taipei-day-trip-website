@@ -106,7 +106,6 @@ async function getReservationStatus() {
   });
   const res = await req.json();
   bookingName.textContent = userInfo["userName"];
-  console.log(res);
 
   if (res.data.userOrders.length === 0) {
     // 使用者沒預定就把footer拉高秀沒有預定的字樣
