@@ -108,6 +108,8 @@ async function getReservationStatus() {
   bookingName.textContent = userInfo["userName"];
 
   if (res.data.userOrders.length === 0) {
+    let bookingTitle = document.querySelector(".bookingTitle");
+    bookingTitle.classList.remove("hide");
     // 使用者沒預定就把footer拉高秀沒有預定的字樣
     let head = document.querySelector(".head");
     head.classList.remove("headMinHeight");
