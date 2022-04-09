@@ -53,6 +53,9 @@ input {
   margin: 54px auto 0 auto;
 }
 
+.headMinHeight {
+  min-height: 81vh;
+}
 .bookingTitle {
   max-width: 600px;
   min-width: 200px;
@@ -132,38 +135,63 @@ input {
   font-size: 19px;
 }
 
-/* messagePlace */
-#messagePlace {
-  max-width: 600px;
-  min-width: 200px;
-  margin: 0 24%;
+/* 訂單資訊 */
+.orderHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.order {
+  max-width: 1200px;
+  margin: 0 0 0 10%;
 }
 
-#messagePlace p {
-  color: #666666;
+.order {
+  margin-bottom: 20px;
+  /* border-bottom: 1px solid #e8e8e8;
+  padding: 5px; */
 }
 
-/* footer */
-.footerWrap {
+.orderDetails {
+  margin-bottom: 15px;
+  width: 50%;
+}
+
+.orderListWrap {
   position: relative;
-  margin-top: 30px;
 }
 
-.footerWrapHeight {
-  height: 79.3vh;
+.orderWrap {
+  margin-top: 10px;
+  padding: 15px 0;
+  display: flex;
+  justify-content: space-around;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+  border-radius: 5px;
 }
 
-.footerStrech {
+.orderImg {
+  max-width: 250px;
+  max-height: 200px;
+}
+
+.orderImg > img {
+  width: 100%;
+  border-radius: 5px;
+}
+
+.pageArea {
+  width: 50%;
   position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
+  bottom: -10%;
+  left: 50%;
 }
 
-.footerNormal {
-  height: 90px;
-  bottom: 0;
+.pageArea a {
+  font-size: 20px;
+  padding: 0 10px;
+  color: #448899;
+  font-weight: bold;
 }
 
 /* rwd 360-600*/
@@ -174,6 +202,20 @@ input {
 
   .bookingDescriptionAndImgWrap {
     flex-direction: column;
+  }
+
+  .order {
+    margin: 0 0 20px 0;
+    padding: 0 10px;
+  }
+
+  .orderHead > button {
+    width: 20%;
+  }
+
+  .orderWrap {
+    flex-direction: column;
+    align-items: center;
   }
 
   .bookingImgWrap {
@@ -213,5 +255,11 @@ input {
   /* if no reservation */
   #messagePlace {
     margin: 0 10px;
+  }
+
+  /* page */
+  .pageArea {
+    bottom: 0;
+    left: 40%;
   }
 } ;

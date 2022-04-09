@@ -1,0 +1,15 @@
+{% extends 'base.html' %} {% block link %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{url_for('static', filename='css/thankyouStyle.css')}}"
+/>
+{% endblock %}{% block header %} {% endblock %} {% block main%}
+
+<div class="thxBox">
+  <div class="thxHead"><h2 class="bold">感謝訂購</h2></div>
+  <div class="thxBody"><h2>訂單編號：</h2></div>
+</div>
+{% endblock %} {% block script %}
+<script src="{{url_for('static', filename='scriptThankyou.js')}}"></script>
+{%endblock %}

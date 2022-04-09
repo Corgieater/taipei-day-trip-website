@@ -130,6 +130,25 @@ nav ul > li > a {
   padding: 0px 20px 0 0;
 }
 
+.cartBtAndCircleWrap {
+  position: relative;
+}
+
+.countCircle {
+  position: absolute;
+  right: 5%;
+  top: 5%;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background-color: #448899;
+  color: white;
+  text-align: center;
+  line-height: 1.5;
+  font-weight: bold;
+  font-size: 13px;
+}
+
 /* ---header--- */
 header {
   height: 320px;
@@ -213,8 +232,23 @@ header {
 }
 
 .success {
-  color: cadetblue;
+  color: #337788;
   font-weight: bold;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+/* messagePlace */
+#messagePlace {
+  max-width: 600px;
+  min-width: 200px;
+  margin: 0 24%;
+}
+
+#messagePlace p {
+  color: #666666;
 }
 
 /* ---footer--- */
@@ -226,6 +260,28 @@ footer p {
   text-align: center;
   line-height: 5.5;
   color: white;
+}
+
+.footerWrap {
+  position: relative;
+  margin-top: 30px;
+}
+
+.footerWrapHeight {
+  height: 85.1vh;
+}
+
+.footerStrech {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
+.footerNormal {
+  height: 90px;
+  bottom: 0;
 }
 
 /* rwd*/
@@ -243,7 +299,7 @@ footer p {
     margin: 0;
   }
   .signInAndReserveBox li {
-    padding: 10px;
+    padding: 5px;
     margin-bottom: 15px;
   }
 
@@ -254,6 +310,11 @@ footer p {
 
   header {
     height: 280px;
+  }
+
+  .countCircle {
+    right: -5px;
+    top: -10px;
   }
 
   /* 360-600 rwd for wrapForWholeSignInBox */
@@ -288,4 +349,97 @@ footer p {
   header {
     height: 280px;
   }
+
+  .countCircle {
+    right: -5px;
+    top: -5px;
+  }
 }
+
+/* loading animation I borrowed  from T. Afif*/
+/* currently not available */
+/* .dots-bars-6 {
+  width: 40px;
+  height: 20px;
+  --c: radial-gradient(farthest-side, currentColor 93%, #0000);
+  background: var(--c) 0 0, var(--c) 50% 0;
+  background-size: 8px 8px;
+  background-repeat: no-repeat;
+  position: relative;
+  clip-path: inset(-200% -100% 0 0);
+  animation: db6-0 1.5s linear infinite;
+  margin: 0 auto;
+  color: #337788;
+}
+.dots-bars-6:before {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 12px;
+  background: currentColor;
+  left: -16px;
+  top: 0;
+  animation: db6-1 1.5s linear infinite,
+    db6-2 0.5s cubic-bezier(0, 200, 0.8, 200) infinite;
+}
+.dots-bars-6:after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: db6-3 1.5s linear infinite;
+}
+
+@keyframes db6-0 {
+  0%,
+  30% {
+    background-position: 0 0, 50% 0;
+  }
+  33% {
+    background-position: 0 100%, 50% 0;
+  }
+  41%,
+  63% {
+    background-position: 0 0, 50% 0;
+  }
+  66% {
+    background-position: 0 0, 50% 100%;
+  }
+  74%,
+  100% {
+    background-position: 0 0, 50% 0;
+  }
+}
+
+@keyframes db6-1 {
+  90% {
+    transform: translateY(0);
+  }
+  95% {
+    transform: translateY(15px);
+  }
+  100% {
+    transform: translateY(15px);
+    left: calc(100% - 8px);
+  }
+}
+
+@keyframes db6-2 {
+  100% {
+    top: -0.1px;
+  }
+}
+
+@keyframes db6-3 {
+  0%,
+  80%,
+  100% {
+    transform: translate(0);
+  }
+  90% {
+    transform: translate(26px);
+  }
+} */

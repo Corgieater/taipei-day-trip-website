@@ -6,6 +6,10 @@
   accent-color: #448899;
 }
 
+main {
+  height: 85.8vh;
+}
+
 .attractionHead {
   border-color: #e8e8e8;
   border-style: solid;
@@ -33,7 +37,7 @@ label,
 }
 
 /* 找方法做照片fade in效果 */
-/* .fadeIn {
+.fadeIn {
   animation: fadeIn 2s ease-in-out;
 }
 
@@ -44,7 +48,7 @@ label,
   to {
     opacity: 1;
   }
-} */
+}
 
 .leftArrow,
 .rightArrow {
@@ -179,9 +183,32 @@ input[type="radio"] {
   margin-bottom: 20px;
 }
 
+/* 彈出訊息 */
+.popMessage {
+  background-color: white;
+  text-align: center;
+  line-height: 5;
+  height: 100px;
+  width: 200px;
+  font-size: 20px;
+  border: 1px solid #e8e8e8;
+  position: relative;
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+
+#popCloseBt > img {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
 /* rwd */
 @media screen and (min-width: 360px) and (max-width: 600px) {
   /* 360-600 rwd for attraction html */
+  main {
+    height: 100%;
+  }
   .signInAndReserveBox {
     padding: 0 5px 0 0;
   }

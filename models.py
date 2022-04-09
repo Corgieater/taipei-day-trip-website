@@ -1,3 +1,5 @@
+import json
+
 import flask_bcrypt
 from flask import *
 import math
@@ -7,7 +9,9 @@ import mysql.connector
 from mysql.connector import pooling
 import jwt
 from datetime import datetime, timedelta
-# import datetime
+import requests
+
+# 要檢視一下connection pool什麼時候要關
 
 
 modelsBlueprint = Blueprint(
@@ -16,7 +20,6 @@ modelsBlueprint = Blueprint(
     static_folder='static',
     template_folder='templates'
 )
-
 
 load_dotenv(find_dotenv())
 MYSQL_DB_NAME = os.getenv('MYSQL_DB_NAME')
@@ -39,6 +42,7 @@ pool = mysql.connector.pooling.MySQLConnectionPool(
 connection = pool.get_connection()
 cursor = connection.cursor()
 
+
 def searchAttractions():
     userInputKeyword = request.args.get('keyword')
     userInputPage = request.args.get('page')
@@ -59,23 +63,23 @@ def searchAttractions():
                                       'longitude, images FROM taipeitrip WHERE name LIKE %s LIMIT %s,  12')
         countItemLength = ('SELECT COUNT(*) FROM taipeitrip WHERE name LIKE %s')
         # don't trans userInputPage here, page 0 will turn to False
-        #search when user input page and keyword
-        startPoint = 12*int(userInputPage)
-        cursor.execute(searchByPageAndNameKeyword, ('%' + userInputKeyword + '%', startPoint, ))
+        # search when user input page and keyword
+        startPoint = 12 * int(userInputPage)
+        cursor.execute(searchByPageAndNameKeyword, ('%' + userInputKeyword + '%', startPoint,))
         totalAttractions = cursor.fetchall()
         cursor.execute(countItemLength, ('%' + userInputKeyword + '%',))
         searchLength = cursor.fetchone()
         searchLength = searchLength[0]
 
-        totalPages = math.ceil(searchLength/12)
+        totalPages = math.ceil(searchLength / 12)
         # determine pages, really important
         if int(userInputPage) < totalPages:
-            if int(userInputPage) == totalPages-1:
+            if int(userInputPage) == totalPages - 1:
                 totalData = makeJsonData(totalAttractions, len(totalAttractions))
                 return totalData
 
             totalData = makeJsonData(totalAttractions, 12)
-            totalData['nextPage'] = int(userInputPage)+1
+            totalData['nextPage'] = int(userInputPage) + 1
             return totalData
 
         else:
@@ -86,7 +90,7 @@ def searchAttractions():
         cursor.execute(search)
         totalAttractionLength = cursor.fetchone()
         totalAttractionLength = totalAttractionLength[0]
-        totalPage = math.floor(totalAttractionLength/12)
+        totalPage = math.floor(totalAttractionLength / 12)
         if int(userInputPage) <= totalPage:
             startPoint = 12 * (int(userInputPage))
             ##### use limit range to make mysql do less
@@ -101,12 +105,13 @@ def searchAttractions():
             totalData = makeJsonData(totalAttractions, 12)
 
             if userInputPage != totalPage:
-                totalData['nextPage'] = int(userInputPage)+1
+                totalData['nextPage'] = int(userInputPage) + 1
 
             return totalData
 
         else:
             return errorData, 500
+
 
 def makeJsonData(totalAttractions, end, start=0):
     totalAttractionsData = {
@@ -141,15 +146,15 @@ def searchAttractionById(attractionId):
         result = cursor.fetchone()
         if result is None:
             attraction = {
-                        "error": True,
-                        "message": 'There is no such id'
-                    }, 400
+                             "error": True,
+                             "message": 'There is no such id'
+                         }, 400
     except:
         # except with no clear error is not ok, but i can't think of any other exception~"~
         attraction = {
-                             "error": True,
-                             "message": 'Internal server error'
-                         }, 500
+                         "error": True,
+                         "message": 'Internal server error'
+                     }, 500
     else:
         # can I find a way to fix this repetition?
         attraction = {
@@ -198,7 +203,6 @@ def userChecker():
         return {
             'data': None
         }
-
     return jsonify(data)
 
 
@@ -258,16 +262,17 @@ def signUpFunc():
         error = {
             'error': True,
             'message': '信箱已被使用'
-            }
+        }
         return error, 400
 
     try:
         createUser = ('INSERT INTO taipeitripuserinfo VALUES(%s, %s, %s, %s)')
         cursor.execute(createUser, (None, userInputName, userInputEmail, userInputPassword))
         connection.commit()
+
         data = {
-                'ok': True
-            }
+            'ok': True
+        }
         return data, 200
     except:
         error = {
@@ -275,7 +280,8 @@ def signUpFunc():
             'message': 'Internal server error'
         }
         return error, 500
-
+    finally:
+        connection.close()
 
 # 登出
 
@@ -289,9 +295,12 @@ def signOutFunc():
 
 
 # 取得預定行程
+global startIndex
+tartIndex = 0
 def checkReservation():
-    token = request.cookies.get('userReservation')
-    # 如果使用者根本沒預定就連try都不用了
+    token = request.cookies.get('userInfo')
+    global startIndex
+    # 使用者沒登入就不用try了
     if token is None:
         data = {
             'data': None
@@ -299,27 +308,55 @@ def checkReservation():
         return data
 
     try:
-        userReservation = jwt.decode(token, secretKey, algorithms=["HS256"])
+        userInfo = jwt.decode(token, secretKey, algorithms=["HS256"])
+        userId = userInfo['userID']
+        if userId:
+            countOrder = 'SELECT COUNT(*) FROM orders WHERE userId = %s'
+            cursor.execute(countOrder, (userId,))
+            orderLen = cursor.fetchone()[0]
+            totalPages = math.ceil(orderLen/5)
+            userInput = request.args.get('page')
 
-        if userReservation:
-            attractionId = userReservation['attractionId']
-            attraction = searchAttractionById(attractionId)['data']
-            attractionName = attraction['name']
-            attractionAddress = attraction['address']
-            attractionImg = attraction['images'][0]
+            print(userInput)
+            searchOrders = 'SELECT number FROM orders WHERE userId = %s LIMIT %s, 5'
+            startIndex = 0
+            if userInput:
+                startIndex = int(userInput) * 5
+                print('starIndex', startIndex)
+            cursor.execute(searchOrders, (userId, startIndex))
+            result = cursor.fetchall()
+            print(result)
+
             data = {
                 'data': {
-                    'attraction': {
-                        'id': attractionId,
-                        'name': attractionName,
-                        'address': attractionAddress,
-                        'image': attractionImg
-                    },
-                    'date': userReservation['date'],
-                    'time': userReservation['time'],
-                    'price': userReservation['price']
-                }
+                    'userOrders': []
+                },
+                'totalPages': totalPages
             }
+
+            for order in result:
+                data['data']['userOrders'].append(order[0])
+
+        # if userReservation:
+        #     attractionId = userReservation['attractionId']
+        #     attraction = searchAttractionById(attractionId)['data']
+        #     attractionName = attraction['name']
+        #     attractionAddress = attraction['address']
+        #     attractionImg = attraction['images'][0]
+        #
+        #     newReservation = {
+        #         'attraction': {
+        #             'id': attractionId,
+        #             'name': attractionName,
+        #             'address': attractionAddress,
+        #             'image': attractionImg
+        #         },
+        #         'date': userReservation['date'],
+        #         'time': userReservation['time'],
+        #         'price': userReservation['price']
+        #     }
+        #     data['data'].append(newReservation)
+        #     print(data)
 
     except:
         data = {
@@ -330,55 +367,172 @@ def checkReservation():
     finally:
         return data
 
-# 預定行程
 
-def doReservation():
-    token = request.cookies.get('userInfo')
-    try:
-        userInfo = jwt.decode(token, secretKey, algorithms=["HS256"])
-        if userInfo:
-            userReservation = request.json
-            jwtEncoded = jwt.encode(userReservation, secretKey, algorithm="HS256")
-            userReservationDate = userReservation['date']
-            today = str(datetime.today().date())
-            print(userReservationDate, today)
-            # 轉str因為datetime這功能回的東西type不是str
-            if userReservationDate <= today:
-                data = {
-                    'error': True,
-                    'message': '請勿預定過去或當日的日期'
-                }
-                return data, 400
+# 預定行程 有購物車了先蓋掉
 
-            data = {
-                "ok": True
-            }
-            res = make_response(data)
-            res.set_cookie('userReservation', jwtEncoded, timedelta(days=31))
-
-            return res, 200
-
-
-    except :
-        data = {
-            'error': True,
-            'message': '請先登入'
-        }
-        return data, 403
-
-
+# def doReservation():
+#     token = request.cookies.get('userInfo')
+#     try:
+#         userInfo = jwt.decode(token, secretKey, algorithms=["HS256"])
+#         if userInfo:
+#             userReservation = request.json
+#             jwtEncoded = jwt.encode(userReservation, secretKey, algorithm="HS256")
+#             userReservationDate = userReservation['date']
+#             today = str(datetime.today().date())
+#             # 轉str因為datetime這功能回的東西type不是str
+#             if userReservationDate <= today:
+#                 data = {
+#                     'error': True,
+#                     'message': '請勿預定過去或當日的日期'
+#                 }
+#                 return data, 400
+#
+#             data = {
+#                 "ok": True
+#             }
+#             res = make_response(data)
+#             res.set_cookie('userReservation', jwtEncoded, timedelta(days=31))
+#
+#             return res, 200
+#
+#
+#     except:
+#         data = {
+#             'error': True,
+#             'message': '請先登入'
+#         }
+#         return data, 403
 
 
 # 刪除預定
-def removeReservation():
+# def removeReservation():
+#     token = request.cookies.get('userInfo')
+#     userInfo = jwt.decode(token, secretKey, algorithms=["HS256"])
+#     if userInfo:
+#         data = {
+#             'ok': True
+#         }
+#         res = make_response(data)
+#         res.set_cookie('userReservation', value='', expires=0)
+#         return res, 200
+#     else:
+#         data = {
+#             'error': True,
+#             'message': '要登出的話要先登入喔:('
+#         }
+#         return data, 403
+
+
+# 購物車相關
+
+def checkCartItems():
+    token = request.cookies.get('userCart')
+    # 如果使用者根本沒預定就連try都不用了
+    if token is None:
+        data = {
+            'data': None
+        }
+        return data
+
+    userCart = jwt.decode(token, secretKey, algorithms=["HS256"])
+    userCart = userCart['data']
+
+    cartItemCollection = {'data': []}
+    if userCart:
+        for i in range(len(userCart)):
+            item = userCart[i]
+            attractionId = item['attractionId']
+            attraction = searchAttractionById(attractionId)
+            attraction = attraction['data']
+            attractionName = attraction['name']
+            attractionAddress = attraction['address']
+            attractionImg = attraction['images'][0]
+
+            item = {'attraction': {
+                'id': attractionId,
+                'name': attractionName,
+                'address': attractionAddress,
+                'image': attractionImg
+            },
+                'date': userCart[i]['date'],
+                'time': userCart[i]['time'],
+                'price': userCart[i]['price'],
+
+            }
+            cartItemCollection['data'].append(item)
+
+
+    return cartItemCollection
+
+
+# 確認購物車有多少品項
+def checkCartLen():
+    token = request.cookies.get('userCart')
+    if token :
+        try:
+            decode = jwt.decode(token, secretKey, algorithms=['HS256'])
+            cartLen = len(decode['data'])
+            data = {
+                'data': {'len': cartLen}
+            }
+        except Exception as e:
+            print(e)
+            data = {
+                'error': True,
+                'message': 'Token有誤'
+            }
+        finally:
+            return data
+
+    else:
+        return {
+            'error': True,
+            'message': '購物車沒東西'
+        }
+
+
+
+# 加入購物車
+def addItemToCart():
+    userInput = request.get_json()
+    data = {
+        'data': []
+    }
+    token = None
+    try:
+        userCart = request.cookies.get('userCart')
+        if userCart is None:
+            data['data'].append(userInput)
+            token = jwt.encode(data, secretKey, algorithm='HS256')
+        else:
+            decodeCart = jwt.decode(userCart, secretKey, algorithms=['HS256'])
+            decodeCart['data'].append(userInput)
+            token = jwt.encode(decodeCart, secretKey, algorithm='HS256')
+    finally:
+        res = make_response({'ok': True})
+        res.set_cookie('userCart', token)
+
+        return res
+
+# 從購物車移除
+def deleteItemFromCart(cartId):
+    cartId = int(cartId)
     token = request.cookies.get('userInfo')
     userInfo = jwt.decode(token, secretKey, algorithms=["HS256"])
     if userInfo:
         data = {
             'ok': True
         }
+
+        cartToken = request.cookies.get('userCart')
+        decodedCart = jwt.decode(cartToken, secretKey, algorithms=["HS256"])
+        del decodedCart['data'][cartId]
+        newToken = jwt.encode(decodedCart, secretKey, algorithm="HS256")
         res = make_response(data)
-        res.set_cookie('userReservation', value='', expires=0)
+        res.set_cookie('userCart', newToken)
+        # cart = request.cookies.get('userCart')
+        # print(jwt.decode(cart, secretKey, algorithms=["HS256"]))
+
         return res, 200
     else:
         data = {
@@ -387,3 +541,205 @@ def removeReservation():
         }
         return data, 403
 
+
+# 建立訂單相關
+
+# 訂單小功能
+
+# 把訂單存到資料庫
+
+def saveOrderToDatabase(cartData ,number, money, name, email, phone, userId):
+    attIds = []
+    dates = []
+    times = []
+    orderSaved = None
+    for item in cartData['order']['trip']:
+        attIds.append(item['attraction']['id'])
+        dates.append(item['date'])
+        times.append(item['time'])
+
+    attIds = json.dumps(attIds)
+    dates = json.dumps(dates)
+    times = json.dumps(times)
+
+    try:
+        createOrder= ('INSERT INTO orders VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)')
+        cursor.execute(createOrder, (None, number, money, attIds, dates, times, name, email, phone, 0, userId))
+        connection.commit()
+        orderSaved = True
+    except Exception as e:
+        print(e)
+        orderSaved = False
+    finally:
+        return orderSaved
+
+
+# 修改訂單的付款資料
+def changeOrderPaymentStatus(orderNumber):
+    try:
+        updateOrder = 'UPDATE orders SET paid = 1 WHERE number = %s'
+        cursor.execute(updateOrder, (orderNumber,))
+        connection.commit()
+        payStatusChanged = True
+    except Exception as e:
+        print(e)
+        payStatusChanged = False
+    finally:
+        return payStatusChanged
+
+
+# 打API給TAPPAY
+def sendReqToTappay(partnerKey, paymentData):
+    headers = {'Content-Type': 'application/json',
+               'x-api-key': partnerKey}
+    url = 'https://sandbox.tappaysdk.com/tpc/payment/pay-by-prime'
+    req = requests.post(url, data=json.dumps(paymentData), headers=headers)
+    res = req.json()
+    # 要轉json不然會是byte
+    return res
+
+
+# 把tappay資訊傳給前端
+def sendTappayInfo():
+    data = {
+        'data': {
+            'appId': os.getenv('APP_ID'),
+            'appKey': os.getenv('APP_KEY')
+        }
+    }
+    return data
+
+
+def makeOrder():
+    # 首先先確定使用者是否登入
+    token = request.cookies.get('userInfo')
+    decodeToken = jwt.decode(token, secretKey, algorithms=["HS256"])
+    userId = decodeToken['userID']
+
+    if userId:
+        cartData = request.get_json()
+        print('data for makeNewOrder ', cartData)
+        prime = cartData['prime']
+        partnerKey = 'partner_eGcjNSvDMVoNiGk0EUzdUPIH5jnCVRObFsj0smHvxjBfMeiqQqOtZsoq'
+        number = datetime.now().strftime('%Y%m%d%H%M%S')
+        # 不確定要不要做訂單編號驗證 會這麼巧撞號嗎?
+        money = cartData['order']['price']
+        name = cartData['contact']['name']
+        email = cartData['contact']['email']
+        phone = cartData['contact']['phone']
+
+
+        orderSaved = saveOrderToDatabase(cartData, number, money, name, email, phone, userId)
+
+        paymentData = {
+            "prime": prime,
+            "partner_key": partnerKey,
+            "merchant_id": "dinnerpark19_ESUN",
+            "details": "TapPay Test",
+            "amount": money,
+            "cardholder": {
+                "phone_number": phone,
+                "name": name,
+                "email": email
+            },
+        }
+
+        if orderSaved:
+            payStatus = sendReqToTappay(partnerKey, paymentData)
+            print(payStatus)
+            print(payStatus['status'])
+            if payStatus['status'] == 0:
+                orderPaid = changeOrderPaymentStatus(number)
+                if orderPaid:
+                    return{
+                        'data': {
+                            'number': number,
+                            'payment': {
+                                'status': 0,
+                                'message': '付款成功'
+                            }
+                        }
+                    }, 200
+            else:
+                return {
+                    'error': True,
+                    "message": "付款失敗，請確認付款資訊",
+                    'number': number
+                }
+    else:
+        return{
+            'error': True,
+            'message': '請先登入'
+        }
+
+
+# 確認訂單資訊
+
+# string轉list 因為我資料庫有用type json 傳回來會全部變成str所以要做處理
+def turnStringToList(strData):
+    unwantedC = ['"', '[', ']', ',']
+
+    for c in unwantedC:
+        strData = strData.replace(c, '')
+    list = strData.split(' ')
+    return list
+
+
+def checkOrder(orderNumber):
+    searchOrder = 'SELECT * FROM orders WHERE number = %s'
+    cursor.execute(searchOrder, (orderNumber,))
+    order = cursor.fetchone()
+    orderNum = order[1]
+    orderPrice = order[2]
+    orderAttIds = turnStringToList(order[3])
+    orderDates = turnStringToList(order[4])
+    orderTimes = turnStringToList(order[5])
+
+    orderName = order[6]
+    orderEmail = order[7]
+    orderPhone = order[8]
+    paymentStatus = order[9]
+
+    data = {
+        "data": {
+            "number": orderNum,
+            "price": orderPrice,
+            "trip": {
+                "attraction": []
+            },
+            "contact": {
+                "name": orderName,
+                "email": orderEmail,
+                "phone": orderPhone
+            },
+            "status": paymentStatus
+        }
+    }
+
+    for i in range(len(orderAttIds)):
+        attraction = {
+            "id": orderAttIds[i],
+            "name": None,
+            "address": None,
+            "image": None,
+            "date": None,
+            "time": None
+        }
+        # 這樣一直查不知道會不會爆炸
+        attractionInfo = 'SELECT name, address, images FROM taipeitrip WHERE id = %s'
+        cursor.execute(attractionInfo, (i+1,))
+        result = cursor.fetchone()
+        attraction['name'] = result[0]
+        attraction['address'] = result[1]
+        image = result[2].split('https://')
+        attraction['image'] = 'https://'+image[1][:-1]
+        attraction['date'] = orderDates[i]
+        attraction['time'] = orderTimes[i]
+        data['data']['trip']['attraction'].append(attraction)
+
+    return data
+
+# 如果付款失敗要回傳單號 訂單狀態是否要顯示付款失敗或成功?
+# 訂單不要一次SHOW全部要limit
+# 訂單詳細要想辦法弄得跟limit一樣效果?
+# nav的登入要看看能不能做成要求登入=>登入後直接轉換到本來要去的地方
