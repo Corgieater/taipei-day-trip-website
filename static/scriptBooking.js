@@ -128,7 +128,6 @@ async function getReservationStatus() {
     for (let i = 0; i < orderList.length; i++) {
       // 要訂單成立後的詳細資料
       let orderDetails = await getReservation(orderList[i]);
-      console.log(orderDetails);
       let itemList = orderDetails.data.trip.attraction;
       createWholeOrder(orderDetails.data.number, orderDetails.data.price);
 
@@ -172,7 +171,6 @@ async function makePages() {
         method: "GET",
       });
       const res = await req.json();
-      console.log("res", res);
       let nextPageItems = res.data.userOrders;
       // 刪掉前個頁面的東西
       let wholeOrders = document.querySelectorAll(".wholeOrder");
@@ -181,9 +179,7 @@ async function makePages() {
       }
       for (let i = 0; i < nextPageItems.length; i++) {
         let orderDetails = await getReservation(nextPageItems[i]);
-        console.log("oder", orderDetails);
         let itemList = orderDetails.data.trip.attraction;
-        console.log("item", itemList);
         createWholeOrder(orderDetails.data.number, orderDetails.data.price);
         for (let j = 0; j < itemList.length; j++) {
           let orderBodies = document.querySelectorAll(".orderBody");

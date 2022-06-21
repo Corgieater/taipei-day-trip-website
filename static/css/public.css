@@ -358,7 +358,17 @@ footer p {
 
 /* loading animation I borrowed  from T. Afif*/
 /* currently not available */
-/* .dots-bars-6 {
+
+#loadingAnimate {
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.15);
+}
+.dots-bars-6 {
   width: 40px;
   height: 20px;
   --c: radial-gradient(farthest-side, currentColor 93%, #0000);
@@ -370,6 +380,7 @@ footer p {
   animation: db6-0 1.5s linear infinite;
   margin: 0 auto;
   color: #337788;
+  top: 50vh;
 }
 .dots-bars-6:before {
   content: "";
@@ -442,4 +453,4 @@ footer p {
   90% {
     transform: translate(26px);
   }
-} */
+}
