@@ -33,6 +33,7 @@ def getData(sql, value, dataAmount='one'):
                 result = cursor.fetchone()
             elif dataAmount == 'all':
                 result = cursor.fetchall()
+                print(result, 'from db')
 
     except Exception as e:
         print(e)

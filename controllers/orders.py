@@ -6,6 +6,7 @@ from datetime import datetime
 import os
 
 merchantID = os.getenv('MERCHANT_ID')
+partnerKey = os.getenv('PARTNER_KEY')
 
 # 把訂單存到資料庫
 def saveOrderToDatabase(cartData ,number, money, name, email, phone, userId):
@@ -59,7 +60,7 @@ def makeOrder():
         cartData = request.get_json()
 
         prime = cartData['prime']
-        partnerKey = 'partner_eGcjNSvDMVoNiGk0EUzdUPIH5jnCVRObFsj0smHvxjBfMeiqQqOtZsoq'
+        partnerKey = partnerKey
         number = datetime.now().strftime('%Y%m%d%H%M%S')+str(userId)
 
         money = cartData['order']['price']
@@ -124,6 +125,7 @@ def turnStringToList(strData):
 def makeOrderDetails(orderNumber):
     searchOrder = 'SELECT * FROM orders WHERE number = %s'
     orderContent = getOrderData(searchOrder, orderNumber)
+    print(orderContent)
     if orderContent:
         orderNum = orderContent[1]
         orderPrice = orderContent[2]
