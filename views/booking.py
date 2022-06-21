@@ -10,7 +10,7 @@ bookingBlueprint = Blueprint(
 
 @bookingBlueprint.route("/booking")
 def booking():
-	return render_template("booking.html")
+    return render_template("booking.html")
 
 
 @bookingBlueprint.route("/api/booking", methods=['GET'])
