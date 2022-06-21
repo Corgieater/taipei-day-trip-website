@@ -1,9 +1,13 @@
 from flask import *
-from models import modelsBlueprint
+from views.attraction import attractionViewBlueprint
+from views.user import userBlueprint
+from views.booking import bookingBlueprint
+from views.cart import cartBlueprint
+from views.orders import ordersBlueprint
 import os
 
 environment = os.getenv('FLASK_ENV')
-flask_host = os.getenv('FLASK_HOST')
+flaskHost = os.getenv('FLASK_HOST')
 
 
 app = Flask(
@@ -15,111 +19,17 @@ app.config["JSON_AS_ASCII"] = False
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
-app.register_blueprint(modelsBlueprint)
-from models import searchAttractions, searchAttractionById, signUpFunc, \
-	signInFunc, userChecker, signOutFunc, checkReservation,\
-	checkCartItems, addItemToCart, deleteItemFromCart, makeOrder, checkOrder, sendTappayInfo,\
-	checkCartLen
-
+app.register_blueprint(attractionViewBlueprint)
+app.register_blueprint(userBlueprint)
+app.register_blueprint(bookingBlueprint)
+app.register_blueprint(cartBlueprint)
+app.register_blueprint(ordersBlueprint)
 
 # Pages
 @app.route("/")
 def index():
 	return render_template("index.html")
 
-# -----景點資訊相關-----
-@app.route("/api/attractions")
-def searching():
-	return searchAttractions()
-
-@app.route("/api/attraction/<attractionId>")
-def searchingById(attractionId):
-	# dynamic route for fuck sake
-	return searchAttractionById(attractionId)
-
-
-# -----登入登出相關-----
-@app.route("/api/user", methods=['POST'])
-def signUp():
-	return signUpFunc()
-
-
-@app.route("/api/user", methods=['PATCH'])
-def signIn():
-	return signInFunc()
-
-
-@app.route('/api/user', methods=["GET"])
-def checkUserInfo():
-	return userChecker()
-
-
-@app.route("/api/user", methods=["DELETE"])
-def signOut():
-	return signOutFunc()
-
-
-# -----預定相關-----
-# changed
-@app.route("/api/booking", methods=['GET'])
-def getReservation():
-	return checkReservation()
-
-# 有購物車了所以先蓋掉
-# @app.route("/api/booking", methods=['POST'])
-# def makeReservation():
-# 	return doReservation()
-
-# 有購物車了不用
-# @app.route("/api/booking", methods=['DELETE'])
-# def deleteReservation():
-# 	return removeReservation()
-
-# 購物車
-@app.route("/cart")
-def cart():
-	return render_template("cart.html")
-
-# check cart and add to cart should be two func
-@app.route('/api/cart', methods=['GET'])
-def getCartItems():
-	return checkCartItems()
-
-# 給購物車計數用
-@app.route('/api/cart/len', methods=['GET'])
-def getCartLen():
-	return checkCartLen()
-
-@app.route('/api/cart', methods=['PATCH'])
-def addItem():
-	return addItemToCart()
-
-@app.route('/api/cart/<cartId>', methods=['DELETE'])
-def deleteItem(cartId):
-	return deleteItemFromCart(cartId)
-
-# 付款相關
-@app.route('/api/orders', methods=['POST'])
-def makeNewOrder():
-	return makeOrder()
-
-@app.route('/api/orfers/tappayInfo', methods=['GET'])
-def getTappayInfo():
-	return sendTappayInfo()
-
-# 查詢訂單內容
-@app.route('/api/orders/<orderNumber>', methods=['GET'])
-def getOrderDetails(orderNumber):
-	return checkOrder(orderNumber)
-
-# ----don't touch-----
-
-@app.route("/attraction/<id>")
-def attraction(id):
-	return render_template("attraction.html")
-@app.route("/booking")
-def booking():
-	return render_template("booking.html")
 @app.route("/thankyou")
 def thankyou():
 	return render_template("thankyou.html")
@@ -127,5 +37,5 @@ def thankyou():
 if __name__ == '__main__' and environment == 'developmente':
 	app.run(debug=True, port=3000)
 else:
-	app.run(host=flask_host, port=3000)
+	app.run(host=flaskHost, port=3000)
 

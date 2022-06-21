@@ -55,7 +55,6 @@ async function getUserInfo() {
 // 檢驗使用者購物車
 async function getReservationStatus() {
   let name = await getUserInfo();
-  console.log(name);
   // 拿使用者預定資料
   const req = await fetch("/api/cart", {
     method: "GET",
@@ -200,11 +199,8 @@ async function makeUserOrderJsonData(primeId) {
       phone: contactPhone,
     },
   };
-  let reqForUserCart = await fetch("/api/cart", {
-    method: "GET",
-  });
+  let reqForUserCart = await fetch("/api/cart");
   let userCartData = await reqForUserCart.json();
-  console.log(userCartData["data"].length);
 
   for (let i = 0; i < userCartData["data"].length; i++) {
     let cartItem = {
@@ -218,7 +214,6 @@ async function makeUserOrderJsonData(primeId) {
       time: null,
     };
     let userCartItem = userCartData["data"][i];
-    console.log(userCartItem);
     cartItem["attraction"]["id"] = userCartItem["attraction"]["id"];
     cartItem["attraction"]["address"] = userCartItem["attraction"]["address"];
     cartItem["attraction"]["image"] = userCartItem["attraction"]["image"];
@@ -227,7 +222,6 @@ async function makeUserOrderJsonData(primeId) {
     cartItem["time"] = userCartItem["time"];
     tripArr.push(cartItem);
   }
-  console.log("body is ", body);
   return body;
 }
 

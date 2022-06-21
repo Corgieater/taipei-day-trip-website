@@ -61,9 +61,7 @@ function returnDefaultValue(messageReset) {
 
 // 確認登入與否然後回傳使用者名稱
 async function checkSignIn() {
-  const req = await fetch("/api/user", {
-    method: "GET",
-  });
+  const req = await fetch("/api/user");
   const res = await req.json();
   if (res.data !== null) {
     return true;
@@ -211,4 +209,33 @@ signOutBt.addEventListener("click", async function (e) {
   location.reload();
 });
 
+let loadingAnimate = document.querySelector("#loadingAnimate");
+
+function checkPageLoading() {
+  if (document.readyState === "complete") {
+    loadingAnimate.classList.add("hide");
+  } else if (document.readyState === "interactive") {
+    // DOM ready! Images, frames, and other subresources are still downloading.
+    loadingAnimate.classList.remove("hide");
+    loadingAnimate.addEventListener("wheel", preventScroll, { passive: false });
+  } else {
+    // Loading still in progress.
+    // To wait for it to complete, add "DOMContentLoaded" or "load" listeners.
+
+    window.addEventListener("DOMContentLoaded", () => {
+      // DOM ready! Images, frames, and other subresources are still downloading.
+      loadingAnimate.classList.remove("hide");
+      loadingAnimate.addEventListener("wheel", preventScroll, {
+        passive: false,
+      });
+    });
+
+    window.addEventListener("load", () => {
+      // Fully loaded!
+      loadingAnimate.classList.add("hide");
+    });
+  }
+}
+
 showOrHideSignInAndReserveBox();
+checkPageLoading();

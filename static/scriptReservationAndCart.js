@@ -35,17 +35,18 @@ cartBt.addEventListener("click", async function (e) {
 });
 
 async function getCartLen() {
-  const req = await fetch("/api/cart/len", {
-    method: "GET",
-  });
+  const req = await fetch("/api/cart/len");
   const res = await req.json();
-  let len = res.data.len;
-  if (len) {
-    return len;
-  } else {
-    return false;
+  if (!res.error) {
+    let len = res.data.len;
+    if (len) {
+      return len;
+    } else {
+      return false;
+    }
   }
 }
+
 async function changeCartCircle() {
   let cartCount = await getCartLen();
   if (cartCount) {
