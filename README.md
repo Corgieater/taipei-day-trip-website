@@ -39,3 +39,6 @@ CVV : 123
 + Payment page with TapPay
 ![image](https://user-images.githubusercontent.com/92343813/174988738-fd515916-aaaa-40bc-8c43-9a12462a5752.png)
 
++ User reservation page for checking their order
+![image](https://user-images.githubusercontent.com/92343813/174990543-71e78c4f-c9df-4ae9-8823-5f96e9c17eb1.png)
+
