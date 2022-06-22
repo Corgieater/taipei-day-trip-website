@@ -31,14 +31,21 @@ CVV : 123
 ![image](https://user-images.githubusercontent.com/92343813/174983678-9daa5f4b-30bf-40ac-a2ed-c3e51a2bc910.png)
 
 + Sign-in/ Sign-up
+
 ![image](https://user-images.githubusercontent.com/92343813/174987475-c605c630-3a1a-4578-b1c3-07b3cfb16521.png)
 
-+ Booking page with Carousel Slider
+## Booking Page
++ Carousel Slider for browsing attraction pictures
+
 ![image](https://user-images.githubusercontent.com/92343813/174988014-2197135a-cb13-40ba-ad4b-528617e7d802.png)
 
-+ Payment page with TapPay
+## Payment Page
++ Paying with TapPay SDK
+
 ![image](https://user-images.githubusercontent.com/92343813/174988738-fd515916-aaaa-40bc-8c43-9a12462a5752.png)
 
-+ User reservation page for checking their order
+## User Reservation Page
++ Checking user orders
+
 ![image](https://user-images.githubusercontent.com/92343813/174990543-71e78c4f-c9df-4ae9-8823-5f96e9c17eb1.png)
 
