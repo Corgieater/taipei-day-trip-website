@@ -28,6 +28,7 @@ CVV : 123
 
 ## Home Page
 + Infinite scroll with AJAX
+
 ![image](https://user-images.githubusercontent.com/92343813/174983678-9daa5f4b-30bf-40ac-a2ed-c3e51a2bc910.png)
 
 + Sign-in/ Sign-up
