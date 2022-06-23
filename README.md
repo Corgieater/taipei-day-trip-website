@@ -1,7 +1,7 @@
 # Taipei Day Trip
 _Full Stack E-commerce tourism website_
 
-### Website Url : [https://merelyasite.xyz/](https://www.taipeitrip.cloud/)
+### Website Url : https://www.taipeitrip.cloud/
 Credit Card : 4242-4242-4242-4242
 Date : 01/23
 CVV : 123
